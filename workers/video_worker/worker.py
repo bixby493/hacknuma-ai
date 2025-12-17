@@ -1,0 +1,1 @@
+print('Video worker placeholder')

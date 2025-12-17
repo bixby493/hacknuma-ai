@@ -1,0 +1,1 @@
+print('Local pipeline placeholder. Integrate workers to generate MP4.')
