@@ -1,8 +1,9 @@
 export default function Home() {
   return (
-    <main>
+    <main style={{ padding: 40 }}>
       <h1>Hacknuma AI</h1>
-      <p>App is running</p>
+      <p>Frontend is live 🚀</p>
     </main>
   );
 }
+
