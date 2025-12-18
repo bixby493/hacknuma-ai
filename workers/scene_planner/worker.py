@@ -1,1 +1,0 @@
-print('Scene planner worker placeholder')

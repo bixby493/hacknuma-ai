@@ -1,1 +1,0 @@
-print('Video worker placeholder')
