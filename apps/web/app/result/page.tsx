@@ -1,33 +1,57 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ResultPage() {
-  const params = useSearchParams();
-  const jobId = params.get("job");
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get("job");
+
+  const [progress, setProgress] = useState(10);
+  const [status, setStatus] = useState("Processing...");
+
+  useEffect(() => {
+    let p = 10;
+
+    const interval = setInterval(() => {
+      p += 20;
+      setProgress(p);
+
+      if (p >= 100) {
+        setStatus("✅ Video ready (demo)");
+        clearInterval(interval);
+      }
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <main style={styles.main}>
       <div style={styles.card}>
-        <h1>🎉 Video Ready</h1>
+        <h1>Video Result 🎥</h1>
 
         <p style={{ color: "#aaa" }}>
-          Job ID: <strong>{jobId}</strong>
+          Job ID: <b>{jobId}</b>
         </p>
 
-        <div style={styles.videoBox}>
-          <p style={{ color: "#666" }}>
-            Video preview will appear here
-          </p>
+        <div style={styles.progressWrap}>
+          <div
+            style={{
+              ...styles.progressBar,
+              width: `${progress}%`,
+            }}
+          />
         </div>
 
-        <button style={styles.button}>
-          ⬇ Download Video
-        </button>
+        <p style={{ marginTop: 16 }}>{status}</p>
 
-        <p style={{ marginTop: 16, fontSize: 13, color: "#777" }}>
-          * Demo mode – real video rendering coming soon
-        </p>
+        {progress >= 100 && (
+          <div style={styles.preview}>
+            <p>📽️ Preview (coming soon)</p>
+            <div style={styles.fakeVideo}>Video Frame</div>
+          </div>
+        )}
       </div>
     </main>
   );
@@ -38,8 +62,8 @@ const styles: any = {
     minHeight: "100vh",
     background: "linear-gradient(135deg, #000, #0f1f0f)",
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
     color: "#fff",
     fontFamily: "Arial",
   },
@@ -49,26 +73,35 @@ const styles: any = {
     borderRadius: 16,
     width: "100%",
     maxWidth: 600,
-    textAlign: "center",
-    boxShadow: "0 0 40px rgba(0,255,0,0.2)",
+    boxShadow: "0 0 40px rgba(0,255,0,0.25)",
   },
-  videoBox: {
-    marginTop: 20,
-    height: 220,
-    borderRadius: 12,
+  progressWrap: {
+    marginTop: 16,
+    height: 12,
+    background: "#222",
+    borderRadius: 6,
+    overflow: "hidden",
+  },
+  progressBar: {
+    height: "100%",
+    background: "#00c853",
+    transition: "width 0.4s ease",
+  },
+  preview: {
+    marginTop: 24,
+    padding: 20,
     background: "#000",
+    borderRadius: 12,
+    textAlign: "center",
+  },
+  fakeVideo: {
+    marginTop: 10,
+    height: 180,
+    background: "#222",
+    borderRadius: 8,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    border: "1px dashed #333",
-  },
-  button: {
-    marginTop: 24,
-    padding: "14px 32px",
-    background: "#00c853",
-    border: "none",
-    borderRadius: 10,
-    fontWeight: "bold",
-    cursor: "pointer",
+    color: "#0f0",
   },
 };
