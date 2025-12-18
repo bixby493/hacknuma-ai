@@ -1,4 +1,18 @@
-export default function Home() {
+"use client";
+import { useState } from "react";
+
+export default function Generate() {
+  const [script, setScript] = useState("");
+  const [status, setStatus] = useState("");
+
+  function submit() {
+    if (!script.trim()) {
+      setStatus("❌ Please enter a script first");
+      return;
+    }
+    setStatus("⏳ Processing... (backend coming soon)");
+  }
+
   return (
     <main
       style={{
@@ -13,40 +27,53 @@ export default function Home() {
     >
       <div
         style={{
-          textAlign: "center",
-          maxWidth: "600px",
-          padding: "40px",
-          borderRadius: "12px",
+          width: "600px",
+          padding: "32px",
           background: "#111",
+          borderRadius: "12px",
           boxShadow: "0 0 40px rgba(0,255,0,0.15)",
         }}
       >
-        <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>
-          Hacknuma AI 🚀
-        </h1>
-
-        <p style={{ fontSize: "16px", color: "#aaa", marginBottom: "30px" }}>
-          Script → Scene → Motion → Voice → Video
+        <h2 style={{ marginBottom: "10px" }}>Generate Video 🎬</h2>
+        <p style={{ color: "#aaa", marginBottom: "16px" }}>
+          Paste your script below
         </p>
 
-        <a
-          href="/generate"
+        <textarea
+          value={script}
+          onChange={(e) => setScript(e.target.value)}
+          placeholder="Write your video script here..."
           style={{
-            display: "inline-block",
-            padding: "14px 28px",
+            width: "100%",
+            height: "140px",
+            padding: "12px",
+            borderRadius: "8px",
+            border: "none",
+            outline: "none",
+            resize: "none",
+            fontSize: "14px",
+          }}
+        />
+
+        <button
+          onClick={submit}
+          style={{
+            marginTop: "16px",
+            padding: "12px 24px",
             background: "#00c853",
             color: "#000",
-            textDecoration: "none",
             fontWeight: "bold",
+            border: "none",
             borderRadius: "8px",
+            cursor: "pointer",
           }}
         >
-          Generate Video
-        </a>
+          Generate
+        </button>
 
-        <p style={{ marginTop: "20px", fontSize: "14px", color: "#555" }}>
-          Deployment successful ✅
-        </p>
+        {status && (
+          <p style={{ marginTop: "16px", color: "#0f0" }}>{status}</p>
+        )}
       </div>
     </main>
   );
