@@ -8,28 +8,17 @@ export default function ResultPage() {
 
   useEffect(() => {
     const i = setInterval(() => {
-      setProgress((p) => {
-        if (p >= 100) {
-          clearInterval(i);
-          return 100;
-        }
-        return p + 20;
-      });
+      setProgress(p => p >= 100 ? 100 : p + 20);
     }, 800);
-
     return () => clearInterval(i);
   }, []);
 
   return (
-    <main style={{ minHeight: "100vh", padding: 40 }}>
-      <h1>Processing Video…</h1>
-      <p>Job ID: {job}</p>
-
-      <div style={{ marginTop: 20 }}>
-        Progress: {progress}%
-      </div>
-
-      {progress === 100 && <p>✅ Video Ready (demo)</p>}
+    <main>
+      <h1>Processing…</h1>
+      <p>Job: {job}</p>
+      <p>{progress}%</p>
+      {progress === 100 && <p>✅ Done</p>}
     </main>
   );
 }
