@@ -1,56 +1,35 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function GeneratePage() {
-  const [script, setScript] = useState("");
-  const router = useRouter();
+export default function ResultPage() {
+  const job = useSearchParams().get("job");
+  const [progress, setProgress] = useState(0);
 
-  async function handleGenerate() {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ script }),
-    });
+  useEffect(() => {
+    const i = setInterval(() => {
+      setProgress((p) => {
+        if (p >= 100) {
+          clearInterval(i);
+          return 100;
+        }
+        return p + 20;
+      });
+    }, 800);
 
-    const data = await res.json();
-    router.push(`/result?job=${data.jobId}`);
-  }
+    return () => clearInterval(i);
+  }, []);
 
   return (
     <main style={{ minHeight: "100vh", padding: 40 }}>
-      <h1>Generate Video 🎬</h1>
+      <h1>Processing Video…</h1>
+      <p>Job ID: {job}</p>
 
-      <textarea
-        value={script}
-        onChange={(e) => setScript(e.target.value)}
-        placeholder="Write your script here..."
-        style={{
-          width: "100%",
-          height: 200,
-          marginTop: 20,
-          padding: 16,
-          borderRadius: 10,
-          fontSize: 16,
-        }}
-      />
+      <div style={{ marginTop: 20 }}>
+        Progress: {progress}%
+      </div>
 
-      <br />
-
-      <button
-        onClick={handleGenerate}
-        style={{
-          marginTop: 20,
-          padding: "12px 28px",
-          background: "#00c853",
-          border: "none",
-          borderRadius: 10,
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
-      >
-        Generate
-      </button>
+      {progress === 100 && <p>✅ Video Ready (demo)</p>}
     </main>
   );
 }
