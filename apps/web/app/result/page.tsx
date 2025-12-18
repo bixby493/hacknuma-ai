@@ -1,107 +1,84 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function ResultPage() {
-  const searchParams = useSearchParams();
-  const jobId = searchParams.get("job");
+export default function GeneratePage() {
+  const [script, setScript] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const [progress, setProgress] = useState(10);
-  const [status, setStatus] = useState("Processing...");
+  async function handleGenerate() {
+    if (!script.trim()) return alert("Script empty hai");
 
-  useEffect(() => {
-    let p = 10;
+    setLoading(true);
 
-    const interval = setInterval(() => {
-      p += 20;
-      setProgress(p);
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ script }),
+    });
 
-      if (p >= 100) {
-        setStatus("✅ Video ready (demo)");
-        clearInterval(interval);
-      }
-    }, 800);
+    const data = await res.json();
 
-    return () => clearInterval(interval);
-  }, []);
+    router.push(`/result?job=${data.jobId}`);
+  }
 
   return (
-    <main style={styles.main}>
-      <div style={styles.card}>
-        <h1>Video Result 🎥</h1>
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg,#000,#0f1f0f)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "Arial",
+      }}
+    >
+      <div
+        style={{
+          background: "#111",
+          padding: 40,
+          borderRadius: 16,
+          width: "100%",
+          maxWidth: 700,
+          boxShadow: "0 0 40px rgba(0,255,0,0.2)",
+        }}
+      >
+        <h1>Generate Video 🎬</h1>
+        <p style={{ color: "#aaa" }}>Paste your script below</p>
 
-        <p style={{ color: "#aaa" }}>
-          Job ID: <b>{jobId}</b>
-        </p>
+        <textarea
+          value={script}
+          onChange={(e) => setScript(e.target.value)}
+          placeholder="Write your script..."
+          style={{
+            width: "100%",
+            height: 200,
+            padding: 16,
+            borderRadius: 10,
+            fontSize: 16,
+          }}
+        />
 
-        <div style={styles.progressWrap}>
-          <div
-            style={{
-              ...styles.progressBar,
-              width: `${progress}%`,
-            }}
-          />
-        </div>
+        <br />
+        <br />
 
-        <p style={{ marginTop: 16 }}>{status}</p>
-
-        {progress >= 100 && (
-          <div style={styles.preview}>
-            <p>📽️ Preview (coming soon)</p>
-            <div style={styles.fakeVideo}>Video Frame</div>
-          </div>
-        )}
+        <button
+          onClick={handleGenerate}
+          disabled={loading}
+          style={{
+            padding: "14px 32px",
+            background: "#00c853",
+            border: "none",
+            borderRadius: 10,
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          {loading ? "Starting..." : "Generate"}
+        </button>
       </div>
     </main>
   );
 }
-
-const styles: any = {
-  main: {
-    minHeight: "100vh",
-    background: "linear-gradient(135deg, #000, #0f1f0f)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#fff",
-    fontFamily: "Arial",
-  },
-  card: {
-    background: "#111",
-    padding: 40,
-    borderRadius: 16,
-    width: "100%",
-    maxWidth: 600,
-    boxShadow: "0 0 40px rgba(0,255,0,0.25)",
-  },
-  progressWrap: {
-    marginTop: 16,
-    height: 12,
-    background: "#222",
-    borderRadius: 6,
-    overflow: "hidden",
-  },
-  progressBar: {
-    height: "100%",
-    background: "#00c853",
-    transition: "width 0.4s ease",
-  },
-  preview: {
-    marginTop: 24,
-    padding: 20,
-    background: "#000",
-    borderRadius: 12,
-    textAlign: "center",
-  },
-  fakeVideo: {
-    marginTop: 10,
-    height: 180,
-    background: "#222",
-    borderRadius: 8,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#0f0",
-  },
-};
