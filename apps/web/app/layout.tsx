@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "Hacknuma AI",
-  description: "AI Video Generator",
+  description: "Script to Video AI",
 };
 
 export default function RootLayout({
