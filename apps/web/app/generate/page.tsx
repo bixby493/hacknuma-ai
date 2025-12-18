@@ -5,6 +5,7 @@ import { useState } from "react";
 export default function GeneratePage() {
   const [script, setScript] = useState("");
   const [status, setStatus] = useState("");
+  const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
 
   async function submit() {
@@ -14,27 +15,46 @@ export default function GeneratePage() {
     }
 
     setLoading(true);
-    setStatus("⏳ Video generation started...");
+    setProgress(10);
+    setStatus("⏳ Sending request...");
 
-    // FAKE API CALL (demo)
-    setTimeout(() => {
-      const jobId = Math.floor(Math.random() * 100000);
-      setStatus(`✅ Video generation started! Job ID: ${jobId}`);
+    try {
+      setProgress(30);
 
-      // RESULT PAGE REDIRECT
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ script }),
+      });
+
+      setProgress(60);
+
+      const data = await res.json();
+
+      if (!data.success) {
+        setStatus("❌ Failed");
+        setLoading(false);
+        return;
+      }
+
+      setProgress(100);
+      setStatus(`✅ Job started. Job ID: ${data.jobId}`);
+
       setTimeout(() => {
-        window.location.href = `/result?job=${jobId}`;
+        window.location.href = `/result?job=${data.jobId}`;
       }, 1200);
-    }, 1500);
+
+    } catch (err) {
+      setStatus("❌ Server error");
+      setLoading(false);
+    }
   }
 
   return (
     <main style={styles.main}>
       <div style={styles.card}>
-        <h1 style={{ marginBottom: 8 }}>Generate Video 🎬</h1>
-        <p style={{ color: "#aaa", marginBottom: 20 }}>
-          Paste your script below
-        </p>
+        <h1>Generate Video 🎬</h1>
+        <p style={{ color: "#aaa" }}>Paste your script below</p>
 
         <textarea
           placeholder="Write your video script here..."
@@ -54,9 +74,18 @@ export default function GeneratePage() {
           {loading ? "Generating..." : "Generate"}
         </button>
 
-        {status && (
-          <p style={{ marginTop: 16, color: "#9f9" }}>{status}</p>
+        {loading && (
+          <div style={styles.progressWrap}>
+            <div
+              style={{
+                ...styles.progressBar,
+                width: `${progress}%`,
+              }}
+            />
+          </div>
         )}
+
+        {status && <p style={{ marginTop: 16 }}>{status}</p>}
       </div>
     </main>
   );
@@ -65,12 +94,12 @@ export default function GeneratePage() {
 const styles: any = {
   main: {
     minHeight: "100vh",
-    background: "linear-gradient(135deg, #000000, #0f1f0f)",
+    background: "linear-gradient(135deg, #000, #0f1f0f)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontFamily: "Arial, sans-serif",
     color: "#fff",
+    fontFamily: "Arial",
   },
   card: {
     background: "#111",
@@ -78,15 +107,14 @@ const styles: any = {
     borderRadius: 16,
     width: "100%",
     maxWidth: 700,
-    boxShadow: "0 0 40px rgba(0,255,0,0.2)",
+    boxShadow: "0 0 40px rgba(0,255,0,0.25)",
   },
   textarea: {
     width: "100%",
-    height: 200,
+    height: 180,
     padding: 16,
     borderRadius: 10,
     border: "none",
-    outline: "none",
     fontSize: 16,
     marginBottom: 20,
   },
@@ -99,5 +127,17 @@ const styles: any = {
     borderRadius: 10,
     cursor: "pointer",
     fontSize: 16,
+  },
+  progressWrap: {
+    marginTop: 16,
+    height: 10,
+    background: "#222",
+    borderRadius: 6,
+    overflow: "hidden",
+  },
+  progressBar: {
+    height: "100%",
+    background: "#00c853",
+    transition: "width 0.4s ease",
   },
 };
