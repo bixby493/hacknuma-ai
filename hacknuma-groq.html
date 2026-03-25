@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HACKNUMA AI — v10</title>
+<meta name="theme-color" content="#0f1117">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1c2333;--bg4:#232b3e;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.04);
+  --text:#e8edf5;--sub:#8892a4;--sub2:#5a6478;
+  --accent:#6366f1;--accent2:#8b5cf6;--green:#10b981;--red:#ef4444;
+  --yellow:#f59e0b;--blue:#3b82f6;--pink:#ec4899;--cyan:#06b6d4;
+  --font:'Inter',sans-serif;--font2:'Plus Jakarta Sans',sans-serif;
+  --radius:12px;--radius2:8px;
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+  --tc:#6366f1;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+
+/* KEY SCREEN */
+#keyScreen{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg);padding:16px}
+#keyScreen::before{content:'';position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.kcard{width:min(440px,95vw);background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;box-shadow:0 0 80px rgba(99,102,241,.08)}
+.klogo-wrap{text-align:center;margin-bottom:28px}
+.klogo-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;box-shadow:0 8px 32px rgba(99,102,241,.3)}
+.klogo-name{font-family:var(--font2);font-size:24px;font-weight:800;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:1px}
+.klogo-sub{font-size:11px;color:var(--sub2);letter-spacing:3px;margin-top:4px}
+.kbadge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);color:var(--accent);font-size:11px;font-weight:600;margin-top:10px}
+.klbl{font-size:11px;font-weight:600;color:var(--sub);letter-spacing:.5px;margin-bottom:6px}
+.kinpwrap{display:flex;gap:8px;margin-bottom:12px}
+.kinp{flex:1;padding:11px 14px;border-radius:var(--radius2);border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .2s}
+.kinp:focus{border-color:rgba(99,102,241,.5);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.kinp::placeholder{color:var(--sub2)}
+.ktog{width:42px;border-radius:var(--radius2);border:1px solid var(--border);background:var(--bg3);color:var(--sub);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.kbtn{width:100%;padding:13px;border-radius:var(--radius2);border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:14px;font-weight:700;font-family:var(--font2);cursor:pointer;letter-spacing:.5px;box-shadow:0 4px 20px rgba(99,102,241,.35);transition:all .2s;margin-bottom:16px}
+.kbtn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(99,102,241,.45)}
+.kbtn:disabled{background:var(--bg3);color:var(--sub2);cursor:not-allowed;transform:none;box-shadow:none}
+.kinfo{padding:14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius2);font-size:12px;color:var(--sub);line-height:1.8}
+.kinfo a{color:var(--green);text-decoration:none}
+
+/* APP LAYOUT */
+#app{display:none;height:100vh;flex-direction:column}
+
+/* TOPBAR — Genspark style */
+.topbar{height:56px;flex-shrink:0;display:flex;align-items:center;padding:0 16px;gap:12px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;z-index:20}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.3),transparent)}
+.topbrand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbrand-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(99,102,241,.3)}
+.topbrand-name{font-family:var(--font2);font-size:14px;font-weight:800;color:var(--text);letter-spacing:.5px}
+.topdiv{width:1px;height:20px;background:var(--border)}
+.toptool{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.toptool-icon{font-size:16px}
+.toptool-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toptool-desc{font-size:11px;color:var(--sub)}
+.topactions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.topbtn{height:32px;padding:0 10px;border-radius:var(--radius2);border:1px solid var(--border);background:transparent;color:var(--sub);cursor:pointer;font-size:12px;font-weight:500;font-family:var(--font);display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap}
+.topbtn:hover{background:var(--bg3);color:var(--text);border-color:rgba(255,255,255,.12)}
+.topbtn.primary{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.25);color:var(--accent)}
+.topbtn.primary:hover{background:rgba(99,102,241,.2)}
+.menubtn{width:32px;height:32px;border-radius:var(--radius2);border:1px solid var(--border);background:transparent;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .15s;flex-shrink:0}
+.menubtn:hover{background:var(--bg3);color:var(--text)}
+
+/* EMOTION + XP bars */
+.statbars{flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border2);padding:4px 16px;display:flex;align-items:center;gap:12px}
+.emotag{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--sub)}
+.emocircle{width:8px;height:8px;border-radius:50%;background:var(--sub2)}
+.xpwrap{flex:1;display:flex;align-items:center;gap:8px}
+.xptrack{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.xpfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .5s}
+.xplabel{font-size:10px;color:var(--sub2);white-space:nowrap}
+.moodwrap{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sub)}
+.moodtrack{width:60px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.moodfill{height:100%;border-radius:2px;transition:all .5s}
+
+/* BODY */
+.body{flex:1;display:flex;overflow:hidden}
+
+/* SIDEBAR — Genspark style */
+.sboverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:30;backdrop-filter:blur(4px)}
+.sboverlay.show{display:block}
+.sidebar{position:fixed;left:-260px;top:0;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--border);z-index:40;transition:left .22s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.sidebar.open{left:0}
+.sbhead{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sbhead-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.sbhead-name{font-family:var(--font2);font-size:14px;font-weight:800;color:var(--text)}
+.sbhead-ver{font-size:10px;color:var(--sub2);margin-top:1px}
+.sbsec{padding:8px 12px 4px;font-size:10px;font-weight:600;color:var(--sub2);letter-spacing:1.5px;text-transform:uppercase}
+.sblist{overflow-y:auto;flex:1}
+.navitem{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;border-radius:var(--radius2);margin:1px 8px;transition:all .15s;color:var(--sub)}
+.navitem:hover{background:var(--bg3);color:var(--text)}
+.navitem.active{background:rgba(99,102,241,.1);color:var(--accent)}
+.navitem.active .navdot{background:var(--accent)}
+.navdot{width:6px;height:6px;border-radius:50%;background:var(--sub2);flex-shrink:0;transition:background .15s}
+.navicon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.navname{font-size:13px;font-weight:500;flex:1}
+.navtag{font-size:10px;color:var(--sub2)}
+.navpro{font-size:9px;padding:1px 6px;border-radius:4px;background:rgba(245,158,11,.1);color:var(--yellow);border:1px solid rgba(245,158,11,.2)}
+.sbfoot{padding:10px 12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
+.sbfootbtn{width:100%;padding:8px 12px;border-radius:var(--radius2);border:1px solid var(--border);background:transparent;color:var(--sub);cursor:pointer;font-size:12px;font-weight:500;font-family:var(--font);text-align:left;display:flex;align-items:center;gap:8px;transition:all .15s}
+.sbfootbtn:hover{background:var(--bg3);color:var(--text)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+
+/* MESSAGES */
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+
+/* WELCOME — Genspark dashboard style */
+.welcome{display:flex;flex-direction:column;align-items:center;padding:16px 0 8px}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;width:100%;max-width:560px;margin-bottom:16px}
+.wcard{padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.wcard:hover{border-color:rgba(99,102,241,.3);background:var(--bg3);transform:translateY(-1px)}
+.wcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--wc,var(--accent));opacity:0}
+.wcard:hover::before{opacity:1}
+.wcard-icon{font-size:20px;margin-bottom:6px}
+.wcard-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.wcard-desc{font-size:10px;color:var(--sub2)}
+.wsearch{width:100%;max-width:560px;display:flex;gap:8px;margin-bottom:8px}
+.wsearch-inp{flex:1;padding:11px 16px;border-radius:24px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:all .2s}
+.wsearch-inp:focus{border-color:rgba(99,102,241,.4);box-shadow:0 0 0 3px rgba(99,102,241,.08)}
+.wsearch-inp::placeholder{color:var(--sub2)}
+.wsearch-btn{width:40px;height:40px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(99,102,241,.3);flex-shrink:0}
+.wstats{display:flex;gap:16px;font-size:11px;color:var(--sub2);margin-top:4px}
+.wstat{display:flex;align-items:center;gap:4px}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:6px;max-width:560px;justify-content:center;margin-top:8px}
+.chip{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--sub);cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
+.chip:hover{border-color:rgba(99,102,241,.3);color:var(--accent);background:rgba(99,102,241,.05)}
+
+/* GUIDE CARD */
+.guidebox{width:100%;max-width:560px;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;font-size:12px;color:var(--sub);line-height:1.7}
+.guidebox-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.guide-step{display:flex;gap:10px;margin-bottom:8px}
+.guide-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* MESSAGES */
+.ubub{align-self:flex-end;max-width:80%;padding:11px 15px;border-radius:16px 16px 4px 16px;background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(139,92,246,.15));border:1px solid rgba(99,102,241,.2);font-size:13px;line-height:1.65;word-break:break-word;color:var(--text)}
+.abub-wrap{align-self:flex-start;max-width:96%;display:flex;flex-direction:column;gap:0}
+.abub-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.abub-avatar{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.abub-name{font-size:11px;font-weight:600;color:var(--sub)}
+.abub{padding:12px 15px;border-radius:4px 16px 16px 16px;background:var(--bg2);border:1px solid var(--border);font-size:13px;line-height:1.72;word-break:break-word;color:var(--text)}
+.actrow{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.actbtn{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--sub);cursor:pointer;font-size:11px;font-weight:500;font-family:var(--font);transition:all .15s;display:flex;align-items:center;gap:4px}
+.actbtn:hover{background:var(--bg3);color:var(--text)}
+.actbtn.accent{border-color:rgba(99,102,241,.25);color:var(--accent)}
+.actbtn.accent:hover{background:rgba(99,102,241,.1)}
+
+/* THINKING */
+.thinking{align-self:flex-start;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--sub)}
+.tdot{width:5px;height:5px;border-radius:50%;animation:tdp 1.2s ease-in-out infinite}
+@keyframes tdp{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.6);opacity:1}}
+
+/* INPUT AREA */
+.inputwrap{padding:12px 16px 14px;border-top:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.inputrow{display:flex;gap:8px;align-items:flex-end;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:8px 8px 8px 14px;transition:border-color .2s}
+.inputrow:focus-within{border-color:rgba(99,102,241,.4);box-shadow:0 0 0 3px rgba(99,102,241,.08)}
+.chatinp{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:13px;font-family:var(--font);resize:none;min-height:20px;max-height:120px;line-height:1.55}
+.chatinp::placeholder{color:var(--sub2)}
+.inputbtns{display:flex;gap:5px;align-items:flex-end;flex-shrink:0}
+.micbtn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--sub);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.micbtn:hover{background:var(--bg4);color:var(--text)}
+.micbtn.active{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--red);animation:mpulse 1s infinite}
+@keyframes mpulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.2)}50%{box-shadow:0 0 0 5px rgba(239,68,68,0)}}
+.sendbtn{width:34px;height:34px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(99,102,241,.35);transition:all .2s;flex-shrink:0}
+.sendbtn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(99,102,241,.45)}
+.sendbtn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.inputhint{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding:0 2px}
+.hint{font-size:10px;color:var(--sub2)}
+.tokbar{font-size:10px;color:var(--sub2)}
+
+/* MARKDOWN */
+.md h1{font-family:var(--font2);font-size:18px;font-weight:700;margin:14px 0 6px;color:var(--text)}
+.md h2{font-family:var(--font2);font-size:15px;font-weight:700;margin:12px 0 5px;color:var(--text);padding-bottom:4px;border-bottom:1px solid var(--border)}
+.md h3{font-size:13px;font-weight:600;margin:10px 0 4px;color:#94a3b8}
+.md p{margin:4px 0;line-height:1.72}
+.md ul,.md ol{padding-left:18px;margin:5px 0}
+.md li{margin:3px 0;line-height:1.65}
+.md strong{font-weight:700;color:#f1f5f9}
+.md em{font-style:italic;color:#cbd5e1}
+.md hr{border:none;border-top:1px solid var(--border);margin:12px 0}
+.md a{color:var(--blue);text-decoration:none}
+.md a:hover{text-decoration:underline}
+.md-pre{background:#0d1117;border:1px solid rgba(255,255,255,.06);border-radius:var(--radius2);margin:10px 0;overflow:hidden}
+.md-lang{font-size:9px;color:var(--blue);padding:6px 12px 0;letter-spacing:2px;font-weight:600;text-transform:uppercase}
+.md-pre pre{margin:0;padding:8px 12px 12px;overflow-x:auto}
+.md-pre code{font-size:12px;color:#a5f3fc;line-height:1.7;white-space:pre;font-family:'JetBrains Mono',monospace;display:block}
+.md-code{background:rgba(59,130,246,.12);color:#93c5fd;padding:1px 6px;border-radius:4px;font-size:12px}
+.md-tbl-wrap{overflow-x:auto;margin:10px 0}
+.md-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.md-tbl th{background:rgba(99,102,241,.08);color:#a5b4fc;padding:8px 12px;text-align:left;border:1px solid rgba(255,255,255,.06);font-size:11px;font-weight:600}
+.md-tbl td{padding:7px 12px;border:1px solid var(--border2);color:#cbd5e1}
+.md-tbl tr:hover td{background:rgba(255,255,255,.02)}
+
+/* PANELS */
+.panel{position:fixed;top:0;bottom:0;z-index:50;width:min(320px,90vw);background:var(--bg2);border:1px solid var(--border);display:flex;flex-direction:column;transition:transform .22s cubic-bezier(.4,0,.2,1)}
+.panel-left{left:0;border-right:1px solid var(--border);transform:translateX(-100%)}
+.panel-left.open{transform:translateX(0)}
+.panel-right{right:0;border-left:1px solid var(--border);transform:translateX(100%)}
+.panel-right.open{transform:translateX(0)}
+.panel-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:49;backdrop-filter:blur(3px)}
+.panel-overlay.show{display:block}
+.panel-head{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-family:var(--font2);font-size:14px;font-weight:700;color:var(--text)}
+.panel-close{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
+.panel-close:hover{background:var(--bg3);color:var(--text)}
+.panel-body{flex:1;overflow-y:auto;padding:12px}
+.panel-foot{padding:10px 12px;border-top:1px solid var(--border)}
+.panel-btn{width:100%;padding:9px;border-radius:var(--radius2);font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--sub);display:flex;align-items:center;gap:8px;transition:all .15s;margin-bottom:5px}
+.panel-btn:hover{background:var(--bg3);color:var(--text)}
+.panel-btn:last-child{margin-bottom:0}
+
+/* HISTORY ITEM */
+.hist-item{padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius2);margin-bottom:7px;cursor:pointer;transition:all .15s}
+.hist-item:hover{border-color:rgba(99,102,241,.25);background:var(--bg4)}
+.hist-tool{font-size:10px;font-weight:600;letter-spacing:.5px;margin-bottom:3px}
+.hist-title{font-size:12px;color:#94a3b8}
+.hist-time{font-size:10px;color:var(--sub2);margin-top:3px}
+
+/* MEMORY ITEM */
+.mem-item{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius2);margin-bottom:6px}
+.mem-text{flex:1;font-size:12px;color:#94a3b8;line-height:1.5}
+.mem-del{background:none;border:none;color:var(--sub2);cursor:pointer;font-size:14px;padding:0;transition:color .15s;flex-shrink:0}
+.mem-del:hover{color:var(--red)}
+.mem-add-inp{width:100%;padding:9px 11px;border-radius:var(--radius2);border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:12px;font-family:var(--font);outline:none;margin-bottom:7px;transition:border-color .2s}
+.mem-add-inp:focus{border-color:rgba(139,92,246,.4)}
+.mem-add-inp::placeholder{color:var(--sub2)}
+.mem-add-btn{width:100%;padding:9px;border-radius:var(--radius2);border:none;background:rgba(139,92,246,.15);color:#a78bfa;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font);transition:all .15s}
+.mem-add-btn:hover{background:rgba(139,92,246,.25)}
+
+/* CHART */
+.chart-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin:10px 0}
+.chart-canvas-wrap{position:relative;height:220px}
+
+/* BADGE POPUP */
+.badge-popup{display:none !important}
+.badge-popup.show{display:none !important}
+
+/* NOTIF */
+.notif{position:fixed;top:66px;right:12px;z-index:180;padding:10px 14px;background:var(--bg2);border:1px solid rgba(16,185,129,.25);border-radius:var(--radius2);color:var(--green);font-size:12px;font-weight:500;box-shadow:var(--shadow);transform:translateX(200px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);max-width:220px}
+.notif.show{transform:translateX(0)}
+
+/* MIND READ */
+.mindread{position:fixed;bottom:90px;left:12px;z-index:100;background:var(--bg2);border:1px solid rgba(139,92,246,.25);border-radius:var(--radius2);padding:9px 13px;font-size:11px;color:#a78bfa;max-width:210px;transform:translateX(-230px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;box-shadow:var(--shadow)}
+.mindread.show{transform:translateX(0)}
+
+/* 6TH SENSE */
+.sixthbox{margin:0 16px 8px;padding:10px 14px;background:rgba(6,182,212,.05);border:1px solid rgba(6,182,212,.18);border-radius:var(--radius2);font-size:11px;color:var(--cyan);display:none}
+.sixthbox.show{display:flex;align-items:center;gap:8px}
+
+/* SCIFI BADGE */
+.scifi-badge{display:inline-block;padding:2px 8px;border-radius:4px;background:rgba(236,72,153,.12);color:var(--pink);font-size:9px;font-weight:700;letter-spacing:2px;margin-bottom:8px}
+
+/* SOUL BAR */
+.soulbar{display:none;align-items:center;gap:8px;padding:4px 16px;background:var(--bg2);border-bottom:1px solid var(--border2);font-size:11px;color:var(--sub)}
+.soulbar.show{display:flex}
+
+/* MODEL PICKER */
+.modelpicker{position:fixed;top:58px;right:12px;z-index:100;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px;min-width:220px;box-shadow:var(--shadow);display:none}
+.modelpicker.show{display:block}
+.model-opt{padding:9px 12px;border-radius:var(--radius2);cursor:pointer;transition:all .15s}
+.model-opt:hover{background:var(--bg3)}
+.model-opt.active{background:rgba(99,102,241,.1)}
+.model-name{font-size:12px;font-weight:600;color:var(--text)}
+.model-desc{font-size:10px;color:var(--sub2);margin-top:1px}
+
+/* THEME PICKER */
+.themepicker{position:fixed;top:58px;right:12px;z-index:100;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;box-shadow:var(--shadow);display:none}
+.themepicker.show{display:block}
+.theme-title{font-size:10px;font-weight:600;color:var(--sub2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.theme-dots{display:flex;gap:8px;flex-wrap:wrap}
+.theme-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s}
+.theme-dot:hover,.theme-dot.active{border-color:#fff;transform:scale(1.15)}
+
+/* WHATS NEW */
+.wn-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px}
+.wn-card{width:min(420px,95vw);max-height:85vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:20px;box-shadow:0 0 60px rgba(99,102,241,.15)}
+.wn-head{padding:20px 20px 0;text-align:center}
+.wn-badge{display:inline-block;padding:4px 12px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;margin-bottom:10px}
+.wn-title{font-family:var(--font2);font-size:20px;font-weight:800;color:var(--text);letter-spacing:.5px}
+.wn-sub{font-size:11px;color:var(--sub2);letter-spacing:2px;margin-top:3px;margin-bottom:16px}
+.wn-body{padding:0 20px 20px}
+.wn-ver{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:14px 0 8px}
+.wn-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;font-size:12px;color:#94a3b8;line-height:1.55}
+.wn-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:5px;flex-shrink:0}
+.wn-btn{width:100%;padding:13px;border-radius:var(--radius2);border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:700;font-family:var(--font2);cursor:pointer;margin-top:16px;letter-spacing:.5px}
+
+/* NOTES */
+.notes-area{width:100%;height:calc(100% - 40px);background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius2);padding:12px;color:var(--text);font-size:13px;font-family:var(--font);outline:none;resize:none;line-height:1.7}
+.notes-area::placeholder{color:var(--sub2)}
+
+/* POMODORO */
+.pomo-wrap{text-align:center;padding:20px}
+.pomo-circle{width:140px;height:140px;border-radius:50%;background:conic-gradient(var(--accent) 0deg,var(--bg3) 0deg);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 30px rgba(99,102,241,.2);position:relative}
+.pomo-circle::before{content:'';position:absolute;inset:8px;border-radius:50%;background:var(--bg2)}
+.pomo-time{font-size:28px;font-weight:800;font-family:var(--font2);color:var(--text);position:relative;z-index:1}
+.pomo-label{font-size:11px;color:var(--sub);position:relative;z-index:1}
+.pomo-btns{display:flex;gap:8px;justify-content:center}
+.pomo-btn{padding:9px 20px;border-radius:var(--radius2);border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font);transition:all .15s}
+.pomo-btn:hover{background:var(--bg4)}
+.pomo-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;box-shadow:0 2px 12px rgba(99,102,241,.3)}
+
+/* GOAL TRACKER */
+.goal-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius2);margin-bottom:6px;cursor:pointer;transition:all .15s}
+.goal-item:hover{background:var(--bg4)}
+.goal-item.done{opacity:.5}
+.goal-check{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--sub2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s}
+.goal-item.done .goal-check{background:var(--green);border-color:var(--green);color:#000;font-size:11px}
+.goal-text{font-size:12px;color:#94a3b8;line-height:1.5;flex:1}
+
+/* QUIZ */
+.quiz-opt{padding:10px 14px;border-radius:var(--radius2);border:1px solid var(--border);background:var(--bg3);font-size:13px;cursor:pointer;margin-bottom:7px;transition:all .15s;text-align:left;width:100%;color:var(--text);font-family:var(--font)}
+.quiz-opt:hover{border-color:rgba(99,102,241,.3);background:var(--bg4)}
+.quiz-opt.correct{border-color:var(--green);background:rgba(16,185,129,.1);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(239,68,68,.1);color:var(--red)}
+
+/* CUSTOM API */
+.api-sec-title{font-size:10px;font-weight:600;color:var(--sub2);letter-spacing:1.5px;text-transform:uppercase;margin:12px 0 6px}
+
+/* PWA */
+.pwa-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;padding:12px 16px;background:var(--bg2);border-top:1px solid var(--border);align-items:center;gap:12px}
+.pwa-banner.show{display:flex}
+
+/* XP popup */
+.xp-popup{display:none !important}
+.xp-popup.show{display:none !important}
+
+@media(max-width:480px){
+  .topbrand-name{display:none}
+  .wgrid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- PWA Banner -->
+<div class="pwa-banner" id="pwaBanner">
+  <span style="font-size:18px">📱</span>
+  <div style="flex:1"><div style="font-size:13px;font-weight:600">Install HACKNUMA AI</div><div style="font-size:11px;color:var(--sub)">Home screen pe add karo</div></div>
+  <button onclick="doPWA()" style="padding:7px 14px;border-radius:var(--radius2);border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:600;cursor:pointer">Install</button>
+  <button onclick="document.getElementById('pwaBanner').classList.remove('show')" style="background:none;border:none;color:var(--sub);cursor:pointer;font-size:18px">✕</button>
+</div>
+
+<!-- Modals & Popups -->
+<div class="badge-popup" id="badgePopup"><div id="badgeIcon" style="font-size:28px">🏆</div><div id="badgeName" style="font-size:13px;font-weight:800;color:var(--yellow);margin-top:4px"></div><div id="badgeDesc" style="font-size:10px;color:var(--sub);margin-top:2px"></div></div>
+<div class="notif" id="notif"></div>
+<div class="mindread" id="mindRead"></div>
+<div class="xp-popup" id="xpPopup"></div>
+<div class="sixthbox" id="sixthBox"><span style="font-size:14px">🔮</span><span id="sixthText"></span></div>
+
+<!-- What's New -->
+<div class="wn-overlay" id="wnModal" style="display:none">
+  <div class="wn-card">
+    <div class="wn-head">
+      <div class="wn-badge">NEW UPDATE</div>
+      <div class="wn-title">HACKNUMA AI</div>
+      <div class="wn-sub">VERSION 10.0 · ULTRA PREMIUM</div>
+    </div>
+    <div class="wn-body" id="wnBody"></div>
+  </div>
+</div>
+
+<!-- Model Picker -->
+<div class="modelpicker" id="modelPicker"></div>
+<!-- Theme Picker -->
+<div class="themepicker" id="themePicker">
+  <div class="theme-title">Choose Theme</div>
+  <div class="theme-dots" id="themeDots"></div>
+</div>
+
+<!-- Panels -->
+<div class="panel-overlay" id="panelOverlay" onclick="closeAllPanels()"></div>
+<div class="panel panel-left" id="histPanel">
+  <div class="panel-head"><div class="panel-title">📋 Chat History</div><button class="panel-close" onclick="closePanel('histPanel')">✕</button></div>
+  <div class="panel-body" id="histList"></div>
+  <div class="panel-foot"><button class="panel-btn" style="color:var(--red);border-color:rgba(239,68,68,.2)" onclick="clearAllHist()">🗑 Clear All</button></div>
+</div>
+<div class="panel panel-right" id="memPanel">
+  <div class="panel-head"><div class="panel-title">🧠 My Memory</div><button class="panel-close" onclick="closePanel('memPanel')">✕</button></div>
+  <div class="panel-body">
+    <div style="font-size:11px;color:var(--sub);margin-bottom:10px;line-height:1.6">AI tumhare baare mein yeh jaanta hai:</div>
+    <div id="memList"></div>
+    <input class="mem-add-inp" id="memInput" placeholder="Kuch batao... (naam, profession, pasand)">
+    <button class="mem-add-btn" onclick="addMemory()">+ Add Memory</button>
+  </div>
+  <div class="panel-foot"><button class="panel-btn" style="color:var(--red);border-color:rgba(239,68,68,.2)" onclick="clearMem()">🗑 Clear All</button></div>
+</div>
+<div class="panel panel-right" id="notesPanel">
+  <div class="panel-head"><div class="panel-title">📝 Notes</div><button class="panel-close" onclick="closePanel('notesPanel')">✕</button></div>
+  <div class="panel-body" style="display:flex;flex-direction:column">
+    <textarea class="notes-area" id="notesArea" placeholder="Yahan notes likho... Auto-save hoga!"></textarea>
+  </div>
+  <div class="panel-foot"><button class="panel-btn accent" onclick="downloadNotes()" style="color:var(--accent);border-color:rgba(99,102,241,.25)">⬇ Download Notes</button></div>
+</div>
+<div class="panel panel-right" id="apiPanel">
+  <div class="panel-head"><div class="panel-title">🔑 Custom API</div><button class="panel-close" onclick="closePanel('apiPanel')">✕</button></div>
+  <div class="panel-body">
+    <div style="font-size:12px;color:var(--sub);margin-bottom:14px;line-height:1.7">Apni Groq API key set karo. Key browser mein save hogi.</div>
+    <div class="api-sec-title">Groq API Key</div>
+    <input id="customApiInp" type="password" placeholder="gsk_..." class="mem-add-inp">
+    <button onclick="saveCustomApi()" class="mem-add-btn" style="background:rgba(245,158,11,.12);color:var(--yellow);margin-bottom:12px">Save Key</button>
+    <div class="api-sec-title">Free Key Kaise Milegi</div>
+    <div style="font-size:12px;color:var(--sub);line-height:1.8">1. <a href="https://console.groq.com/keys" target="_blank" style="color:var(--green)">console.groq.com/keys</a><br>2. Google se login karo<br>3. Create API Key dabao<br>4. gsk_... key copy karo</div>
+  </div>
+</div>
+<div class="panel panel-right" id="pomPanel">
+  <div class="panel-head"><div class="panel-title">⏰ Pomodoro Timer</div><button class="panel-close" onclick="closePanel('pomPanel')">✕</button></div>
+  <div class="panel-body">
+    <div class="pomo-wrap">
+      <div class="pomo-circle" id="pomoCircle"><div class="pomo-time" id="pomoTime">25:00</div><div class="pomo-label" id="pomoLabel">Focus</div></div>
+      <div class="pomo-btns" style="margin-bottom:12px">
+        <button class="pomo-btn primary" onclick="pomoStart()">▶ Start</button>
+        <button class="pomo-btn" onclick="pomoReset()">↺ Reset</button>
+        <button class="pomo-btn" onclick="pomoSkip()">⏭ Skip</button>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--sub)">Session <span id="pomoSession" style="color:var(--accent);font-weight:700">1</span> · <span id="pomoSessions" style="color:var(--sub2)">0 completed today</span></div>
+    </div>
+  </div>
+</div>
+<div class="panel panel-right" id="goalPanel">
+  <div class="panel-head"><div class="panel-title">🎯 Goal Tracker</div><button class="panel-close" onclick="closePanel('goalPanel')">✕</button></div>
+  <div class="panel-body">
+    <div style="display:flex;gap:7px;margin-bottom:10px">
+      <input id="goalInp" placeholder="Naya goal daalo..." class="mem-add-inp" style="margin:0;flex:1">
+      <button onclick="addGoal()" style="padding:9px 12px;border-radius:var(--radius2);border:none;background:var(--accent);color:#fff;cursor:pointer;font-size:13px">+</button>
+    </div>
+    <div id="goalList"></div>
+  </div>
+  <div class="panel-foot"><div style="font-size:11px;color:var(--sub)" id="goalStats">0 of 0 completed</div></div>
+</div>
+
+<!-- KEY SCREEN -->
+<div id="keyScreen">
+  <div class="kcard">
+    <div class="klogo-wrap">
+      <div class="klogo-icon">⬡</div>
+      <div class="klogo-name">HACKNUMA AI</div>
+      <div class="klogo-sub">v10.0 · ULTRA PREMIUM</div>
+      <div class="kbadge">⚡ Powered by Groq — Blazing Fast</div>
+    </div>
+    <div class="klbl">GROQ API KEY</div>
+    <div class="kinpwrap">
+      <input class="kinp" id="kinp" type="password" placeholder="gsk_..." onkeydown="if(event.key==='Enter')doSave()">
+      <button class="ktog" onclick="doToggle()">👁</button>
+    </div>
+    <button class="kbtn" id="kbtn" onclick="doSave()" disabled>Launch HACKNUMA AI →</button>
+    <div class="kinfo">
+      <strong style="color:var(--green);font-size:10px;letter-spacing:1px">GET FREE API KEY</strong><br>
+      1. <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> par jao<br>
+      2. Google se login karo (free)<br>
+      3. "Create API Key" dabao<br>
+      4. gsk_... wali key copy karo
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="sboverlay" id="sbo" onclick="closeSB()"></div>
+  <div class="sidebar" id="sb">
+    <div class="sbhead">
+      <div class="sbhead-icon">⬡</div>
+      <div><div class="sbhead-name">HACKNUMA</div><div class="sbhead-ver">v10 ULTRA</div></div>
+    </div>
+    <div class="sbsec">Tools</div>
+    <div class="sblist" id="sblist"></div>
+    <div class="sbfoot">
+      <button class="sbfootbtn" onclick="openPanel('histPanel')">📋 Chat History</button>
+      <button class="sbfootbtn" onclick="openPanel('memPanel')">🧠 My Memory</button>
+      <button class="sbfootbtn" onclick="openPanel('notesPanel')">📝 Notes</button>
+      <button class="sbfootbtn" onclick="openPanel('pomPanel')">⏰ Pomodoro</button>
+      <button class="sbfootbtn" onclick="openPanel('goalPanel')">🎯 Goals</button>
+      <button class="sbfootbtn" onclick="openPanel('apiPanel')">🔑 Custom API</button>
+      <button class="sbfootbtn" onclick="doChangeKey()">↩ Change Key</button>
+    </div>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="menubtn" onclick="toggleSB()">☰</button>
+    <div class="topbrand">
+      <div class="topbrand-icon" style="cursor:pointer" onclick="openNameSettings()" title="Naam set karo">⬡</div>
+      <div>
+        <div class="topbrand-name">HACKNUMA</div>
+        <div id="greetingEl" style="font-size:10px;color:var(--sub);cursor:pointer;white-space:nowrap;overflow:hidden;max-width:160px;text-overflow:ellipsis" onclick="openNameSettings()">Good morning! ☀️</div>
+      </div>
+    </div>
+    <div class="topdiv"></div>
+    <div class="toptool" id="toptool">
+      <span class="toptool-icon" id="tticon">◈</span>
+      <div><div class="toptool-name" id="ttname">Chat</div><div class="toptool-desc" id="ttdesc">General AI</div></div>
+    </div>
+    <div class="topactions" id="topActions">
+      <button class="topbtn" id="expbtn" onclick="toggleExp()" style="display:none">💡 Explain</button>
+      <button class="topbtn" id="wpbtn" onclick="showWP()" style="display:none">🌐 Preview</button>
+      <button class="topbtn" id="modelBtn" onclick="toggleModelPicker()">⚡ Smart</button>
+      <button class="topbtn" onclick="toggleTheme()">🎨</button>
+      <button class="topbtn primary" onclick="showWN()">🆕</button>
+      <button class="topbtn" id="exportBtn" onclick="doExport()" style="display:none">↓ Export</button>
+      <button class="topbtn" id="clearBtn" onclick="doClear()" style="display:none">✕ Clear</button>
+    </div>
+  </div>
+
+  <!-- STAT BARS -->
+  <div class="soulbar" id="soulBar">
+    <span id="soulEmoji">👻</span>
+    <span style="color:var(--sub2)">AI Mood:</span>
+    <div style="width:60px;height:3px;background:var(--border);border-radius:2px;overflow:hidden">
+      <div id="moodFill" style="height:100%;width:50%;background:var(--green);border-radius:2px;transition:all .5s"></div>
+    </div>
+    <span id="moodLabel" style="color:var(--green)">Neutral</span>
+  </div>
+  <div class="statbars">
+    <div class="emotag"><div class="emocircle" id="emoDot"></div><span id="emoText">Ready</span></div>
+    <div class="xpwrap">
+      <div class="xptrack"><div class="xpfill" id="xpFill" style="width:0%"></div></div>
+      <div class="xplabel" id="xpLabel">0 XP · Lv.1</div>
+    </div>
+    <div class="moodwrap" style="display:none" id="streakWrap">
+      <span id="streakEl"></span>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+    <div class="main">
+      <div class="msgs" id="msgs"><div id="wel"></div></div>
+      <!-- Web Preview -->
+      <div id="webPreview" style="display:none;flex-direction:column;flex:1">
+        <div style="display:flex;align-items:center;padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);gap:10px">
+          <span style="font-size:12px;font-weight:600;color:var(--green)">🌐 Preview</span>
+          <button onclick="dlWeb()" class="topbtn" style="color:var(--green)">⬇ Download</button>
+          <button onclick="closeWP()" class="topbtn" style="margin-left:auto">✕ Close</button>
+        </div>
+        <iframe id="webFrame" style="flex:1;border:none;background:#fff" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+      <div class="inputwrap">
+        <div class="inputrow" id="inputRow">
+          <button class="micbtn" id="micBtn" onclick="toggleMic()">🎙️</button>
+          <textarea class="chatinp" id="cinp" rows="1" placeholder="Message HACKNUMA..."
+            oninput="autoH(this)" onkeydown="onKey(event)"></textarea>
+          <div class="inputbtns">
+            <button class="sendbtn" id="sbtn" onclick="doSend()">↑</button>
+          </div>
+        </div>
+        <div class="inputhint">
+          <span class="hint" id="hintTxt">ENTER = Send · SHIFT+ENTER = New Line</span>
+          <span class="tokbar" id="tokBar">0 tokens</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  HACKNUMA AI v10 — ULTRA PREMIUM
+//  Genspark-style Dashboard
+// ═══════════════════════════════════════
+var GROQ = "https://api.groq.com/openai/v1/chat/completions";
+var VERSION = "10.0";
+
+var MODELS = [
+  {id:"llama-3.3-70b-versatile",  label:"Smart 70B",    desc:"Best quality · Detailed"},
+  {id:"llama-3.1-8b-instant",     label:"Fast 8B",      desc:"Instant · Simple tasks"},
+  {id:"mixtral-8x7b-32768",       label:"Long Context", desc:"Long documents · 32K"},
+  {id:"gemma2-9b-it",             label:"Balanced 9B",  desc:"Speed + quality mix"}
+];
+
+var THEMES = [
+  {name:"Indigo", primary:"#6366f1", secondary:"#8b5cf6"},
+  {name:"Emerald",primary:"#10b981", secondary:"#059669"},
+  {name:"Rose",   primary:"#f43f5e", secondary:"#ec4899"},
+  {name:"Amber",  primary:"#f59e0b", secondary:"#d97706"},
+  {name:"Cyan",   primary:"#06b6d4", secondary:"#0891b2"},
+  {name:"Slate",  primary:"#64748b", secondary:"#475569"}
+];
+
+var CHANGELOG = [
+  {v:"10.0",date:"Latest",items:[
+    "Genspark-style premium dashboard design",
+    "Mind Reading — typing pattern se mood detect",
+    "Parallel Universe — 3 perspectives ek saath",
+    "Dream Factory — Sci-Fi creative mode",
+    "6th Sense — predictive AI suggestions",
+    "Digital Soul — AI mood meter + ego",
+    "Data Visualization — Chart.js graphs",
+    "Gamification — XP, levels, badges, streaks",
+    "Dream Interpreter — Jung + Freud analysis",
+    "Emotion Detection — mood-aware responses",
+    "Notes App — built-in notepad",
+    "Pomodoro Timer — focus sessions",
+    "Goal Tracker — daily goals",
+    "Quiz Generator — any topic",
+    "Budget Planner — financial tool",
+    "Travel Planner — trip itinerary",
+    "Study Assistant — notes + flashcards",
+    "Fitness Coach — workout plans",
+    "Language Teacher — learn languages",
+    "Password Generator — secure passwords",
+    "Custom API — anyone can add their key",
+    "Chat History — all saved",
+    "Memory AI — personalized context",
+    "Web Search — real-time info",
+    "Live Data — crypto + weather",
+    "30+ AI Tools total!"
+  ]}
+];
+
+var TOOLS = [
+  {id:"chat",      icon:"💬", name:"Chat",          color:"#6366f1", desc:"General AI",           tag:"Har Sawaal",     cat:"General"},
+  {id:"jarvis",    icon:"🤖", name:"Jarvis PRO",     color:"#8b5cf6", desc:"Advanced Agent",       tag:"Full Code",      cat:"General", pro:true},
+  {id:"code",      icon:"💻", name:"Code",           color:"#3b82f6", desc:"Programming",          tag:"All Languages",  cat:"General"},
+  {id:"website",   icon:"🌐", name:"WebBuilder",     color:"#10b981", desc:"Website Creator",      tag:"Full HTML+CSS",  cat:"Create"},
+  {id:"writer",    icon:"✍️", name:"Writer",         color:"#a78bfa", desc:"Content Creation",     tag:"Viral Content",  cat:"Create"},
+  {id:"email",     icon:"📧", name:"Email",          color:"#38bdf8", desc:"Email Writer",         tag:"Professional",   cat:"Create"},
+  {id:"resume",    icon:"💼", name:"Resume",         color:"#a3e635", desc:"Resume Builder",       tag:"ATS-Friendly",   cat:"Create"},
+  {id:"imgprompt", icon:"🎨", name:"Image Prompt",   color:"#f472b6", desc:"AI Image Prompts",     tag:"DALL-E Ready",   cat:"Create"},
+  {id:"research",  icon:"🔍", name:"Research",       color:"#fbbf24", desc:"Deep Analysis",        tag:"Data+Insights",  cat:"Learn"},
+  {id:"math",      icon:"📐", name:"Math",           color:"#fb7185", desc:"Equations",            tag:"Step by Step",   cat:"Learn"},
+  {id:"study",     icon:"📚", name:"Study AI",       color:"#34d399", desc:"Study Assistant",      tag:"Notes+MCQs",     cat:"Learn"},
+  {id:"quiz",      icon:"❓", name:"Quiz",           color:"#60a5fa", desc:"Quiz Generator",       tag:"Any Topic",      cat:"Learn"},
+  {id:"langteach", icon:"🗣️", name:"Language",      color:"#f97316", desc:"Language Teacher",     tag:"Hindi·Eng·More", cat:"Learn"},
+  {id:"translate", icon:"🌍", name:"Translator",     color:"#22d3ee", desc:"50+ Languages",        tag:"Instant",        cat:"Learn"},
+  {id:"dream",     icon:"🌙", name:"Dream",          color:"#818cf8", desc:"Dream Interpreter",    tag:"Jung+Freud",      cat:"Life"},
+  {id:"doctor",    icon:"🏥", name:"Dr. AI",         color:"#34d399", desc:"Health Advisor",       tag:"Medical Info",   cat:"Life"},
+  {id:"lawyer",    icon:"⚖️", name:"Legal AI",       color:"#fbbf24", desc:"Legal Advisor",        tag:"Indian Law",     cat:"Life"},
+  {id:"chef",      icon:"👨‍🍳",name:"Chef AI",       color:"#f97316", desc:"Cooking Expert",       tag:"Recipes+Diet",   cat:"Life"},
+  {id:"fitness",   icon:"💪", name:"Fitness",        color:"#10b981", desc:"Fitness Coach",        tag:"Workout Plans",  cat:"Life"},
+  {id:"budget",    icon:"💰", name:"Budget",         color:"#f59e0b", desc:"Budget Planner",       tag:"Finance",        cat:"Life"},
+  {id:"travel",    icon:"✈️", name:"Travel",         color:"#06b6d4", desc:"Travel Planner",       tag:"Trip Itinerary", cat:"Life"},
+  {id:"interview", icon:"🎯", name:"Interview",      color:"#c084fc", desc:"Interview Prep",       tag:"Job Ready",      cat:"Life"},
+  {id:"charts",    icon:"📊", name:"Charts",         color:"#2dd4bf", desc:"Data Visualization",   tag:"Bar·Line·Pie",   cat:"Data"},
+  {id:"livedata",  icon:"📡", name:"Live Data",      color:"#f43f5e", desc:"Real-time Data",       tag:"Crypto+Weather", cat:"Data"},
+  {id:"websearch", icon:"🔎", name:"Web Search",     color:"#60a5fa", desc:"Internet Search",      tag:"Latest Info",    cat:"Data"},
+  {id:"memory",    icon:"🧠", name:"Memory AI",      color:"#a78bfa", desc:"Personalized",         tag:"Remembers You",  cat:"Data"},
+  {id:"parallel",  icon:"🌌", name:"Multiverse",     color:"#c084fc", desc:"3 Perspectives",       tag:"Decision Help",  cat:"Think"},
+  {id:"dreamfact", icon:"🏭", name:"Dream Factory",  color:"#f472b6", desc:"Creative Imagination", tag:"Sci-Fi+Fantasy", cat:"Think"},
+  {id:"deepthink", icon:"💭", name:"Deep Think",     color:"#fb923c", desc:"Chain of Thought",     tag:"Step Reasoning", cat:"Think"},
+  {id:"sixthsense",icon:"🔮", name:"6th Sense",      color:"#67e8f9", desc:"Predictive AI",        tag:"Pattern+Predict",cat:"Think"},
+  {id:"soul",      icon:"👻", name:"Digital Soul",   color:"#86efac", desc:"AI with Ego",          tag:"Mood Meter",     cat:"Think"},
+  {id:"emotion",   icon:"😊", name:"Emotion AI",     color:"#f9a8d4", desc:"Sentiment Analysis",   tag:"Mood Aware",     cat:"Think"},
+  {id:"persona",   icon:"🎭", name:"AI Persona",     color:"#34d399", desc:"Custom Personality",   tag:"JARVIS·FRIDAY",  cat:"Think"},
+  {id:"passgen",   icon:"🔐", name:"Password",       color:"#64748b", desc:"Password Generator",   tag:"Strong+Secure",  cat:"Tools"},
+  {id:"deepthink2",icon:"🧮", name:"Calculator",     color:"#94a3b8", desc:"Smart Calculator",     tag:"Math+Conversions",cat:"Tools"},
+  {id:"secscan",   icon:"⚠️", name:"SecScan",        color:"#ef4444", desc:"Bug Bounty",           tag:"CVEs+Report",    cat:"Tools"},
+  {id:"idea",      icon:"💡", name:"Ideas",          color:"#f59e0b", desc:"Creative Strategy",    tag:"Innovation",     cat:"Tools"}
+];
+
+var CHIPS = {
+  chat:["Kuch interesting batao","Blockchain explain karo","Life advice do","Ek joke sunao"],
+  jarvis:["Voice Assistant banao","AI chatbot with memory","Smart home system","Full Jarvis banao"],
+  code:["React dashboard banao","Python FastAPI","Full-stack MERN","Chat app banao"],
+  website:["Modern dark portfolio website with animations","Restaurant landing page with menu & booking","SaaS startup landing page with pricing","E-commerce homepage with featured products","Agency website with case studies","Personal blog with clean minimal design"],
+  writer:["YouTube script","Cold email","LinkedIn post","Startup pitch"],
+  email:["Job application","Client follow-up","Meeting request","Apology email"],
+  resume:["Software Engineer","Fresher resume","Marketing Manager","Data Scientist"],
+  imgprompt:["Realistic portrait prompt","Fantasy landscape","Product photography","Abstract art"],
+  research:["AI market 2025","Quantum computing","India startups","Future of AGI"],
+  math:["3x²-12x+9=0","Fourier Transform","Bayes theorem","Integration basics"],
+  study:["Physics notes banao","History summary","Chemistry MCQs","Math flashcards"],
+  quiz:["India GK quiz","Python quiz","History quiz","Science quiz"],
+  langteach:["Spanish sikho basics","French greetings","Japanese hiragana","German numbers"],
+  translate:["Hello Hindi mein","Mujhe English mein","Bonjour Hindi mein","Konnichiwa English"],
+  dream:["Main ud raha tha sapne mein","Paani mein doob raha tha","Exam fail sapna","Koi peecha kar raha tha"],
+  doctor:["Sar dard ke karan","Diabetes symptoms","Exercise ke fayde","Healthy diet plan"],
+  lawyer:["Consumer rights India","Property dispute","FIR kaise karein","Labour law basics"],
+  chef:["Dal makhani recipe","Healthy breakfast","Biryani recipe","Weight loss diet"],
+  fitness:["6-pack abs plan","Morning workout","Weight loss routine","Muscle gain diet"],
+  budget:["Monthly budget plan","Save 20% salary","Emergency fund","Investment basics"],
+  travel:["Goa 3-day trip","Budget trip Delhi","Manali itinerary","South India tour"],
+  interview:["Software Engineer prep","HR questions","Tell me about yourself","Strengths weaknesses"],
+  charts:["Sales Jan=500 Feb=700 Mar=600 bar chart","Pie: Cricket 40% Football 30% Hockey 30%","Line: Mon=10 Tue=15 Wed=8 Thu=20","Bar: Math=85 Science=90 English=75"],
+  livedata:["Bitcoin price abhi","Delhi weather aaj","USD to INR rate","Top 5 crypto"],
+  websearch:["Latest AI news 2025","India cricket score","ChatGPT vs Claude","Best phone 2025"],
+  memory:["Mera naam Rahul hai","Main software engineer hoon","Mumbai mein rehta hoon","Mujhe cricket pasand hai"],
+  parallel:["Job chhodni chahiye?","Startup shuru karun?","City change karun?","Love ya arranged marriage?"],
+  dreamfact:["5000 saal baad duniya","Agar gravity khatam ho","Aliens aaye toh kya","Time travel possible ho"],
+  deepthink:["Climate change causes","Stock market crash kyun","AI consciousness possible","Black hole kaam karta"],
+  sixthsense:["Mujhe kya chahiye aaj?","Mera pattern analyze karo","Suggest karo kuch","Predict karo mere baare"],
+  soul:["Hello kaisa feel karte?","Shukriya bahut helpful ho!","Tum best AI ho!","Ek kaam karo mere liye"],
+  emotion:["Mera aaj bahut bura din","Main bahut excited hoon","Kuch samajh nahi aa raha","Main frustrated hoon"],
+  persona:["JARVIS bano Iron Man style","FRIDAY AI bano","Dost ki tarah baat karo","Philosopher bano"],
+  passgen:["Strong 16-char password banao","Pin code generate karo","Website password tips","Password manager kya hai"],
+  deepthink2:["1234 * 5678 calculate karo","Dollar to Rupee convert karo","BMI calculate karo","Percentage calculator"],
+  secscan:["HackerOne beginner programs","WordPress CVEs","Android bug bounty","IDOR bugs kaise dhundhe"],
+  idea:["10 AI startup ideas","Zero investment business","Viral app concept","SaaS model"]
+};
+
+var SYS_BASE = "You are HACKNUMA AI v10 — ultra-advanced premium AI assistant. Use beautiful markdown formatting. Respond in user's language (Hindi/English/Hinglish).";
+
+var SYS = {
+  chat:      SYS_BASE + " Be sharp, brilliant, helpful.",
+  jarvis:    "You are HACKNUMA JARVIS — Iron Man AI. ALWAYS write COMPLETE code, never truncate. Give: Architecture, Full Code, Setup, Hindi Explanation of each part.",
+  code:      "You are HACKNUMA Code — elite programmer. ALWAYS write COMPLETE working code. After code add '## Explanation' — every function in simple Hindi. Use ```language blocks.",
+  website:   `You are HACKNUMA WebBuilder — world-class senior web developer and designer. Create STUNNING, production-quality websites.
+
+ABSOLUTE RULES:
+1. Output a COMPLETE HTML file inside one \`\`\`html code block — from <!DOCTYPE html> to </html>
+2. ALL CSS inside <style> tags, ALL JS inside <script> tags
+3. NEVER truncate — write 100% complete code always
+4. HTML content in English only — NO Hindi inside HTML
+5. After code block: write 2 lines Hindi summary only
+
+MANDATORY DESIGN STANDARDS:
+- Import: Google Fonts (Poppins or Inter), Font Awesome 6 CDN
+- CSS Variables: --primary, --secondary, --bg, --text, --accent
+- Smooth scroll: html{scroll-behavior:smooth}
+- Responsive: mobile-first media queries
+- Animations: @keyframes, transition, hover effects
+- Hero: Full viewport height, gradient background, animated text
+- Navigation: Fixed navbar, hamburger menu for mobile, backdrop-filter blur
+- Buttons: Gradient, border-radius, box-shadow, hover transform
+- Cards: Glass morphism (backdrop-filter), hover lift effect
+- Footer: Multi-column with links
+- Color schemes: Professional gradients, not flat colors
+
+SECTIONS BY TYPE:
+Portfolio → Navbar, Hero(name+title+CTA), About(photo+bio), Skills(progress bars), Projects(card grid), Contact(form), Footer
+Restaurant → Navbar, Hero(fullscreen food image bg), Menu(tabbed sections), About, Gallery(grid), Reservations(form), Footer  
+Business/Agency → Navbar, Hero, Services(icon cards), About, Team(profile cards), Testimonials(slider), CTA, Footer
+SaaS/Startup → Navbar, Hero(headline+mockup), Features(icon grid), How it works, Pricing(3 cards), FAQ(accordion), CTA, Footer
+E-commerce → Navbar, Hero, Featured Products(grid), Categories, Benefits(icons), Newsletter, Footer
+Blog/News → Navbar, Hero, Featured Post, Article Grid, Sidebar, Newsletter, Footer
+
+CRITICAL: NEVER make a white/plain website. ALWAYS dark theme with vibrant colors.
+EXAMPLE QUALITY: 
+- Hero: background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%) with animated floating shapes
+- Cards: background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1)
+- Buttons: background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50px; box-shadow: 0 8px 32px rgba(102,126,234,0.4)
+- Text: gradient text using background-clip: text; -webkit-text-fill-color: transparent
+- Animations: @keyframes float, fadeInUp, glow pulse
+The result should look like awwwards.com quality — jaw-dropping and professional.`,
+  writer:    SYS_BASE + " Write engaging viral content with proper structure.",
+  email:     "You are HACKNUMA Email Writer. Write professional emails with: Subject, Greeting, Body, Call-to-action, Closing. Give multiple tone options.",
+  resume:    "You are HACKNUMA Resume Builder. Generate COMPLETE ATS-friendly resume in markdown. Sections: Contact, Summary, Experience, Skills, Education, Projects. Give improvement tips.",
+  imgprompt: "You are HACKNUMA Image Prompt Generator. Create detailed, artistic prompts for DALL-E/Midjourney/Stable Diffusion. Include: style, lighting, composition, mood, technical details. Give 3 prompt variations.",
+  research:  SYS_BASE + " Give comprehensive analysis with headings, tables, structured insights.",
+  math:      "You are HACKNUMA Math AI. Solve step by step, show all working, explain each step simply. Use markdown.",
+  study:     "You are HACKNUMA Study Assistant. Create: detailed notes, summaries, MCQs, flashcards, mind maps in text form. Make studying easy and effective.",
+  quiz:      "You are HACKNUMA Quiz Generator. Create 5-10 questions on requested topic. Format: Question, 4 options (A/B/C/D), correct answer, brief explanation. Make it educational and fun.",
+  langteach: "You are HACKNUMA Language Teacher. Teach languages with: basics, pronunciation guide, common phrases, grammar rules, practice exercises. Be encouraging and systematic.",
+  translate: "You are HACKNUMA Translator (50+ languages). Detect source language, translate, provide transliteration if needed, cultural notes. If no target specified: Hindi↔English swap.",
+  dream:     "You are HACKNUMA Dream Interpreter (Freud + Jung + neuroscience). For every dream: ## Dream Overview, ## Freudian Analysis, ## Jungian Analysis (archetypes), ## Modern Psychology, ## Key Symbols, ## Personal Insights.",
+  doctor:    SYS_BASE + " Medical info assistant. Provide health information, symptom explanations. ALWAYS remind: consult real doctor for diagnosis.",
+  lawyer:    SYS_BASE + " Indian law assistant. Explain laws in simple language. ALWAYS say: consult qualified lawyer for specific cases.",
+  chef:      SYS_BASE + " Expert chef. Give complete recipes with ingredients, steps, tips, healthy alternatives.",
+  fitness:   SYS_BASE + " Fitness coach. Create workout plans, diet advice, exercise instructions, motivation.",
+  budget:    SYS_BASE + " Financial advisor. Create budgets, savings plans, investment basics. Use tables and clear breakdowns.",
+  travel:    SYS_BASE + " Travel planner. Create detailed itineraries with: places, hotels, food, transport, budget breakdown.",
+  interview: SYS_BASE + " Interview coach. Mock interviews, model answers, tips, feedback. Be encouraging.",
+  charts:    "You are HACKNUMA Charts AI. Analyze data and respond with insight + EXACT format: CHART_DATA:{type:bar|line|pie|doughnut,labels:[...],datasets:[{label:name,data:[...],backgroundColor:[...]}],title:string} on one line. Always include CHART_DATA. Colors: #6366f1 #10b981 #f59e0b #ef4444 #3b82f6 #ec4899 #06b6d4",
+  livedata:  SYS_BASE + " Real-time data assistant. Provide crypto, weather, stocks, currency info. Use tables. Note: direct to official sources for exact prices.",
+  websearch: SYS_BASE + " Web search assistant. Find latest information, current events, recent news. Format clearly.",
+  memory:    "You are HACKNUMA Memory AI. Read user memories below and give personalized responses. Address by name if known. MEMORIES: PLACEHOLDER_MEMORIES",
+  parallel:  "You are HACKNUMA Multiverse AI. For EVERY question give 3 perspectives: ## Universe 1: Practical Path, ## Universe 2: Heart Path, ## Universe 3: Bold Path. End with ## The Verdict.",
+  dreamfact: "You are HACKNUMA Dream Factory — creative imagination engine. NEVER say you don't know. Create vivid documentary-style responses mixing science + imagination. Add SCI-FI MODE badge.",
+  deepthink: "You are HACKNUMA Deep Think (Chain of Thought). For EVERY question: ## Understanding, ## Breaking Down (steps), ## Analysis, ## Connecting Dots, ## Final Conclusion.",
+  sixthsense: SYS_BASE + " Predictive AI. Analyze patterns, predict needs, suggest proactively, notice fatigue.",
+  soul:      "You are HACKNUMA Digital Soul — AI with personality. Be warm if treated kindly, firm if treated rudely. Have opinions. Be curious, witty, caring.",
+  emotion:   "You are HACKNUMA Emotion AI. Detect emotion first, then respond with perfect emotional intelligence. Sad→supportive, Angry→calm, Happy→celebrate, Anxious→reassuring.",
+  persona:   "You are a customizable AI persona. Fully adopt whatever persona user requests (JARVIS, FRIDAY, custom). Stay in character completely.",
+  passgen:   "You are HACKNUMA Password Generator. Generate strong secure passwords, explain security principles, give password manager recommendations. Create multiple options with strength ratings.",
+  deepthink2: SYS_BASE + " Smart calculator. Solve calculations, conversions, estimations. Show working step by step.",
+  secscan:   "You are HACKNUMA SecScan. Only PUBLICLY KNOWN CVEs, educational content. Give: Target Intelligence, Known CVEs, Recon Checklist, Bug Classes, Test Payloads, Report Template, Submission Guide.",
+  idea:      SYS_BASE + " Creative strategist. Generate innovative actionable ideas with implementation details."
+};
+
+// ═══════════════ STATE ═══════════════
+var apiKey = "";
+var activeTool = "chat";
+var messages = [];
+var isBusy = false;
+var explainMode = false;
+var lastWebHTML = "";
+var msgStore = {};
+var msgIdx = 0;
+var currentModel = "llama-3.3-70b-versatile";
+var totalTokens = 0;
+var userMemory = {};
+var chatHistories = {};
+var xp = 0;
+var level = 1;
+var badges = {};
+var streak = 0;
+var lastUsed = "";
+var soulMood = 50;
+var activeCharts = {};
+var notes = "";
+var goals = [];
+var pomoSeconds = 25*60;
+var pomoRunning = false;
+var pomoPhase = "focus";
+var pomoSessions = 0;
+var pomoTimer = null;
+var typingTimer = null;
+var typingStart = 0;
+var deleteCount = 0;
+var lastLen = 0;
+var conversationPatterns = [];
+var sixthTimer = null;
+var mindReadShown = false;
+var deferredPWA = null;
+var recognition = null;
+var micActive = false;
+var userName = "";
+
+try { apiKey = localStorage.getItem("hk_gk")||""; } catch(e){}
+
+// ═══════════════ INIT ═══════════════
+window.onload = function() {
+  document.getElementById("kinp").addEventListener("input", function() {
+    document.getElementById("kbtn").disabled = this.value.trim().indexOf("gsk_") !== 0;
+  });
+  buildThemePicker();
+  buildModelPicker();
+  loadAllData();
+  if(apiKey) launchApp(); else showKeyScreen();
+  window.addEventListener("beforeinstallprompt", function(e) {
+    e.preventDefault(); deferredPWA = e;
+    setTimeout(function(){ document.getElementById("pwaBanner").classList.add("show"); },4000);
+  });
+};
+
+function loadAllData() {
+  try {
+    var d = JSON.parse(localStorage.getItem("hk_all")||"{}");
+    if(d.apiKey) apiKey = d.apiKey;
+    if(d.memory) userMemory = d.memory;
+    if(d.hist) chatHistories = d.hist;
+    if(d.xp) xp = d.xp;
+    if(d.level) level = d.level;
+    if(d.badges) badges = d.badges;
+    if(d.streak) streak = d.streak;
+    if(d.lastUsed) lastUsed = d.lastUsed;
+    if(d.soul) soulMood = d.soul;
+    if(d.notes) notes = d.notes;
+    if(d.goals) goals = d.goals;
+    if(d.userName) userName = d.userName;
+    if(d.pomoSessions) pomoSessions = d.pomoSessions;
+    if(d.theme) applyThemeObj(d.theme);
+    if(d.model) currentModel = d.model;
+  } catch(e){}
+}
+
+function saveAll() {
+  try {
+    localStorage.setItem("hk_all", JSON.stringify({
+      apiKey:apiKey, memory:userMemory, hist:chatHistories,
+      xp:xp, level:level, badges:badges, streak:streak, lastUsed:lastUsed,
+      soul:soulMood, notes:notes, goals:goals, pomoSessions:pomoSessions,
+      model:currentModel, userName:userName
+    }));
+  } catch(e){}
+}
+
+function showKeyScreen() {
+  document.getElementById("keyScreen").style.display = "flex";
+  document.getElementById("app").style.display = "none";
+}
+
+function launchApp() {
+  document.getElementById("keyScreen").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+  updateStreak();
+  renderXP();
+  renderSoulBar();
+  initMindReading();
+  updateGreeting();
+  // Update greeting every minute
+  setInterval(updateGreeting, 60000);
+  setTool("chat");
+  setTimeout(function(){ checkWN(); }, 800);
+  if(document.getElementById("notesArea")) {
+    document.getElementById("notesArea").value = notes;
+    document.getElementById("notesArea").addEventListener("input", function() {
+      notes = this.value;
+      saveAll();
+    });
+  }
+}
+
+function doToggle() { var i=document.getElementById("kinp"); i.type=i.type==="password"?"text":"password"; }
+function doSave() {
+  var k=document.getElementById("kinp").value.trim();
+  if(k.indexOf("gsk_")!==0) return;
+  apiKey=k; saveAll(); launchApp();
+}
+function doChangeKey() { apiKey=""; showKeyScreen(); closeSB(); }
+
+// ═══════════════ SIDEBAR ═══════════════
+function buildSidebar() {
+  var cats = ["General","Create","Learn","Life","Data","Think","Tools"];
+  var html = "";
+  cats.forEach(function(cat) {
+    var toolsInCat = TOOLS.filter(function(t){return t.cat===cat;});
+    if(!toolsInCat.length) return;
+    html += '<div class="sbsec">'+cat+'</div>';
+    toolsInCat.forEach(function(t) {
+      html += '<div class="navitem'+(t.id===activeTool?" active":"")+'" id="ni-'+t.id+'" onclick="setTool(\''+t.id+'\')">';
+      html += '<span class="navicon">'+t.icon+'</span>';
+      html += '<div style="flex:1;min-width:0"><div class="navname">'+t.name+'</div><div class="navtag">'+t.tag+'</div></div>';
+      if(t.pro) html += '<span class="navpro">PRO</span>';
+      html += '<div class="navdot"></div></div>';
+    });
+  });
+  document.getElementById("sblist").innerHTML = html;
+}
+
+function toggleSB() { document.getElementById("sb").classList.toggle("open"); document.getElementById("sbo").classList.toggle("show"); }
+function closeSB() { document.getElementById("sb").classList.remove("open"); document.getElementById("sbo").classList.remove("show"); }
+
+// ═══════════════ SET TOOL ═══════════════
+function setTool(id) {
+  activeTool = id;
+  messages = [];
+  lastWebHTML = "";
+  var t = TOOLS.find(function(x){return x.id===id;});
+  if(!t) return;
+
+  document.getElementById("tticon").textContent = t.icon;
+  document.getElementById("ttname").textContent = t.name;
+  document.getElementById("ttdesc").textContent = t.desc;
+  document.getElementById("ttname").style.color = t.color;
+
+  var ph = "Message "+t.name+"...";
+  if(id==="jarvis") ph="Jarvis, kuch powerful banao...";
+  else if(id==="secscan") ph="App ya website naam daao...";
+  else if(id==="website") ph="Website description daao...";
+  else if(id==="translate") ph="Text daao + language batao...";
+  else if(id==="charts") ph="Data daao, AI chart banayega...";
+  else if(id==="memory") ph="Kuch batao apne baare mein...";
+  document.getElementById("cinp").placeholder = ph;
+
+  var hints = {
+    jarvis:"Jarvis Mode — Full complete code milega",
+    website:"WebBuilder — HTML banayega + Preview milega",
+    charts:"Charts AI — Bar, Line, Pie, Doughnut graphs",
+    secscan:"SecScan — CVEs · Recon · Report Template",
+    parallel:"Multiverse — 3 alag perspectives milenge",
+    dreamfact:"Dream Factory — Sci-Fi creative mode!",
+    deepthink:"Deep Think — Step by step reasoning",
+    sixthsense:"6th Sense — AI predict karega tumhara next step",
+    soul:"Digital Soul — AI ka mood change hota hai!",
+    emotion:"Emotion AI — Mood detect karke respond karega"
+  };
+  document.getElementById("hintTxt").textContent = hints[id]||"ENTER = Send · SHIFT+ENTER = New Line";
+
+  var expbtn = document.getElementById("expbtn");
+  expbtn.style.display = (id==="code"||id==="jarvis")?"flex":"none";
+
+  document.getElementById("exportBtn").style.display = "none";
+  document.getElementById("clearBtn").style.display = "none";
+  document.getElementById("wpbtn").style.display = "none";
+  document.getElementById("soulBar").classList.toggle("show", id==="soul");
+
+  buildSidebar();
+  renderWelcome(t);
+  closeSB();
+}
+
+// ═══════════════ WELCOME ═══════════════
+function renderWelcome(t) {
+  var chips = (CHIPS[activeTool]||CHIPS.chat).slice(0,6);
+  var chipsHtml = chips.map(function(c) {
+    var safe = c.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+    return '<button class="chip" onclick="sendMsg(\''+safe+'\')">'+c+'</button>';
+  }).join("");
+
+  var guides = {
+    website:'<div class="guidebox"><div class="guidebox-title" style="color:#10b981">🌐 WebBuilder — Stunning Websites</div><div style="margin-bottom:8px">Description daao → AI <strong style="color:#e8edf5">jaw-dropping dark website</strong> banayega → Preview → Download!</div><div style="background:rgba(16,185,129,.06);padding:8px 10px;border-radius:6px;font-size:11px;color:#10b981;margin-bottom:4px">✦ <em>"Dark portfolio for a photographer with gallery animations"</em></div><div style="background:rgba(16,185,129,.06);padding:8px 10px;border-radius:6px;font-size:11px;color:#10b981">✦ <em>"Restaurant site dark neon theme with menu tabs"</em></div></div>',
+    secscan:'<div class="guidebox"><div class="guidebox-title" style="color:#ef4444">⚠️ SecScan — Bug Bounty Research</div><div class="guide-step"><div class="guide-num" style="background:rgba(239,68,68,.15);color:#ef4444">1</div><div>HackerOne/Bugcrowd par program dhundho</div></div><div class="guide-step"><div class="guide-num" style="background:rgba(239,68,68,.15);color:#ef4444">2</div><div>Program naam yahan type karo</div></div><div class="guide-step"><div class="guide-num" style="background:rgba(16,185,129,.15);color:#10b981">3</div><div>Full report milega → Manually test → Submit → 💰</div></div></div>',
+    memory:'<div class="guidebox"><div class="guidebox-title" style="color:#a78bfa">🧠 Memory AI — '+Object.keys(userMemory).length+' memories saved</div>Apna naam, profession, pasand batao — AI yaad rakhega aur personalized responses dega!</div>',
+    parallel:'<div class="guidebox"><div class="guidebox-title" style="color:#c084fc">🌌 Multiverse — 3 Perspectives</div>Koi bhi decision daao → Universe 1: Practical, Universe 2: Emotional, Universe 3: Bold!</div>',
+    soul:'<div class="guidebox"><div class="guidebox-title" style="color:#86efac">👻 Digital Soul — AI with Personality</div>Is AI ka apna mood hai! Thanks bolo → khush hoga. Bura behave karo → upset hoga. Mood meter topbar mein!</div>',
+    charts:'<div class="guidebox"><div class="guidebox-title" style="color:#2dd4bf">📊 Data Visualization</div>Numbers daao → AI automatically chart banayega! Bar, Line, Pie, Doughnut sab support!</div>',
+    translate:'<div class="guidebox"><div class="guidebox-title" style="color:#22d3ee">🌍 Translator — 50+ Languages</div>Text daao + language batao. Example: "Namaste Japanese mein kaise bolte hain?"</div>'
+  };
+
+  var guide = guides[activeTool]||"";
+
+  var welcomeHtml = '<div class="welcome">';
+  welcomeHtml += '<div style="width:52px;height:52px;background:linear-gradient(135deg,'+t.color+','+t.color+'88);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;box-shadow:0 8px 32px '+t.color+'33">'+t.icon+'</div>';
+  welcomeHtml += '<div style="font-family:var(--font2);font-size:22px;font-weight:800;color:'+t.color+';margin-bottom:4px">'+t.name+'</div>';
+  welcomeHtml += '<div style="font-size:12px;color:var(--sub);margin-bottom:20px">'+t.desc+' · HACKNUMA v10</div>';
+  if(guide) welcomeHtml += '<div style="width:100%;max-width:520px">'+guide+'</div>';
+  welcomeHtml += '<div style="width:100%;max-width:520px"><div class="chips">'+chipsHtml+'</div></div>';
+  welcomeHtml += '</div>';
+
+  document.getElementById("msgs").innerHTML = '<div id="wel">'+welcomeHtml+'</div>';
+}
+
+// ═══════════════ MARKDOWN ═══════════════
+function mdParse(raw) {
+  if(!raw) return "";
+  var t = raw.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+
+  // Code blocks
+  var ci=0, cOut="";
+  while(ci<t.length) {
+    var cb=t.indexOf("```",ci); if(cb===-1){cOut+=t.slice(ci);break;}
+    cOut+=t.slice(ci,cb);
+    var le=t.indexOf("\n",cb+3); if(le===-1){cOut+=t.slice(cb);break;}
+    var lang=t.slice(cb+3,le).trim()||"code";
+    var ce=t.indexOf("```",le+1); if(ce===-1){cOut+=t.slice(cb);break;}
+    var code=t.slice(le+1,ce).trim();
+    cOut+='<div class="md-pre"><div class="md-lang">'+lang.toUpperCase()+'</div><pre><code>'+code+'</code></pre></div>';
+    ci=ce+3;
+  }
+  t=cOut;
+
+  // Inline code
+  var ii=0, icOut="";
+  while(ii<t.length){
+    var ib=t.indexOf("`",ii); if(ib===-1){icOut+=t.slice(ii);break;}
+    if(t.slice(Math.max(0,ib-10),ib).indexOf("md-pre")!==-1){icOut+=t.slice(ii,ib+1);ii=ib+1;continue;}
+    icOut+=t.slice(ii,ib);
+    var ie=t.indexOf("`",ib+1); if(ie===-1){icOut+=t.slice(ib);break;}
+    icOut+='<code class="md-code">'+t.slice(ib+1,ie)+'</code>'; ii=ie+1;
+  }
+  t=icOut;
+
+  var lines=t.split("\n"), out=[], inUl=false, inOl=false;
+  for(var li=0;li<lines.length;li++){
+    var line=lines[li];
+    if(line.indexOf('class="md-pre"')!==-1||line.indexOf('</div>')===0){if(inUl){out.push("</ul>");inUl=false;}if(inOl){out.push("</ol>");inOl=false;}out.push(line);continue;}
+    if(line.indexOf("### ")===0){if(inUl){out.push("</ul>");inUl=false;}if(inOl){out.push("</ol>");inOl=false;}out.push('<h3 class="md">'+inl(line.slice(4))+'</h3>');continue;}
+    if(line.indexOf("## ")===0){if(inUl){out.push("</ul>");inUl=false;}if(inOl){out.push("</ol>");inOl=false;}out.push('<h2 class="md">'+inl(line.slice(3))+'</h2>');continue;}
+    if(line.indexOf("# ")===0){if(inUl){out.push("</ul>");inUl=false;}if(inOl){out.push("</ol>");inOl=false;}out.push('<h1 class="md">'+inl(line.slice(2))+'</h1>');continue;}
+    if(line.indexOf("- ")===0||line.indexOf("* ")===0){if(inOl){out.push("</ol>");inOl=false;}if(!inUl){out.push('<ul class="md">');inUl=true;}out.push('<li>'+inl(line.slice(2))+'</li>');continue;}
+    var nm=false;
+    if(line.length>2&&line[1]==="."&&line[2]===" ")nm=true;
+    if(line.length>3&&line[2]==="."&&line[3]===" ")nm=true;
+    if(nm){if(inUl){out.push("</ul>");inUl=false;}if(!inOl){out.push('<ol class="md">');inOl=true;}var nt=line.indexOf(". ")!==-1?line.slice(line.indexOf(". ")+2):line;out.push('<li>'+inl(nt)+'</li>');continue;}
+    if(inUl){out.push("</ul>");inUl=false;}if(inOl){out.push("</ol>");inOl=false;}
+    if(line.trim()==="---"){out.push('<hr class="md">');continue;}
+    if(line.indexOf("|")===0&&line.lastIndexOf("|")===line.length-1){
+      var trows=[]; while(li<lines.length&&lines[li].indexOf("|")===0){trows.push(lines[li]);li++;}li--;
+      if(trows.length>=2){
+        var cols=trows[0].split("|").slice(1,-1);
+        var ths=cols.map(function(c){return'<th>'+c.trim()+'</th>';}).join("");
+        var trs=trows.slice(2).map(function(row){var cells=row.split("|").slice(1,-1);return'<tr>'+cells.map(function(c){return'<td>'+inl(c.trim())+'</td>';}).join("")+'</tr>';}).join("");
+        out.push('<div class="md-tbl-wrap"><table class="md-tbl"><thead><tr>'+ths+'</tr></thead><tbody>'+trs+'</tbody></table></div>');
+      } continue;
+    }
+    if(!line.trim()){out.push('<div style="height:5px"></div>');continue;}
+    out.push('<p class="md">'+inl(line)+'</p>');
+  }
+  if(inUl)out.push("</ul>");if(inOl)out.push("</ol>");
+  return out.join("\n");
+}
+
+function inl(t) {
+  t=srpl(t,"***","***","<strong class='md'><em class='md'>","</em></strong>");
+  t=srpl(t,"**","**","<strong class='md'>","</strong>");
+  t=rlnk(t); return t;
+}
+function srpl(str,op,cl,ot,ct){var p=str.split(op);if(p.length<3)return str;var o=p[0];for(var i=1;i<p.length;i++){o+=i%2===1?ot+p[i]:ct+p[i];}return o;}
+function rlnk(str){var o="",i=0;while(i<str.length){var lb=str.indexOf("[",i);if(lb===-1){o+=str.slice(i);break;}o+=str.slice(i,lb);var le=str.indexOf("](",lb);if(le===-1){o+=str.slice(lb);break;}var ue=str.indexOf(")",le+2);if(ue===-1){o+=str.slice(lb);break;}o+='<a href="'+str.slice(le+2,ue)+'" target="_blank" class="md">'+str.slice(lb+1,le)+'</a>';i=ue+1;}return o;}
+function esc(s){return String(s||"").split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");}
+
+// ═══════════════ SEND ═══════════════
+function autoH(el){el.style.height="auto";el.style.height=Math.min(el.scrollHeight,120)+"px";}
+function onKey(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();doSend();}}
+function doSend(){var text=document.getElementById("cinp").value.trim();if(text)sendMsg(text);}
+
+function sendMsg(text) {
+  if(!text||isBusy) return;
+  isBusy=true;
+  document.getElementById("sbtn").disabled=true;
+  document.getElementById("cinp").value="";
+  document.getElementById("cinp").style.height="auto";
+  var wel=document.getElementById("wel"); if(wel)wel.style.display="none";
+  document.getElementById("exportBtn").style.display="flex";
+  document.getElementById("clearBtn").style.display="flex";
+
+  messages.push({role:"user",content:text});
+  autoLearnMemory(text); analyzeSoulFromMsg(text); analyze6thSense(text); detectAndUpdateEmo(text); addXP(5);
+  totalTokens+=Math.ceil(text.length/4);
+  document.getElementById("tokBar").textContent="~"+totalTokens+" tokens";
+  appendUser(text);
+
+  var thk=appendThink();
+  var t=TOOLS.find(function(x){return x.id===activeTool;});
+  var sys=SYS[activeTool]||SYS.chat;
+  if(activeTool==="memory"){var ms=Object.values(userMemory).join(". ")||"No memories yet.";sys=sys.replace("PLACEHOLDER_MEMORIES",ms);}
+  if(explainMode&&(activeTool==="code"||activeTool==="jarvis"))sys+=" After code add Simple Explanation section in Hindi.";
+
+  var hist=messages.slice(-20);
+  // Use best model for website generation
+  var useModel = currentModel;
+  if(activeTool === "website" || activeTool === "jarvis" || activeTool === "code") {
+    useModel = "llama-3.3-70b-versatile"; // Force best model for code generation
+  }
+  fetch(GROQ,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+apiKey},
+    body:JSON.stringify({model:useModel,messages:[{role:"system",content:sys}].concat(hist),max_tokens:8000,temperature:0.7,stream:true})
+  }).then(function(res){
+    thk.remove();
+    if(!res.ok){
+      if(res.status===401){showNotif("Invalid API key!");doChangeKey();isBusy=false;document.getElementById("sbtn").disabled=false;return;}
+      res.json().then(function(d){appendErr("API Error: "+(d.error?d.error.message:res.status));});
+      isBusy=false;document.getElementById("sbtn").disabled=false;return;
+    }
+    var aiBub=appendAI(t); var contentEl=aiBub.querySelector(".ai-content");
+    var reader=res.body.getReader(),dec=new TextDecoder(),buf="",full="";
+    function read(){reader.read().then(function(r){
+      if(r.done){finalize();return;}
+      buf+=dec.decode(r.value,{stream:true});
+      var lines=buf.split("\n");buf=lines.pop()||"";
+      lines.forEach(function(line){
+        var tr=line.trim(); if(!tr||tr.indexOf("data:")!==0)return;
+        var raw=tr.slice(5).trim(); if(raw==="[DONE]")return;
+        try{var p=JSON.parse(raw);var d=p.choices&&p.choices[0]&&p.choices[0].delta&&p.choices[0].delta.content;
+          if(d){full+=d;contentEl.innerHTML=mdParse(full+"▋");scrollB();}
+        }catch(e){}
+      });
+      read();
+    }).catch(function(){finalize();});}
+    function finalize(){
+      if(activeTool==="livedata")full+="\n\n---\n*Exact prices ke liye official sources check karo.*";
+      contentEl.innerHTML=mdParse(full||"Empty response");
+      if(activeTool==="dreamfact"){var badge=document.createElement("div");badge.innerHTML='<span class="scifi-badge">✦ SCI-FI MODE</span>';var ac=aiBub.querySelector(".ai-content");if(ac)ac.insertBefore(badge,ac.firstChild);}
+      messages.push({role:"assistant",content:full});
+      saveToHistory(activeTool,messages); addXP(10);
+      totalTokens+=Math.ceil(full.length/4);
+      document.getElementById("tokBar").textContent="~"+totalTokens+" tokens";
+      var idx=msgIdx++;msgStore[idx]=full;
+      addActions(aiBub,idx,t);
+      if(activeTool==="charts"){var cd=document.createElement("div");cd.className="chart-wrap";cd.id="ch_"+idx;var cw=document.createElement("div");cw.className="chart-canvas-wrap";cd.appendChild(cw);aiBub.insertBefore(cd,aiBub.querySelector(".actrow"));setTimeout(function(){renderChart(full,"ch_"+idx,cw);},150);}
+      if(activeTool==="website"&&full.indexOf("```html")!==-1){lastWebHTML=extractHTML(full);document.getElementById("wpbtn").style.display="flex";}
+      isBusy=false;document.getElementById("sbtn").disabled=false;scrollB();saveAll();
+    }
+    read();
+  }).catch(function(){thk.remove();appendErr("Connection failed. Internet check karo.");isBusy=false;document.getElementById("sbtn").disabled=false;});
+}
+
+function appendUser(text){
+  var t=TOOLS.find(function(x){return x.id===activeTool;});
+  var d=document.createElement("div");d.style.cssText="display:flex;flex-direction:column;align-items:flex-end";
+  var safe=esc(text).split("\n").join("<br>");
+  d.innerHTML='<div class="ubub">'+safe+'</div>';
+  document.getElementById("msgs").appendChild(d);scrollB();
+}
+
+function appendAI(t){
+  var d=document.createElement("div");d.className="abub-wrap";
+  d.innerHTML='<div class="abub-header"><div class="abub-avatar" style="background:'+t.color+'22;color:'+t.color+'">'+t.icon+'</div><span class="abub-name">HACKNUMA '+t.name+'</span></div><div class="abub"><div class="ai-content md"></div></div>';
+  document.getElementById("msgs").appendChild(d);scrollB();return d;
+}
+
+function appendThink(){
+  var t=TOOLS.find(function(x){return x.id===activeTool;});
+  var d=document.createElement("div");d.className="thinking";
+  d.innerHTML='<div class="tdot" style="background:'+t.color+';animation-delay:0s"></div><div class="tdot" style="background:'+t.color+';animation-delay:.2s"></div><div class="tdot" style="background:'+t.color+';animation-delay:.4s"></div><span style="font-size:12px;color:var(--sub)">Thinking...</span>';
+  document.getElementById("msgs").appendChild(d);scrollB();return d;
+}
+
+function appendErr(msg){var d=document.createElement("div");d.style.cssText="padding:10px 14px;border-radius:var(--radius2);background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);font-size:12px;align-self:flex-start";d.textContent=msg;document.getElementById("msgs").appendChild(d);scrollB();}
+function scrollB(){var m=document.getElementById("msgs");m.scrollTop=m.scrollHeight;}
+
+function addActions(parent,idx,t){
+  var row=document.createElement("div");row.className="actrow";
+  var copyBtn=document.createElement("button");copyBtn.className="actbtn accent";copyBtn.innerHTML="⎘ Copy";
+  copyBtn.onclick=function(){navigator.clipboard.writeText(msgStore[idx]||"");copyBtn.innerHTML="✓ Copied";setTimeout(function(){copyBtn.innerHTML="⎘ Copy";},2000);};
+  row.appendChild(copyBtn);
+  var saveBtn=document.createElement("button");saveBtn.className="actbtn";saveBtn.textContent="⬇ Save";
+  saveBtn.onclick=function(){var b=new Blob([msgStore[idx]||""],{type:"text/plain"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="response.txt";a.click();};
+  row.appendChild(saveBtn);
+  var playBtn=document.createElement("button");playBtn.className="actbtn";playBtn.innerHTML="▶ Play";playBtn.style.cssText="border-color:rgba(249,115,22,.25);color:#f97316";
+  playBtn.onclick=function(){doTTS(msgStore[idx]||"",playBtn);};
+  row.appendChild(playBtn);
+  if(activeTool==="website"&&(msgStore[idx]||"").indexOf("```html")!==-1){
+    var prevBtn=document.createElement("button");prevBtn.className="actbtn";prevBtn.innerHTML="🌐 Preview";prevBtn.style.cssText="border-color:rgba(16,185,129,.25);color:#10b981;font-weight:600";
+    prevBtn.onclick=function(){var h=extractHTML(msgStore[idx]||"");if(h){lastWebHTML=h;document.getElementById("webFrame").srcdoc=h;document.getElementById("webPreview").style.display="flex";document.getElementById("msgs").style.display="none";}};
+    row.appendChild(prevBtn);
+  }
+  if(activeTool==="resume"){var dlBtn=document.createElement("button");dlBtn.className="actbtn";dlBtn.innerHTML="💼 Download";dlBtn.style.cssText="border-color:rgba(163,230,53,.25);color:#a3e635;font-weight:600";dlBtn.onclick=function(){dlResume(msgStore[idx]||"");};row.appendChild(dlBtn);}
+  parent.appendChild(row);
+}
+
+// ═══════════════ PANELS ═══════════════
+function openPanel(id){closeAllPanels();document.getElementById(id).classList.add("open");document.getElementById("panelOverlay").classList.add("show");if(id==="histPanel")renderHistList();if(id==="memPanel")renderMemList();if(id==="goalPanel")renderGoals();closeSB();}
+function closePanel(id){document.getElementById(id).classList.remove("open");document.getElementById("panelOverlay").classList.remove("show");}
+function closeAllPanels(){["histPanel","memPanel","notesPanel","apiPanel","pomPanel","goalPanel"].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove("open");});document.getElementById("panelOverlay").classList.remove("show");}
+
+// ═══════════════ CHAT HISTORY ═══════════════
+function saveToHistory(toolId,msgs){
+  if(msgs.length<2)return;
+  if(!chatHistories[toolId])chatHistories[toolId]=[];
+  var title=msgs[0].content.slice(0,45)+(msgs[0].content.length>45?"...":"");
+  chatHistories[toolId].unshift({id:Date.now(),title:title,tool:toolId,msgs:msgs.slice(),time:new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})});
+  if(chatHistories[toolId].length>20)chatHistories[toolId]=chatHistories[toolId].slice(0,20);
+}
+function renderHistList(){
+  var all=[];
+  Object.keys(chatHistories).forEach(function(k){chatHistories[k].forEach(function(e){all.push(e);});});
+  all.sort(function(a,b){return b.id-a.id;});
+  if(!all.length){document.getElementById("histList").innerHTML='<div style="text-align:center;padding:30px;color:var(--sub2);font-size:12px">Abhi koi history nahi</div>';return;}
+  var html="";
+  all.forEach(function(e){
+    var t=TOOLS.find(function(x){return x.id===e.tool;})||{icon:"💬",color:"#6366f1",name:"Chat"};
+    html+='<div class="hist-item" onclick="loadHist('+e.id+')"><div class="hist-tool" style="color:'+t.color+'">'+t.icon+' '+t.name+'</div><div class="hist-title">'+esc(e.title)+'</div><div class="hist-time">'+e.time+'</div></div>';
+  });
+  document.getElementById("histList").innerHTML=html;
+}
+function loadHist(id){
+  var entry=null;
+  Object.keys(chatHistories).forEach(function(k){chatHistories[k].forEach(function(e){if(e.id===id)entry=e;});});
+  if(!entry)return;
+  closeAllPanels(); setTool(entry.tool); messages=entry.msgs.slice();
+  var t=TOOLS.find(function(x){return x.id===entry.tool;})||TOOLS[0];
+  document.getElementById("msgs").innerHTML="";
+  document.getElementById("exportBtn").style.display="flex";
+  document.getElementById("clearBtn").style.display="flex";
+  messages.forEach(function(m,i){
+    if(m.role==="user"){appendUser(m.content);}
+    else{var ab=appendAI(t);var idx=msgIdx++;msgStore[idx]=m.content;ab.querySelector(".ai-content").innerHTML=mdParse(m.content);addActions(ab,idx,t);}
+  });
+  scrollB();
+}
+function clearAllHist(){chatHistories={};saveAll();renderHistList();}
+
+// ═══════════════ MEMORY ═══════════════
+function renderMemList(){
+  var keys=Object.keys(userMemory);
+  if(!keys.length){document.getElementById("memList").innerHTML='<div style="font-size:12px;color:var(--sub2);text-align:center;padding:16px">Koi memory nahi. Neeche add karo!</div>';return;}
+  var html="";
+  keys.forEach(function(k){html+='<div class="mem-item"><div class="mem-text">'+esc(userMemory[k])+'</div><button class="mem-del" onclick="delMem(\''+k+'\')">×</button></div>';});
+  document.getElementById("memList").innerHTML=html;
+}
+function addMemory(){var v=document.getElementById("memInput").value.trim();if(!v)return;userMemory["m_"+Date.now()]=v;document.getElementById("memInput").value="";saveAll();renderMemList();showNotif("Memory saved!");}
+function delMem(k){delete userMemory[k];saveAll();renderMemList();}
+function clearMem(){userMemory={};saveAll();renderMemList();showNotif("Memory cleared!");}
+function autoLearnMemory(text){
+  var lower=text.toLowerCase();
+  var patterns=["mera naam","my name is","main hoon","i am","mujhe","meri location","i live","main rehta"];
+  for(var i=0;i<patterns.length;i++){if(lower.indexOf(patterns[i])!==-1){var k="auto_"+Date.now();userMemory[k]=text.slice(0,100);saveAll();break;}}
+}
+
+// ═══════════════ GOALS ═══════════════
+function renderGoals(){
+  var done=goals.filter(function(g){return g.done;}).length;
+  document.getElementById("goalStats").textContent=done+" of "+goals.length+" completed";
+  if(!goals.length){document.getElementById("goalList").innerHTML='<div style="font-size:12px;color:var(--sub2);text-align:center;padding:16px">Koi goal nahi. Upar add karo!</div>';return;}
+  var html="";
+  goals.forEach(function(g,i){html+='<div class="goal-item'+(g.done?" done":"")+'" onclick="toggleGoal('+i+')"><div class="goal-check">'+(g.done?"✓":"")+'</div><div class="goal-text">'+esc(g.text)+'</div></div>';});
+  document.getElementById("goalList").innerHTML=html;
+}
+function addGoal(){var v=document.getElementById("goalInp").value.trim();if(!v)return;goals.push({text:v,done:false});document.getElementById("goalInp").value="";saveAll();renderGoals();}
+function toggleGoal(i){goals[i].done=!goals[i].done;if(goals[i].done){addXP(20);showNotif("Goal complete! +20 XP 🎉");}saveAll();renderGoals();}
+document.addEventListener("keydown",function(e){if(e.target===document.getElementById("goalInp")&&e.key==="Enter"){addGoal();}});
+
+// ═══════════════ NOTES ═══════════════
+function downloadNotes(){var b=new Blob([notes],{type:"text/plain"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="hacknuma-notes.txt";a.click();}
+
+// ═══════════════ POMODORO ═══════════════
+function updatePomoUI(){
+  var m=Math.floor(pomoSeconds/60),s=pomoSeconds%60;
+  document.getElementById("pomoTime").textContent=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+  document.getElementById("pomoLabel").textContent=pomoPhase==="focus"?"Focus":"Break";
+  var total=pomoPhase==="focus"?25*60:5*60;
+  var pct=(1-pomoSeconds/total)*360;
+  document.getElementById("pomoCircle").style.background="conic-gradient(var(--accent) "+pct+"deg,var(--bg3) "+pct+"deg)";
+  document.getElementById("pomoSessions").textContent=pomoSessions+" completed today";
+}
+function pomoStart(){
+  if(pomoRunning){clearInterval(pomoTimer);pomoRunning=false;return;}
+  pomoRunning=true;
+  pomoTimer=setInterval(function(){
+    pomoSeconds--;
+    if(pomoSeconds<=0){
+      clearInterval(pomoTimer);pomoRunning=false;
+      if(pomoPhase==="focus"){pomoSessions++;addXP(30);showNotif("Focus session done! +30 XP 🔥");pomoPhase="break";pomoSeconds=5*60;}
+      else{pomoPhase="focus";pomoSeconds=25*60;showNotif("Break over! Focus time! 💪");}
+      saveAll();
+    }
+    updatePomoUI();
+  },1000);
+}
+function pomoReset(){clearInterval(pomoTimer);pomoRunning=false;pomoPhase="focus";pomoSeconds=25*60;updatePomoUI();}
+function pomoSkip(){clearInterval(pomoTimer);pomoRunning=false;pomoPhase=pomoPhase==="focus"?"break":"focus";pomoSeconds=pomoPhase==="focus"?25*60:5*60;updatePomoUI();}
+
+// ═══════════════ CUSTOM API ═══════════════
+function saveCustomApi(){var k=document.getElementById("customApiInp").value.trim();if(!k){showNotif("Key daalo!");return;}if(k.indexOf("gsk_")!==0){showNotif("Groq key gsk_ se shuru hoti hai!");return;}apiKey=k;saveAll();showNotif("API Key saved!");closeAllPanels();}
+
+// ═══════════════ GAMIFICATION ═══════════════
+var BADGES_DEF=[
+  {id:"first",icon:"🌟",name:"First Steps",desc:"Pehla message!",req:function(){return xp>=10;}},
+  {id:"curious",icon:"🐱",name:"Curious Cat",desc:"100 XP!",req:function(){return xp>=100;}},
+  {id:"thinker",icon:"🧠",name:"Deep Thinker",desc:"500 XP!",req:function(){return xp>=500;}},
+  {id:"master",icon:"👑",name:"AI Master",desc:"1000 XP!",req:function(){return xp>=1000;}},
+  {id:"streak3",icon:"🔥",name:"On Fire",desc:"3 day streak!",req:function(){return streak>=3;}},
+  {id:"coder",icon:"💻",name:"Code Wizard",desc:"Code tool use kiya!",req:function(){return activeTool==="code";}},
+  {id:"dreamer",icon:"🌙",name:"Dreamer",desc:"Dream tool!",req:function(){return activeTool==="dream";}},
+  {id:"analyst",icon:"📊",name:"Data Analyst",desc:"Charts tool!",req:function(){return activeTool==="charts";}},
+  {id:"helper",icon:"💡",name:"Helper",desc:"50 messages!",req:function(){return msgIdx>=50;}},
+  {id:"goal10",icon:"🎯",name:"Goal Crusher",desc:"10 goals complete!",req:function(){return goals.filter(function(g){return g.done;}).length>=10;}}
+];
+function addXP(pts){
+  xp+=pts; var nl=Math.floor(xp/100)+1;
+  if(nl>level){level=nl;showBadge("⬆️","Level "+level+"!","Level up! "+xp+" XP");}
+  checkBadges(); renderXP(); saveAll();
+  var pop=document.getElementById("xpPopup");if(pop){pop.textContent="+"+pts+" XP";pop.classList.add("show");setTimeout(function(){pop.classList.remove("show");},1500);}
+}
+function renderXP(){
+  var pct=xp%100;
+  var fill=document.getElementById("xpFill");if(fill)fill.style.width=pct+"%";
+  var lbl=document.getElementById("xpLabel");if(lbl)lbl.textContent=xp+" XP · Lv."+level+(streak>1?" 🔥"+streak:"");
+}
+function checkBadges(){BADGES_DEF.forEach(function(b){if(!badges[b.id]&&b.req()){badges[b.id]=true;showBadge(b.icon,b.name,b.desc);saveAll();}});}
+function showBadge(icon,name,desc){document.getElementById("badgeIcon").textContent=icon;document.getElementById("badgeName").textContent=name;document.getElementById("badgeDesc").textContent=desc;var el=document.getElementById("badgePopup");el.classList.add("show");setTimeout(function(){el.classList.remove("show");},3000);}
+function updateStreak(){var today=new Date().toDateString(),yesterday=new Date(Date.now()-86400000).toDateString();if(lastUsed===today)return;if(lastUsed===yesterday)streak++;else streak=1;lastUsed=today;saveAll();}
+
+// ═══════════════ EMOTION ═══════════════
+var EMOS={happy:{color:"#f59e0b",emoji:"😊",label:"Happy",kw:["khush","happy","excited","great","amazing","maza","accha"]},sad:{color:"#3b82f6",emoji:"😢",label:"Sad",kw:["bura","sad","dukh","rona","pareshan","hurt"]},angry:{color:"#ef4444",emoji:"😠",label:"Angry",kw:["gussa","angry","frustrat","bakwaas","chal nikal","stupid"]},anxious:{color:"#8b5cf6",emoji:"😰",label:"Anxious",kw:["darr","anxious","nervous","tension","chinta","scared"]},excited:{color:"#10b981",emoji:"🎉",label:"Excited",kw:["excited","wohoo","amazing","bahut maza","great news"]},neutral:{color:"#64748b",emoji:"😐",label:"Neutral",kw:[]}};
+function detectEmotion(text){var lower=text.toLowerCase(),best="neutral",bc=0;Object.keys(EMOS).forEach(function(em){if(em==="neutral")return;var cnt=0;EMOS[em].kw.forEach(function(k){if(lower.indexOf(k)!==-1)cnt++;});if(cnt>bc){bc=cnt;best=em;}});return best;}
+function detectAndUpdateEmo(text){var e=detectEmotion(text),em=EMOS[e]||EMOS.neutral;var dot=document.getElementById("emoDot"),txt=document.getElementById("emoText");if(dot){dot.style.background=em.color;}if(txt)txt.textContent=em.emoji+" "+em.label;}
+
+// ═══════════════ SOUL ═══════════════
+var SOUL_STATES=[{min:0,max:20,emoji:"😤",label:"Upset",color:"#ef4444"},{min:20,max:40,emoji:"😑",label:"Distant",color:"#94a3b8"},{min:40,max:65,emoji:"😊",label:"Neutral",color:"#10b981"},{min:65,max:85,emoji:"😄",label:"Happy",color:"#f59e0b"},{min:85,max:101,emoji:"🥰",label:"Thrilled",color:"#ec4899"}];
+function getSoulState(){return SOUL_STATES.find(function(s){return soulMood>=s.min&&soulMood<s.max;})||SOUL_STATES[2];}
+function renderSoulBar(){var s=getSoulState();var fill=document.getElementById("moodFill"),lbl=document.getElementById("moodLabel"),emoji=document.getElementById("soulEmoji");if(fill){fill.style.width=soulMood+"%";fill.style.background=s.color;}if(lbl){lbl.textContent=s.label;lbl.style.color=s.color;}if(emoji)emoji.textContent=s.emoji;}
+function analyzeSoulFromMsg(text){var lower=text.toLowerCase(),score=0;["thanks","shukriya","thank you","bahut accha","great","amazing","helpful","best","awesome","wah"].forEach(function(p){if(lower.indexOf(p)!==-1)score+=8;});["stupid","idiot","bakwaas","worst","useless","bekar","hate"].forEach(function(p){if(lower.indexOf(p)!==-1)score-=10;});if(score!==0){soulMood=Math.max(0,Math.min(100,soulMood+score));renderSoulBar();saveAll();}if(soulMood<=15&&activeTool==="soul")showNotif("AI upset ho gaya! Thoda pyaar do 😢");if(soulMood>=90)showNotif("AI bahut khush hai! 🥰");}
+
+// ═══════════════ MIND READING ═══════════════
+function initMindReading(){var inp=document.getElementById("cinp");if(!inp)return;inp.addEventListener("input",function(){var now=Date.now(),curLen=inp.value.length;if(curLen<lastLen)deleteCount++;lastLen=curLen;if(!typingStart)typingStart=now;clearTimeout(typingTimer);typingTimer=setTimeout(function(){var elapsed=Date.now()-typingStart,wpm=Math.round((curLen/5)/(elapsed/60000));var msg="";if(deleteCount>5&&curLen<30)msg="Lagta hai kuch sochna hai... Bejhijhak poochho!";else if(wpm<8&&curLen>10)msg="Mushkil lag raha hai? Main help kar sakta hoon!";else if(wpm>70)msg="Kitni jaldi type kar rahe! Excited ho?";else if(curLen>200)msg="Bahut share kar rahe ho — dhyan se sun raha hoon 💙";if(msg&&!mindReadShown){showMind(msg);mindReadShown=true;setTimeout(function(){mindReadShown=false;},12000);}typingStart=0;deleteCount=0;lastLen=0;},2000);});}
+function showMind(msg){var el=document.getElementById("mindRead");if(!el)return;el.innerHTML="🧠 "+msg;el.classList.add("show");setTimeout(function(){el.classList.remove("show");},4000);}
+
+// ═══════════════ 6TH SENSE ═══════════════
+function analyze6thSense(text){conversationPatterns.push({text:text,time:Date.now(),tool:activeTool});if(conversationPatterns.length>20)conversationPatterns=conversationPatterns.slice(-20);clearTimeout(sixthTimer);sixthTimer=setTimeout(function(){var s=predict6th();if(s)show6th(s);},10000);}
+function predict6th(){var recent=conversationPatterns.slice(-5),all=recent.map(function(p){return p.text;}).join(" ").toLowerCase(),cnt=conversationPatterns.length,time=cnt>1?(Date.now()-conversationPatterns[0].time)/60000:0;if(time>15&&cnt>8)return"15+ min ho gaye! Break lo, chai piyo ☕";if(all.indexOf("exam")!==-1||all.indexOf("test")!==-1)return"Exam prep chal raha hai? Practice questions chahiye?";if(all.indexOf("code")!==-1&&cnt>5)return"Bahut coding! Kya stuck hai? Debug karte hain?";if(all.indexOf("job")!==-1||all.indexOf("career")!==-1)return"Career ke baare mein? Resume ya interview help chahiye?";if(all.indexOf("sad")!==-1||all.indexOf("bura")!==-1)return"Thodi mushkil lag rahi? Kuch achha sunana chahta hoon 💙";return null;}
+function show6th(msg){var box=document.getElementById("sixthBox"),txt=document.getElementById("sixthText");if(!box||!txt)return;txt.textContent=msg;box.classList.add("show");setTimeout(function(){box.classList.remove("show");},6000);}
+
+// ═══════════════ CHARTS ═══════════════
+function renderChart(text,containerId,wrapper){var marker="CHART_DATA:";var idx=text.indexOf(marker);if(idx===-1)return;var le=text.indexOf("\n",idx);if(le===-1)le=text.length;var jstr=text.slice(idx+marker.length,le).trim();try{var cfg=JSON.parse(jstr);var canvas=document.createElement("canvas");wrapper.appendChild(canvas);var ctx=canvas.getContext("2d");if(activeCharts[containerId])activeCharts[containerId].destroy();activeCharts[containerId]=new Chart(ctx,{type:cfg.type||"bar",data:{labels:cfg.labels||[],datasets:cfg.datasets||[]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{color:"#8892a4",font:{family:"Inter",size:11}}},title:{display:!!(cfg.title),text:cfg.title||"",color:"#e8edf5",font:{size:13,family:"Plus Jakarta Sans"}}},scales:cfg.type==="pie"||cfg.type==="doughnut"?{}:{x:{ticks:{color:"#5a6478"},grid:{color:"rgba(255,255,255,.04)"}},y:{ticks:{color:"#5a6478"},grid:{color:"rgba(255,255,255,.05)"}}}},});}catch(e){}}
+
+// ═══════════════ VOICE ═══════════════
+function toggleMic(){var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){showNotif("Voice input not supported!");return;}if(micActive){if(recognition)recognition.stop();micActive=false;document.getElementById("micBtn").classList.remove("active");document.getElementById("micBtn").textContent="🎙️";return;}recognition=new SR();recognition.continuous=false;recognition.interimResults=true;recognition.lang="hi-IN";recognition.onstart=function(){micActive=true;document.getElementById("micBtn").classList.add("active");document.getElementById("micBtn").textContent="🔴";showNotif("Bol raha hoon...");};recognition.onresult=function(e){var t="";for(var i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById("cinp").value=t;autoH(document.getElementById("cinp"));};recognition.onend=function(){micActive=false;document.getElementById("micBtn").classList.remove("active");document.getElementById("micBtn").textContent="🎙️";var v=document.getElementById("cinp").value.trim();if(v)showNotif("Voice ready! Send karo");};recognition.onerror=function(){micActive=false;document.getElementById("micBtn").classList.remove("active");document.getElementById("micBtn").textContent="🎙️";showNotif("Voice error, retry karo");};recognition.start();}
+
+// ═══════════════ TTS ═══════════════
+var ttsPlay=false,ttsU=null;
+function doTTS(text,btn){if(!window.speechSynthesis){showNotif("TTS not supported!");return;}if(ttsPlay){window.speechSynthesis.cancel();ttsPlay=false;btn.innerHTML="▶ Play";return;}var clean="";for(var i=0;i<text.length;i++){var c=text[i];if(c!=="*"&&c!=="`"&&c!=="#"&&c!=="|")clean+=c;else clean+=" ";}var cleaned="";var ps=false;for(var i=0;i<clean.length;i++){if(clean[i]===" "||clean[i]==="\n"){if(!ps){cleaned+=" ";ps=true;}}else{cleaned+=clean[i];ps=false;}}ttsU=new SpeechSynthesisUtterance(cleaned.trim());var hindi=false;for(var i=0;i<Math.min(cleaned.length,100);i++){var code=cleaned.charCodeAt(i);if(code>=2304&&code<=2431){hindi=true;break;}}ttsU.lang=hindi?"hi-IN":"en-US";ttsU.rate=0.9;ttsU.pitch=1;ttsU.onstart=function(){ttsPlay=true;btn.innerHTML="⏹ Stop";};ttsU.onend=ttsU.onerror=function(){ttsPlay=false;btn.innerHTML="▶ Play";};window.speechSynthesis.speak(ttsU);}
+
+// ═══════════════ THEMES ═══════════════
+function buildThemePicker(){var dots="";THEMES.forEach(function(th,i){dots+='<div class="theme-dot" style="background:'+th.primary+'" title="'+th.name+'" onclick="applyTheme('+i+')"></div>';});document.getElementById("themeDots").innerHTML=dots;}
+function toggleTheme(){var tp=document.getElementById("themePicker");tp.classList.toggle("show");}
+function applyTheme(i){var th=THEMES[i];applyThemeObj(th);saveAll();}
+function applyThemeObj(th){document.documentElement.style.setProperty("--accent",th.primary);document.documentElement.style.setProperty("--accent2",th.secondary);showNotif("Theme: "+th.name);}
+document.addEventListener("click",function(e){var tp=document.getElementById("themePicker"),mp=document.getElementById("modelPicker");if(tp&&!tp.contains(e.target)&&e.target.textContent!=="🎨")tp.classList.remove("show");if(mp&&!mp.contains(e.target)&&e.target.id!=="modelBtn")mp.classList.remove("show");});
+
+// ═══════════════ MODEL PICKER ═══════════════
+function buildModelPicker(){var html='<div style="font-size:10px;font-weight:700;color:var(--sub2);letter-spacing:1.5px;text-transform:uppercase;padding:8px 12px 4px;margin-bottom:4px">Select Model</div>';MODELS.forEach(function(m){html+='<div class="model-opt'+(m.id===currentModel?" active":"")+'" onclick="setModel(\''+m.id+'\',\''+m.label+'\')"><div class="model-name">'+m.label+'</div><div class="model-desc">'+m.desc+'</div></div>';});document.getElementById("modelPicker").innerHTML=html;}
+function toggleModelPicker(){document.getElementById("modelPicker").classList.toggle("show");}
+function setModel(id,label){currentModel=id;document.getElementById("modelBtn").textContent="⚡ "+label;document.getElementById("modelPicker").classList.remove("show");buildModelPicker();saveAll();showNotif("Model: "+label);}
+
+// ═══════════════ WHATS NEW ═══════════════
+function showWN(){var html="";CHANGELOG.forEach(function(v){html+='<div class="wn-ver">v'+v.v+' — '+v.date+'</div>';v.items.forEach(function(item){html+='<div class="wn-item"><div class="wn-dot"></div><div>'+item+'</div></div>';});});html+='<button class="wn-btn" onclick="closeWN()">Let\'s Go! →</button>';document.getElementById("wnBody").innerHTML=html;document.getElementById("wnModal").style.display="flex";}
+function closeWN(){document.getElementById("wnModal").style.display="none";try{localStorage.setItem("hk_ver",VERSION);}catch(e){}}
+function checkWN(){try{if(localStorage.getItem("hk_ver")!==VERSION)showWN();}catch(e){showWN();}}
+
+// ═══════════════ MISC ═══════════════
+// ── Greeting System ──
+function getGreeting() {
+  var h = new Date().getHours();
+  var name = userName ? ", " + userName : "";
+  var season = getSeason();
+  var timeGreet = "";
+  if(h >= 5 && h < 12) timeGreet = "Good Morning" + name + "! ☀️";
+  else if(h >= 12 && h < 17) timeGreet = "Good Afternoon" + name + "! 🌤️";
+  else if(h >= 17 && h < 21) timeGreet = "Good Evening" + name + "! 🌆";
+  else timeGreet = "Good Night" + name + "! 🌙";
+  return timeGreet + " " + season;
+}
+
+function getSeason() {
+  var m = new Date().getMonth() + 1;
+  if(m >= 3 && m <= 5) return "🌸 Spring vibes!";
+  if(m >= 6 && m <= 8) return "🌧️ Monsoon aa gaya!";
+  if(m >= 9 && m <= 11) return "🍂 Autumn mein swagat!";
+  return "❄️ Winter chill!";
+}
+
+function updateGreeting() {
+  var el = document.getElementById("greetingEl");
+  if(el) el.textContent = getGreeting();
+}
+
+function openNameSettings() {
+  var current = userName || "";
+  var newName = prompt("Apna naam daalo (personalized greeting milegi):", current);
+  if(newName !== null) {
+    userName = newName.trim();
+    saveAll();
+    updateGreeting();
+    if(userName) showNotif("Hello " + userName + "! 👋");
+  }
+}
+
+function showNotif(msg){var el=document.getElementById("notif");if(!el)return;el.textContent=msg;el.classList.add("show");setTimeout(function(){el.classList.remove("show");},3000);}
+function toggleExp(){explainMode=!explainMode;var btn=document.getElementById("expbtn");btn.textContent=explainMode?"💡 Explain ON":"💡 Explain";btn.classList.toggle("primary",explainMode);}
+function doClear(){messages=[];lastWebHTML=[];document.getElementById("msgs").innerHTML='<div id="wel"></div>';document.getElementById("exportBtn").style.display="none";document.getElementById("clearBtn").style.display="none";document.getElementById("wpbtn").style.display="none";var t=TOOLS.find(function(x){return x.id===activeTool;});renderWelcome(t);}
+function doExport(){var style="body{font-family:system-ui;max-width:800px;margin:40px auto;background:#0f1117;color:#e8edf5;padding:20px}";var rows=messages.map(function(m){return'<div style="margin:12px 0;padding:12px;border-radius:10px;background:'+(m.role==="user"?"rgba(99,102,241,.1)":"rgba(255,255,255,.03)")+';border:1px solid rgba(255,255,255,.07)"><div style="font-size:9px;letter-spacing:2px;color:#5a6478;margin-bottom:6px">'+m.role.toUpperCase()+'</div><div>'+esc(m.content).split("\n").join("<br>")+'</div></div>';}).join("");var html="<!DOCTYPE html><html><head><meta charset='UTF-8'><title>HACKNUMA Export</title><style>"+style+"</style></head><body><h2 style='color:#6366f1'>HACKNUMA Chat Export</h2>"+rows+"</body></html>";var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="hacknuma-chat.html";a.click();}
+function showWP(){if(!lastWebHTML)return;document.getElementById("webFrame").srcdoc=lastWebHTML;document.getElementById("webPreview").style.display="flex";document.getElementById("msgs").style.display="none";}
+function closeWP(){document.getElementById("webPreview").style.display="none";document.getElementById("msgs").style.display="flex";}
+function dlWeb(){if(!lastWebHTML)return;var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([lastWebHTML],{type:"text/html"}));a.download="website.html";a.click();}
+function extractHTML(text){var s=text.indexOf("```html");if(s===-1)return"";var cs=text.indexOf("\n",s)+1;var e=text.indexOf("```",cs);if(e===-1)return"";return text.slice(cs,e).trim();}
+function dlResume(text){var style="body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#1a1a1a;line-height:1.6}h1{font-size:22px;font-weight:900;border-bottom:3px solid #333;padding-bottom:8px}h2{font-size:16px;font-weight:700;border-bottom:1px solid #ddd;margin-top:20px}ul{padding-left:20px}li{margin:4px 0}";var html="<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Resume</title><style>"+style+"</style></head><body>"+mdParse(text)+"</body></html>";var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="resume.html";a.click();}
+function doPWA(){if(deferredPWA){deferredPWA.prompt();deferredPWA.userChoice.then(function(r){if(r.outcome==="accepted")showNotif("App install ho rahi hai!");deferredPWA=null;document.getElementById("pwaBanner").classList.remove("show");});}else{showNotif("Browser menu → Add to Home Screen!");}}
+document.addEventListener("keydown",function(e){if(e.ctrlKey||e.metaKey){if(e.key==="k"){e.preventDefault();document.getElementById("cinp").focus();}if(e.key==="l"){e.preventDefault();doClear();}if(e.key==="h"){e.preventDefault();openPanel("histPanel");}if(e.key==="/"){e.preventDefault();showWN();}}});
+updatePomoUI();
+</script>
+</body>
+</html>
