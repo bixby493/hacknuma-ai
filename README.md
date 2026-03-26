@@ -1,108 +1,98 @@
 # 🚀 Hacknuma AI
 
-[![Status](https://img.shields.io/badge/status-active%20development-22c55e?style=for-the-badge)](https://github.com/bibxy493/hacknuma-ai)
-[![Platform](https://img.shields.io/badge/platform-web-blue?style=for-the-badge)](https://github.com/bibxy493/hacknuma-ai)
-[![Tech](https://img.shields.io/badge/tech-HTML%20%7C%20CSS%20%7C%20JavaScript-orange?style=for-the-badge)](https://github.com/bibxy493/hacknuma-ai)
-[![AI](https://img.shields.io/badge/AI-assistant-purple?style=for-the-badge)](https://github.com/bibxy493/hacknuma-ai)
+![Status](https://img.shields.io/badge/status-active-success?style=for-the-badge)
+![Platform](https://img.shields.io/badge/platform-web-blue?style=for-the-badge)
+![AI](https://img.shields.io/badge/type-AI%20Assistant-purple?style=for-the-badge)
+![Build](https://img.shields.io/badge/build-stable-orange?style=for-the-badge)
 
-> **Hacknuma AI** is a fast, browser-based personal AI workspace built like a lightweight Jarvis-style assistant.  
-> It combines chat, tools, productivity, and automation in one clean interface.
+> ⚡ A powerful **Jarvis-style AI workspace** combining chat, tools, productivity, and automation in one place.
 
 ---
 
 ## 🌐 Live Demo
 
-- **Vercel:** https://hacknuma-ai.vercel.app
-- **GitHub Pages:** https://bibxy493.github.io/hacknuma-ai/
+- 🔗 https://hacknuma-ai.vercel.app
+- 🔗 https://bibxy493.github.io/hacknuma-ai/
 
 ---
 
-## 🧠 What is Hacknuma AI?
+## 🧠 About Hacknuma AI
 
-Hacknuma AI is a **personal AI assistant concept** designed to feel like a practical Jarvis-style dashboard.
+Hacknuma AI ek **all-in-one AI dashboard** hai jo:
 
-It is built for people who want:
+- AI chatbot
+- tools system
+- productivity features
+- automation concept
 
-- AI chat in one place
-- quick tools and utilities
-- productivity support
-- a clean interface
-- future-ready automation ideas
+👉 sabko ek hi interface me combine karta hai
 
-> **One dashboard. Multiple capabilities.**
+> 💡 Not just a chatbot — a **personal AI system concept**
 
 ---
 
 ## ✨ What Makes It Different?
 
-Most projects are either just a chatbot or just a tool panel.  
-Hacknuma AI tries to combine both.
-
-- **Chat-first interface**
-- **Tool-based workflow**
-- **Productivity-friendly layout**
-- **Expandable structure**
-- **Security-oriented future direction**
+- Chat + Tools combined
+- Clean UI (no clutter)
+- Fast browser-based system
+- Expandable architecture
+- Future security integration (Panthom Nexus)
 
 ---
 
 ## 📸 Screenshots
 
-> Replace these placeholders with real screenshots from your app.
+> ⚠️ IMPORTANT: niche wale links tabhi kaam karenge jab tu images upload karega
 
-![Hacknuma AI Home](https://via.placeholder.com/1200x700?text=Hacknuma+AI+Home+Screen)
+### 🏠 Home
+![Home](./assets/home.png)
 
-![Hacknuma AI Dashboard](https://via.placeholder.com/1200x700?text=Hacknuma+AI+Dashboard)
+### 🧠 Dashboard
+![Dashboard](./assets/dashboard.png)
 
-![Hacknuma AI Tools](https://via.placeholder.com/1200x700?text=Hacknuma+AI+Tools)
+### 🛠️ Tools
+![Tools](./assets/tools.png)
 
 ---
 
-## ⚡ Core Features
+## ⚡ Features
 
-### 🤖 AI Personal Assistant
-- Chat-style interface
+### 🤖 AI Assistant
+- Chat interface
 - Coding help
-- General queries
-- Fast browser-based experience
+- Fast responses
 
-### 🛠️ Multi-Tool Dashboard
-- Utility features
-- Workflow tools
-- Developer-friendly sections
-- Expandable module structure
+### 🛠️ Tool System
+- Multiple utilities
+- Web tools
+- Expandable modules
 
-### 🧩 Productivity System
-- Notes and ideas
+### 🧩 Productivity
+- Notes
+- Tasks
 - Focus tools
-- Task-style workflow
-- Lightweight organization
 
-### ⚙️ Automation Ready
-- Designed for future AI automation
-- Modular structure
-- Easy to expand with more features
+### ⚙️ Automation
+- Workflow ideas
+- Future AI automation
 
-### 🔍 Security Direction
-- Future plans for analysis tools
-- Security-focused companion app ideas
-- Better workflow for monitoring and alerts
+### 🔐 Security Direction
+- Planned system analysis
+- Future protection tools
+- Panthom Nexus integration
 
 ---
 
-## 🏗️ Related Project: Panthom Nexus
+## 🏗️ Ecosystem Vision
 
-I am also building **Panthom Nexus**, a security-focused project.
+### 🔹 Hacknuma AI
+👉 Personal AI assistant
 
-### Panthom Nexus will focus on:
-- security concepts
-- analysis tools
-- monitoring ideas
-- risk detection workflows
-- experimental defensive features
+### 🔹 Panthom Nexus
+👉 Security-focused system (separate project)
 
-> **Hacknuma AI** = personal AI assistant  
-> **Panthom Nexus** = security-focused companion project
+> Together = AI + Security ecosystem
 
 ---
 
@@ -111,17 +101,63 @@ I am also building **Panthom Nexus**, a security-focused project.
 - HTML
 - CSS
 - JavaScript
-- Browser-based UI
-- API-ready architecture
 
 ---
 
-## 📦 Project Structure
+## 📦 Structure
 
-```text
-hacknuma-ai/
+/hacknuma-ai
 ├── index.html
 ├── README.md
 ├── apps/
 ├── workers/
 └── assets/
+
+
+---
+
+## 🗺️ Roadmap
+
+### Phase 1
+- UI polish
+- Stability
+
+### Phase 2
+- AI API integration
+- Better responses
+
+### Phase 3
+- Advanced tools
+- Automation system
+
+### Phase 4
+- Panthom Nexus launch
+- Security modules
+
+---
+
+## ❓ FAQ
+
+**Q: Is this real AI?**  
+👉 Yes (structure ready, API expandable)
+
+**Q: Is it just chatbot?**  
+👉 No — multi-tool system
+
+**Q: Future plans?**  
+👉 Automation + Security system
+
+---
+
+## 👨‍💻 Developer
+
+Hacknuma (panthomnexus)  
+Building AI + Security systems
+
+---
+
+## ⭐ Support
+
+- ⭐ Star repo
+- 🔁 Share
+- 💬 Feedback
