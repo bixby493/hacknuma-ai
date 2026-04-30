@@ -58,41 +58,43 @@ class RuhanVoiceEngine @Inject constructor(
         val baseSpeed = preferencesManager.voiceSpeed
 
         if (isMale) {
-            engine.setPitch((basePitch * 0.9f).coerceIn(0.5f, 2.0f))
+            engine.setPitch((basePitch * 0.85f).coerceIn(0.5f, 2.0f))
         } else {
-            engine.setPitch((basePitch * 1.15f).coerceIn(0.5f, 2.0f))
+            engine.setPitch((basePitch * 1.2f).coerceIn(0.5f, 2.0f))
         }
         engine.setSpeechRate(baseSpeed)
 
         val voices = engine.voices ?: return
 
-        val hindiVoices = voices.filter { v ->
-            !v.isNetworkConnectionRequired &&
-                    (v.locale.language == "hi" ||
-                            v.name.contains("hi-in", ignoreCase = true) ||
-                            v.name.contains("hi_in", ignoreCase = true) ||
-                            v.name.contains("hindi", ignoreCase = true))
-        }.sortedByDescending { it.quality }
+        val isHindiLocale = { v: Voice ->
+            v.locale.language == "hi" ||
+                    v.name.contains("hi-in", ignoreCase = true) ||
+                    v.name.contains("hi_in", ignoreCase = true) ||
+                    v.name.contains("hindi", ignoreCase = true)
+        }
 
-        val networkHindiVoices = voices.filter { v ->
-            v.isNetworkConnectionRequired &&
-                    (v.locale.language == "hi" ||
-                            v.name.contains("hi-in", ignoreCase = true) ||
-                            v.name.contains("hindi", ignoreCase = true))
-        }.sortedByDescending { it.quality }
+        val isIndianEnglish = { v: Voice ->
+            (v.locale.language == "en" && v.locale.country == "IN") ||
+                    v.name.contains("en-in", ignoreCase = true) ||
+                    v.name.contains("en_in", ignoreCase = true)
+        }
 
-        val indianEnglishVoices = voices.filter { v ->
-            !v.isNetworkConnectionRequired &&
-                    ((v.locale.language == "en" && v.locale.country == "IN") ||
-                            v.name.contains("en-in", ignoreCase = true) ||
-                            v.name.contains("en_in", ignoreCase = true))
-        }.sortedByDescending { it.quality }
+        val networkHindiVoices = voices.filter { isHindiLocale(it) && it.isNetworkConnectionRequired }
+            .sortedByDescending { it.quality }
+        val localHindiVoices = voices.filter { isHindiLocale(it) && !it.isNetworkConnectionRequired }
+            .sortedByDescending { it.quality }
+        val networkIndianEnglish = voices.filter { isIndianEnglish(it) && it.isNetworkConnectionRequired }
+            .sortedByDescending { it.quality }
+        val localIndianEnglish = voices.filter { isIndianEnglish(it) && !it.isNetworkConnectionRequired }
+            .sortedByDescending { it.quality }
+        val networkEnglish = voices.filter { it.locale.language == "en" && it.isNetworkConnectionRequired }
+            .sortedByDescending { it.quality }
+        val localEnglish = voices.filter { it.locale.language == "en" && !it.isNetworkConnectionRequired }
+            .sortedByDescending { it.quality }
 
-        val englishVoices = voices.filter { v ->
-            !v.isNetworkConnectionRequired && v.locale.language == "en"
-        }.sortedByDescending { it.quality }
-
-        val allCandidates = hindiVoices + networkHindiVoices + indianEnglishVoices + englishVoices
+        val allCandidates = networkHindiVoices + localHindiVoices +
+                networkIndianEnglish + localIndianEnglish +
+                networkEnglish + localEnglish
 
         val selectedVoice: Voice? = if (isMale) {
             allCandidates.firstOrNull { it.name.contains("male", ignoreCase = true) && !it.name.contains("female", ignoreCase = true) }

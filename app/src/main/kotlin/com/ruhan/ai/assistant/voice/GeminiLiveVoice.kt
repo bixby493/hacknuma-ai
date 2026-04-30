@@ -43,6 +43,7 @@ class GeminiLiveVoice @Inject constructor(
     private var webSocket: WebSocket? = null
     private var audioRecord: AudioRecord? = null
     private var recordingJob: Job? = null
+    private var audioTrack: AudioTrack? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val _state = MutableStateFlow(LiveVoiceState.IDLE)
@@ -57,6 +58,7 @@ class GeminiLiveVoice @Inject constructor(
     var onTranscript: ((String) -> Unit)? = null
 
     private val sampleRate = 16000
+    private val outSampleRate = 24000
     private val channelConfig = AudioFormat.CHANNEL_IN_MONO
     private val audioEncoding = AudioFormat.ENCODING_PCM_16BIT
 
@@ -396,7 +398,7 @@ You are capable of complex, multi-step workflows. If $bossName gives a complex c
 
                         val setup = JSONObject().apply {
                             put("setup", JSONObject().apply {
-                                put("model", "models/gemini-2.0-flash-live")
+                                put("model", "models/gemini-2.5-flash-preview-native-audio-dialog")
                                 put("generationConfig", JSONObject().apply {
                                     put("responseModalities", JSONArray().put("AUDIO"))
                                     put("speechConfig", JSONObject().apply {
@@ -460,6 +462,11 @@ You are capable of complex, multi-step workflows. If $bossName gives a complex c
 
             if (json.has("serverContent")) {
                 val content = json.getJSONObject("serverContent")
+
+                if (content.optBoolean("interrupted", false)) {
+                    stopAudioPlayback()
+                    _state.value = LiveVoiceState.LISTENING
+                }
 
                 if (content.has("inputTranscription")) {
                     val inputText = content.getJSONObject("inputTranscription")
@@ -739,53 +746,64 @@ You are capable of complex, multi-step workflows. If $bossName gives a complex c
         }
     }
 
+    private fun ensureAudioTrack(): AudioTrack? {
+        if (audioTrack != null) return audioTrack
+        try {
+            val minBuf = AudioTrack.getMinBufferSize(
+                outSampleRate,
+                AudioFormat.CHANNEL_OUT_MONO,
+                AudioFormat.ENCODING_PCM_16BIT
+            )
+            if (minBuf == AudioTrack.ERROR || minBuf == AudioTrack.ERROR_BAD_VALUE) return null
+
+            audioTrack = AudioTrack.Builder()
+                .setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .build()
+                )
+                .setAudioFormat(
+                    AudioFormat.Builder()
+                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                        .setSampleRate(outSampleRate)
+                        .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                        .build()
+                )
+                .setBufferSizeInBytes(minBuf * 4)
+                .setTransferMode(AudioTrack.MODE_STREAM)
+                .build()
+            audioTrack?.play()
+        } catch (_: Exception) {
+            audioTrack = null
+        }
+        return audioTrack
+    }
+
     private fun playAudio(audioData: ByteArray) {
         if (audioData.isEmpty()) return
         scope.launch {
             withContext(Dispatchers.IO) {
                 try {
-                    val outSampleRate = 24000
-                    val minBuf = AudioTrack.getMinBufferSize(
-                        outSampleRate,
-                        AudioFormat.CHANNEL_OUT_MONO,
-                        AudioFormat.ENCODING_PCM_16BIT
-                    )
-                    if (minBuf == AudioTrack.ERROR || minBuf == AudioTrack.ERROR_BAD_VALUE) return@withContext
-
-                    val track = AudioTrack.Builder()
-                        .setAudioAttributes(
-                            AudioAttributes.Builder()
-                                .setUsage(AudioAttributes.USAGE_MEDIA)
-                                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                                .build()
-                        )
-                        .setAudioFormat(
-                            AudioFormat.Builder()
-                                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                                .setSampleRate(outSampleRate)
-                                .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-                                .build()
-                        )
-                        .setBufferSizeInBytes(maxOf(minBuf, audioData.size))
-                        .setTransferMode(AudioTrack.MODE_STATIC)
-                        .build()
-
+                    val track = ensureAudioTrack() ?: return@withContext
                     track.write(audioData, 0, audioData.size)
-                    track.play()
-
-                    val totalFrames = audioData.size / 2
-                    while (track.playbackHeadPosition < totalFrames) {
-                        delay(50)
-                    }
-                    track.stop()
-                    track.release()
                 } catch (_: Exception) {
                 }
             }
         }
     }
 
+    private fun stopAudioPlayback() {
+        try {
+            audioTrack?.stop()
+            audioTrack?.flush()
+        } catch (_: Exception) {}
+        try { audioTrack?.release() } catch (_: Exception) {}
+        audioTrack = null
+    }
+
     fun interrupt() {
+        stopAudioPlayback()
         _state.value = LiveVoiceState.LISTENING
     }
 
@@ -794,6 +812,7 @@ You are capable of complex, multi-step workflows. If $bossName gives a complex c
         try { audioRecord?.stop() } catch (_: Exception) { }
         try { audioRecord?.release() } catch (_: Exception) { }
         audioRecord = null
+        stopAudioPlayback()
     }
 
     private fun stopLiveSessionSync() {

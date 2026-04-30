@@ -17,12 +17,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -88,78 +90,114 @@ fun SettingsScreen(
             SettingsTextField("Boss ka Naam", uiState.bossName, viewModel::updateBossName, colors)
             SettingsTextField("Wake Word", uiState.wakeWord, viewModel::updateWakeWord, colors)
 
-            // SECTION 2 — API Keys
-            SectionHeader("API Keys", colors.accent)
+            // SECTION 2 — External API Endpoints (Command Center style)
+            SectionHeader("External API Endpoints", colors.accent)
 
-            ApiKeyField(
-                label = "Groq API Key",
-                value = uiState.groqApiKey,
-                onChange = viewModel::updateGroqKey,
-                status = uiState.groqKeyStatus,
-                onTest = viewModel::testGroqKey,
-                link = "https://console.groq.com",
-                colors = colors
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF0A0F0A), RoundedCornerShape(16.dp))
+                    .border(1.dp, colors.accent.copy(alpha = 0.15f), RoundedCornerShape(16.dp))
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                ApiKeyField(
+                    label = "GEMINI PRO CORE",
+                    value = uiState.geminiApiKey,
+                    onChange = viewModel::updateGeminiKey,
+                    status = uiState.geminiKeyStatus,
+                    onTest = viewModel::testGeminiKey,
+                    link = "https://aistudio.google.com/apikey",
+                    colors = colors
+                )
 
-            ApiKeyField(
-                label = "Gemini API Key",
-                value = uiState.geminiApiKey,
-                onChange = viewModel::updateGeminiKey,
-                status = uiState.geminiKeyStatus,
-                onTest = viewModel::testGeminiKey,
-                link = "https://aistudio.google.com/apikey",
-                colors = colors
-            )
+                ApiKeyField(
+                    label = "GROQ FAST INFERENCING",
+                    value = uiState.groqApiKey,
+                    onChange = viewModel::updateGroqKey,
+                    status = uiState.groqKeyStatus,
+                    onTest = viewModel::testGroqKey,
+                    link = "https://console.groq.com",
+                    colors = colors
+                )
 
-            ApiKeyField(
-                label = "HuggingFace Key",
-                value = uiState.huggingFaceApiKey,
-                onChange = viewModel::updateHuggingFaceKey,
-                status = uiState.hfKeyStatus,
-                onTest = viewModel::testHuggingFaceKey,
-                link = "https://huggingface.co/settings/tokens",
-                colors = colors
-            )
+                ApiKeyField(
+                    label = "HUGGING FACE VISION",
+                    value = uiState.huggingFaceApiKey,
+                    onChange = viewModel::updateHuggingFaceKey,
+                    status = uiState.hfKeyStatus,
+                    onTest = viewModel::testHuggingFaceKey,
+                    link = "https://huggingface.co/settings/tokens",
+                    colors = colors
+                )
 
-            ApiKeyField(
-                label = "Tavily API Key",
-                value = uiState.tavilyApiKey,
-                onChange = viewModel::updateTavilyKey,
-                status = uiState.tavilyKeyStatus,
-                onTest = viewModel::testTavilyKey,
-                link = "https://app.tavily.com",
-                colors = colors
-            )
+                ApiKeyField(
+                    label = "TAVILY RESEARCH AGENT",
+                    value = uiState.tavilyApiKey,
+                    onChange = viewModel::updateTavilyKey,
+                    status = uiState.tavilyKeyStatus,
+                    onTest = viewModel::testTavilyKey,
+                    link = "https://app.tavily.com",
+                    colors = colors
+                )
 
-            ApiKeyField(
-                label = "Notion API Key",
-                value = uiState.notionApiKey,
-                onChange = viewModel::updateNotionApiKey,
-                status = uiState.notionKeyStatus,
-                onTest = viewModel::testNotionKey,
-                link = "https://www.notion.so/my-integrations",
-                colors = colors
-            )
+                ApiKeyField(
+                    label = "NOTION SYNC ENGINE",
+                    value = uiState.notionApiKey,
+                    onChange = viewModel::updateNotionApiKey,
+                    status = uiState.notionKeyStatus,
+                    onTest = viewModel::testNotionKey,
+                    link = "https://www.notion.so/my-integrations",
+                    colors = colors
+                )
 
-            OutlinedTextField(
-                value = uiState.notionDatabaseId,
-                onValueChange = viewModel::updateNotionDatabaseId,
-                label = { Text("Notion Database ID", color = colors.textSecondary) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = colors.textPrimary,
-                    unfocusedTextColor = colors.textPrimary,
-                    focusedBorderColor = colors.accent,
-                    unfocusedBorderColor = colors.textSecondary,
-                    cursorColor = colors.accent
-                ),
-                singleLine = true
-            )
-            Text(
-                "Research, Notes, Memories sab Notion mein save honge",
-                color = colors.textSecondary,
-                fontSize = 11.sp
-            )
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        "NOTION DATABASE ID",
+                        color = colors.textSecondary.copy(alpha = 0.7f),
+                        fontSize = 10.sp,
+                        letterSpacing = 2.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    OutlinedTextField(
+                        value = uiState.notionDatabaseId,
+                        onValueChange = viewModel::updateNotionDatabaseId,
+                        placeholder = { Text("Database ID paste karo...", color = Color(0xFF333833)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = colors.textPrimary,
+                            unfocusedTextColor = colors.textPrimary,
+                            focusedBorderColor = colors.accent.copy(alpha = 0.3f),
+                            unfocusedBorderColor = colors.textSecondary.copy(alpha = 0.15f),
+                            cursorColor = colors.accent
+                        ),
+                        singleLine = true
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFF050805), RoundedCornerShape(8.dp))
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Icon(
+                        Icons.Default.Lock,
+                        contentDescription = null,
+                        tint = colors.textSecondary.copy(alpha = 0.5f),
+                        modifier = Modifier.size(14.dp).padding(top = 2.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "[SECURITY NOTICE]: All API keys are encrypted and stored strictly in your local device. RUHAN does not transmit these keys to any centralized server.",
+                        color = colors.textSecondary.copy(alpha = 0.5f),
+                        fontSize = 10.sp,
+                        lineHeight = 14.sp
+                    )
+                }
+            }
 
             // SECTION 3 — Voice
             SectionHeader("Voice", colors.accent)
@@ -403,63 +441,75 @@ private fun ApiKeyField(
 ) {
     val context = LocalContext.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colors.card, RoundedCornerShape(12.dp))
-            .padding(12.dp)
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                label,
+                color = colors.textSecondary.copy(alpha = 0.7f),
+                fontSize = 10.sp,
+                letterSpacing = 2.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val statusDot = when (status) {
+                    KeyTestStatus.SUCCESS -> Color.Green
+                    KeyTestStatus.FAILED -> Color.Red
+                    KeyTestStatus.TESTING -> Color.Yellow
+                    KeyTestStatus.IDLE -> if (value.isNotBlank()) Color(0xFF335533) else Color(0xFF333333)
+                }
+                Box(
+                    modifier = Modifier
+                        .size(6.dp)
+                        .background(statusDot, CircleShape)
+                )
+                if (value.isNotBlank()) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        "TEST",
+                        color = colors.accent.copy(alpha = 0.6f),
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                        modifier = Modifier.clickable { onTest() }
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF050505), RoundedCornerShape(8.dp))
+                .border(1.dp, colors.textSecondary.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                .padding(horizontal = 14.dp, vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             OutlinedTextField(
                 value = value,
                 onValueChange = onChange,
-                label = { Text(label, color = colors.textSecondary) },
+                placeholder = { Text("Paste key here...", color = Color(0xFF333833), fontSize = 13.sp) },
                 modifier = Modifier.weight(1f),
                 visualTransformation = PasswordVisualTransformation(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = colors.textPrimary,
                     unfocusedTextColor = colors.textPrimary,
-                    focusedBorderColor = colors.accent,
-                    unfocusedBorderColor = colors.inputBorder,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
                     cursorColor = colors.accent
                 ),
                 singleLine = true
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                onClick = onTest,
-                enabled = value.isNotBlank() && status != KeyTestStatus.TESTING,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = when (status) {
-                        KeyTestStatus.SUCCESS -> Color.Green
-                        KeyTestStatus.FAILED -> Color.Red
-                        else -> colors.accent
-                    }
-                ),
-                modifier = Modifier.height(48.dp)
-            ) {
-                when (status) {
-                    KeyTestStatus.TESTING -> CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        color = Color.White,
-                        strokeWidth = 2.dp
-                    )
-                    KeyTestStatus.SUCCESS -> Icon(Icons.Default.Check, "Success", tint = Color.White)
-                    KeyTestStatus.FAILED -> Icon(Icons.Default.Close, "Failed", tint = Color.White)
-                    KeyTestStatus.IDLE -> Text("TEST", color = colors.background, fontSize = 12.sp)
-                }
-            }
         }
-
         Text(
-            text = "Get key: $link",
-            color = colors.accent.copy(alpha = 0.7f),
-            fontSize = 11.sp,
+            text = link,
+            color = colors.accent.copy(alpha = 0.4f),
+            fontSize = 9.sp,
             modifier = Modifier
-                .padding(top = 4.dp)
+                .padding(top = 2.dp)
                 .clickable {
                     context.startActivity(
                         Intent(Intent.ACTION_VIEW, Uri.parse(link))
@@ -468,5 +518,4 @@ private fun ApiKeyField(
                 }
         )
     }
-    Spacer(modifier = Modifier.height(8.dp))
 }

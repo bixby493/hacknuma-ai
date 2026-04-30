@@ -129,10 +129,23 @@ class CommandParser @Inject constructor() {
     }
 
     private fun parseOpenApp(text: String): ParsedCommand? {
-        if (!text.matches(Regex(".*(khol|open|launch|start|chalu).*"))) return null
-        val app = text.replace(Regex("(ruhan\\s+)"), "")
-            .replace(Regex("\\s*(khol|open|launch|start|chalu).*"), "").trim()
-        return if (app.isNotBlank()) ParsedCommand.OpenApp(app) else null
+        val cleaned = text.replace(Regex("^ruhan\\s+"), "").trim()
+        val patterns = listOf(
+            Regex("(.+?)\\s*(khol|kholo|open|launch|start|chalu)\\s*(kar|karo|kardo)?\\s*$"),
+            Regex("(khol|kholo|open|launch|start|chalu)\\s*(kar|karo|kardo)?\\s+(.+)"),
+            Regex("(.+?)\\s*ko\\s*(khol|open|launch|start|chalu)\\s*(kar|karo|kardo)?"),
+        )
+        for (p in patterns) {
+            val m = p.find(cleaned)
+            if (m != null) {
+                val keywords = setOf("khol", "kholo", "open", "launch", "start", "chalu", "kar", "karo", "kardo", "ko")
+                val app = m.groupValues.drop(1)
+                    .firstOrNull { it.isNotBlank() && it !in keywords }
+                    ?.trim()
+                if (!app.isNullOrBlank()) return ParsedCommand.OpenApp(app)
+            }
+        }
+        return null
     }
 
     private fun parseReminder(text: String): ParsedCommand? {

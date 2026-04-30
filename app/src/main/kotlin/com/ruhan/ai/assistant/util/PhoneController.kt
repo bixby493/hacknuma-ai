@@ -146,13 +146,69 @@ class PhoneController @Inject constructor(
 
     fun openApp(appName: String): Boolean {
         val packageManager = context.packageManager
-        val installedApps = packageManager.getInstalledApplications(0)
-        val targetApp = installedApps.firstOrNull { appInfo ->
-            val label = packageManager.getApplicationLabel(appInfo).toString()
-            label.contains(appName, ignoreCase = true)
+        val searchName = appName.trim().lowercase()
+
+        val knownPackages = mapOf(
+            "youtube" to "com.google.android.youtube",
+            "whatsapp" to "com.whatsapp",
+            "instagram" to "com.instagram.android",
+            "facebook" to "com.facebook.katana",
+            "twitter" to "com.twitter.android",
+            "x" to "com.twitter.android",
+            "chrome" to "com.android.chrome",
+            "camera" to "com.android.camera",
+            "gmail" to "com.google.android.gm",
+            "maps" to "com.google.android.apps.maps",
+            "phone" to "com.android.dialer",
+            "calculator" to "com.google.android.calculator",
+            "clock" to "com.google.android.deskclock",
+            "calendar" to "com.google.android.calendar",
+            "settings" to "com.android.settings",
+            "spotify" to "com.spotify.music",
+            "telegram" to "org.telegram.messenger",
+            "snapchat" to "com.snapchat.android",
+            "netflix" to "com.netflix.mediaclient",
+            "amazon" to "in.amazon.mShop.android.shopping",
+            "flipkart" to "com.flipkart.android",
+            "paytm" to "net.one97.paytm",
+            "gpay" to "com.google.android.apps.nbu.paisa.user",
+            "google pay" to "com.google.android.apps.nbu.paisa.user",
+            "phonepe" to "com.phonepe.app",
+            "zomato" to "com.application.zomato",
+            "swiggy" to "in.swiggy.android",
+            "uber" to "com.ubercab",
+            "ola" to "com.olacabs.customer",
+            "tiktok" to "com.zhiliaoapp.musically",
+            "pinterest" to "com.pinterest",
+            "reddit" to "com.reddit.frontpage",
+            "linkedin" to "com.linkedin.android",
+            "drive" to "com.google.android.apps.docs",
+            "photos" to "com.google.android.apps.photos",
+            "files" to "com.google.android.documentsui",
+            "notes" to "com.google.android.keep",
+            "keep" to "com.google.android.keep",
+            "play store" to "com.android.vending",
+            "music" to "com.google.android.music",
+        )
+
+        val knownPkg = knownPackages[searchName]
+        if (knownPkg != null) {
+            val launchIntent = packageManager.getLaunchIntentForPackage(knownPkg)
+            if (launchIntent != null) {
+                launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(launchIntent)
+                return true
+            }
+        }
+
+        val mainIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+        val launchables = packageManager.queryIntentActivities(mainIntent, 0)
+        val targetApp = launchables.firstOrNull { resolveInfo ->
+            val label = resolveInfo.loadLabel(packageManager).toString()
+            label.contains(searchName, ignoreCase = true)
         }
         return if (targetApp != null) {
-            val launchIntent = packageManager.getLaunchIntentForPackage(targetApp.packageName)
+            val launchIntent = packageManager.getLaunchIntentForPackage(targetApp.activityInfo.packageName)
             if (launchIntent != null) {
                 launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(launchIntent)
