@@ -83,20 +83,30 @@ fun RuhanScreen(
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "R U H A N",
-                            color = colors.accent,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp,
-                            letterSpacing = 4.sp
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = "Taiyaar hoon Boss",
-                            color = colors.textSecondary,
-                            fontSize = 12.sp
-                        )
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "R U H A N   A I",
+                                color = colors.accent,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp,
+                                letterSpacing = 4.sp
+                            )
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = uiState.modelName,
+                                color = colors.accent.copy(alpha = 0.6f),
+                                fontSize = 10.sp,
+                                letterSpacing = 1.sp
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Taiyaar hoon Boss",
+                                color = colors.textSecondary,
+                                fontSize = 10.sp
+                            )
+                        }
                     }
                 },
                 actions = {

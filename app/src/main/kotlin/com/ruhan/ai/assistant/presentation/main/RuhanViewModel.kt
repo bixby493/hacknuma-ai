@@ -36,7 +36,8 @@ data class RuhanUiState(
     val hfStatus: Boolean = false,
     val tavilyStatus: Boolean = false,
     val isLiveVoiceActive: Boolean = false,
-    val liveTranscript: String = ""
+    val liveTranscript: String = "",
+    val modelName: String = "LLaMA 3.3 70B"
 )
 
 @HiltViewModel
@@ -56,16 +57,14 @@ class RuhanViewModel @Inject constructor(
     private var pendingOnConfirm: (suspend () -> String)? = null
 
     init {
-        initializeVoice()
+        setupSpeechCallbacks()
         loadConversations()
-        checkFirstBoot()
         updateApiStatus()
         observeLiveVoice()
+        initializeVoice()
     }
 
-    private fun initializeVoice() {
-        voiceEngine.initialize()
-
+    private fun setupSpeechCallbacks() {
         speechManager.onPartialResult = { text ->
             _uiState.value = _uiState.value.copy(currentTranscript = text)
         }
@@ -98,11 +97,24 @@ class RuhanViewModel @Inject constructor(
             }
         }
 
-        speechManager.onError = { _ ->
-            _uiState.value = _uiState.value.copy(
-                isListening = false
-            )
+        speechManager.onError = { errorCode ->
+            if (errorCode == android.speech.SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS) {
+                _uiState.value = _uiState.value.copy(
+                    isListening = false,
+                    statusText = "Mic permission chahiye, Boss"
+                )
+            } else {
+                _uiState.value = _uiState.value.copy(
+                    isListening = false
+                )
+            }
         }
+    }
+
+    private fun initializeVoice() {
+        voiceEngine.initialize(onReady = {
+            checkFirstBoot()
+        })
     }
 
     private fun observeLiveVoice() {
@@ -125,19 +137,12 @@ class RuhanViewModel @Inject constructor(
                         LiveVoiceState.LISTENING -> "Live Voice — Listening..."
                         LiveVoiceState.PROCESSING -> "Gemini processing..."
                         LiveVoiceState.SPEAKING -> "Ruhan speaking..."
-                        LiveVoiceState.ERROR -> "Live voice error"
-                    }
-                )
-                if (state == LiveVoiceState.ERROR) {
-                    val errorMsg = geminiLiveVoice.errorMessage.value
-                    if (errorMsg.isNotBlank()) {
-                        val msg = "${preferencesManager.bossName}, $errorMsg"
-                        viewModelScope.launch {
-                            try { conversationRepository.saveMessage(msg, isUser = false) } catch (_: Exception) {}
-                            speak(msg)
+                        LiveVoiceState.ERROR -> {
+                            val errorMsg = geminiLiveVoice.errorMessage.value
+                            if (errorMsg.isNotBlank()) errorMsg else "Live voice error"
                         }
                     }
-                }
+                )
             }
         }
         viewModelScope.launch {
@@ -152,23 +157,9 @@ class RuhanViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isFirstBoot = true)
             val greeting = "Namaste ${preferencesManager.bossName}. Main Ruhan hoon — aapka personal AI assistant. Aaj main aapki kya madad kar sakta hoon?"
             viewModelScope.launch {
-                conversationRepository.saveMessage(greeting, isUser = false)
+                try { conversationRepository.saveMessage(greeting, isUser = false) } catch (_: Exception) {}
                 loadConversations()
-                voiceEngine.speak(
-                    greeting,
-                    onStart = {
-                        _uiState.value = _uiState.value.copy(
-                            orbState = OrbState.SPEAKING,
-                            statusText = "Speaking..."
-                        )
-                    },
-                    onDone = {
-                        _uiState.value = _uiState.value.copy(
-                            orbState = OrbState.IDLE,
-                            statusText = "Idle — Say Hello Ruhan"
-                        )
-                    }
-                )
+                speak(greeting)
             }
             preferencesManager.isFirstBoot = false
         }
@@ -246,9 +237,15 @@ class RuhanViewModel @Inject constructor(
             statusText = "Executing..."
         )
         viewModelScope.launch {
-            val result = action()
-            conversationRepository.saveMessage(result, isUser = false)
-            speak(result)
+            try {
+                val result = action()
+                try { conversationRepository.saveMessage(result, isUser = false) } catch (_: Exception) {}
+                speak(result)
+            } catch (e: Exception) {
+                val msg = "${preferencesManager.bossName}, execution mein problem hui."
+                try { conversationRepository.saveMessage(msg, isUser = false) } catch (_: Exception) {}
+                speak(msg)
+            }
         }
     }
 
@@ -261,25 +258,24 @@ class RuhanViewModel @Inject constructor(
         )
         viewModelScope.launch {
             val msg = "Cancel kar diya, ${preferencesManager.bossName}."
-            conversationRepository.saveMessage(msg, isUser = false)
+            try { conversationRepository.saveMessage(msg, isUser = false) } catch (_: Exception) {}
             speak(msg)
         }
     }
 
     private fun processInput(text: String) {
         viewModelScope.launch {
-            try {
-                conversationRepository.saveMessage(text, isUser = true)
-            } catch (_: Exception) { }
+            try { conversationRepository.saveMessage(text, isUser = true) } catch (_: Exception) {}
 
             val response = try {
                 brain.process(text)
             } catch (e: Exception) {
-                BrainResponse.Speak("Boss, kuch gadbad ho gayi. Dobara try karo.")
+                BrainResponse.Speak("${preferencesManager.bossName}, kuch gadbad ho gayi: ${e.message ?: "unknown"}. Dobara try karo.")
             }
+
             when (response) {
                 is BrainResponse.Speak -> {
-                    conversationRepository.saveMessage(response.text, isUser = false)
+                    try { conversationRepository.saveMessage(response.text, isUser = false) } catch (_: Exception) {}
                     speak(response.text)
                 }
 
@@ -294,7 +290,6 @@ class RuhanViewModel @Inject constructor(
                 }
 
                 is BrainResponse.Navigate -> {
-                    // Handle navigation to notes, research, etc.
                     _uiState.value = _uiState.value.copy(
                         orbState = OrbState.IDLE,
                         statusText = "Idle — Say Hello Ruhan"

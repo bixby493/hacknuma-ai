@@ -7,6 +7,7 @@ import android.speech.tts.Voice
 import com.ruhan.ai.assistant.util.PreferencesManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -37,9 +38,15 @@ class RuhanVoiceEngine @Inject constructor(
         val engine = tts ?: return
 
         val hindiLocale = Locale("hi", "IN")
+        val englishInLocale = Locale("en", "IN")
+        val englishLocale = Locale.ENGLISH
+
         val result = engine.setLanguage(hindiLocale)
         if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            engine.setLanguage(Locale("en", "IN"))
+            val result2 = engine.setLanguage(englishInLocale)
+            if (result2 == TextToSpeech.LANG_MISSING_DATA || result2 == TextToSpeech.LANG_NOT_SUPPORTED) {
+                engine.setLanguage(englishLocale)
+            }
         }
 
         applyVoiceSettings(engine)
@@ -50,25 +57,42 @@ class RuhanVoiceEngine @Inject constructor(
         val basePitch = preferencesManager.voicePitch
         val baseSpeed = preferencesManager.voiceSpeed
 
-        engine.setPitch(if (isMale) basePitch else basePitch + 0.35f)
+        if (isMale) {
+            engine.setPitch((basePitch * 0.9f).coerceIn(0.5f, 2.0f))
+        } else {
+            engine.setPitch((basePitch * 1.15f).coerceIn(0.5f, 2.0f))
+        }
         engine.setSpeechRate(baseSpeed)
 
         val voices = engine.voices ?: return
 
         val hindiVoices = voices.filter { v ->
-            v.locale.language == "hi" ||
-                    v.name.contains("hi-in", ignoreCase = true) ||
-                    v.name.contains("hi_in", ignoreCase = true) ||
-                    v.name.contains("hindi", ignoreCase = true)
+            !v.isNetworkConnectionRequired &&
+                    (v.locale.language == "hi" ||
+                            v.name.contains("hi-in", ignoreCase = true) ||
+                            v.name.contains("hi_in", ignoreCase = true) ||
+                            v.name.contains("hindi", ignoreCase = true))
+        }.sortedByDescending { it.quality }
+
+        val networkHindiVoices = voices.filter { v ->
+            v.isNetworkConnectionRequired &&
+                    (v.locale.language == "hi" ||
+                            v.name.contains("hi-in", ignoreCase = true) ||
+                            v.name.contains("hindi", ignoreCase = true))
         }.sortedByDescending { it.quality }
 
         val indianEnglishVoices = voices.filter { v ->
-            (v.locale.language == "en" && v.locale.country == "IN") ||
-                    v.name.contains("en-in", ignoreCase = true) ||
-                    v.name.contains("en_in", ignoreCase = true)
+            !v.isNetworkConnectionRequired &&
+                    ((v.locale.language == "en" && v.locale.country == "IN") ||
+                            v.name.contains("en-in", ignoreCase = true) ||
+                            v.name.contains("en_in", ignoreCase = true))
         }.sortedByDescending { it.quality }
 
-        val allCandidates = hindiVoices + indianEnglishVoices
+        val englishVoices = voices.filter { v ->
+            !v.isNetworkConnectionRequired && v.locale.language == "en"
+        }.sortedByDescending { it.quality }
+
+        val allCandidates = hindiVoices + networkHindiVoices + indianEnglishVoices + englishVoices
 
         val selectedVoice: Voice? = if (isMale) {
             allCandidates.firstOrNull { it.name.contains("male", ignoreCase = true) && !it.name.contains("female", ignoreCase = true) }
@@ -94,10 +118,23 @@ class RuhanVoiceEngine @Inject constructor(
         onStart: () -> Unit = {},
         onDone: () -> Unit = {}
     ) {
-        if (!isReady || text.isBlank()) {
+        if (text.isBlank()) {
             onDone()
             return
         }
+
+        if (!isReady) {
+            repeat(50) {
+                if (isReady) return@repeat
+                delay(100)
+            }
+        }
+
+        if (!isReady) {
+            onDone()
+            return
+        }
+
         onStart()
         isSpeaking = true
         withContext(Dispatchers.Main) {

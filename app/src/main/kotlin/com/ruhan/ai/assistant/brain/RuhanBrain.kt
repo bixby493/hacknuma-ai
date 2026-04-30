@@ -1,6 +1,7 @@
 package com.ruhan.ai.assistant.brain
 
 import com.ruhan.ai.assistant.data.repository.AIRepository
+import com.ruhan.ai.assistant.data.repository.ConversationRepository
 import com.ruhan.ai.assistant.data.repository.PhoneRepository
 import com.ruhan.ai.assistant.phone.SettingsController
 import com.ruhan.ai.assistant.premium.LocationManager
@@ -22,6 +23,7 @@ sealed class BrainResponse {
 class RuhanBrain @Inject constructor(
     private val commandParser: CommandParser,
     private val aiRepository: AIRepository,
+    private val conversationRepository: ConversationRepository,
     private val phoneRepository: PhoneRepository,
     private val memoryManager: MemoryManager,
     private val settingsController: SettingsController,
@@ -220,12 +222,18 @@ class RuhanBrain @Inject constructor(
     }
 
     private suspend fun handleAiChat(message: String): BrainResponse {
-        val context = memoryManager.getAllMemories()
+        val memContext = memoryManager.getAllMemories()
             .take(5)
             .joinToString("\n") { "${it.key}: ${it.value}" }
 
-        val extraContext = if (context.isNotBlank()) "\n\nMemory context:\n$context" else ""
-        val response = aiRepository.chat(message + extraContext)
+        val history = try {
+            conversationRepository.getContextMessages(10)
+        } catch (_: Exception) {
+            emptyList()
+        }
+
+        val extraContext = if (memContext.isNotBlank()) "\n\nMemory context:\n$memContext" else ""
+        val response = aiRepository.chat(message + extraContext, history)
         return BrainResponse.Speak(response)
     }
 }

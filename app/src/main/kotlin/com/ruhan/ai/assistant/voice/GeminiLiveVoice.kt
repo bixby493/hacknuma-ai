@@ -175,9 +175,16 @@ class GeminiLiveVoice @Inject constructor(
     private fun startAudioCapture(ws: WebSocket) {
         recordingJob = scope.launch {
             try {
+                val permissionCheck = context.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
+                if (permissionCheck != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    _errorMessage.value = "Mic permission de do Settings mein, Boss"
+                    _state.value = LiveVoiceState.ERROR
+                    return@launch
+                }
+
                 val bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioEncoding)
                 if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
-                    _errorMessage.value = "Audio recording not supported"
+                    _errorMessage.value = "Audio recording not supported on this device"
                     _state.value = LiveVoiceState.ERROR
                     return@launch
                 }
@@ -190,7 +197,7 @@ class GeminiLiveVoice @Inject constructor(
                 )
 
                 if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
-                    _errorMessage.value = "Microphone access failed"
+                    _errorMessage.value = "Mic busy hai Boss, doosri app band karo"
                     _state.value = LiveVoiceState.ERROR
                     return@launch
                 }

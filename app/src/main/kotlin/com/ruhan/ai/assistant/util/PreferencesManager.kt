@@ -51,23 +51,23 @@ class PreferencesManager(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_FLOATING_BUTTON, value).apply()
 
     var voiceSpeed: Float
-        get() = prefs.getFloat(KEY_VOICE_SPEED, 0.9f)
+        get() = prefs.getFloat(KEY_VOICE_SPEED, 0.95f)
         set(value) = prefs.edit().putFloat(KEY_VOICE_SPEED, value).apply()
 
     var voicePitch: Float
-        get() = prefs.getFloat(KEY_VOICE_PITCH, 0.85f)
+        get() = prefs.getFloat(KEY_VOICE_PITCH, 1.0f)
         set(value) = prefs.edit().putFloat(KEY_VOICE_PITCH, value).apply()
 
     var biometricLockEnabled: Boolean
-        get() = prefs.getBoolean(KEY_BIOMETRIC_LOCK, false)
+        get() = prefs.getBoolean(KEY_BIOMETRIC_LOCK, true)
         set(value) = prefs.edit().putBoolean(KEY_BIOMETRIC_LOCK, value).apply()
 
     var fakeCrashEnabled: Boolean
-        get() = prefs.getBoolean(KEY_FAKE_CRASH, false)
+        get() = prefs.getBoolean(KEY_FAKE_CRASH, true)
         set(value) = prefs.edit().putBoolean(KEY_FAKE_CRASH, value).apply()
 
     var breakInPhotoEnabled: Boolean
-        get() = prefs.getBoolean(KEY_BREAK_IN_PHOTO, false)
+        get() = prefs.getBoolean(KEY_BREAK_IN_PHOTO, true)
         set(value) = prefs.edit().putBoolean(KEY_BREAK_IN_PHOTO, value).apply()
 
     var dailyBriefingEnabled: Boolean

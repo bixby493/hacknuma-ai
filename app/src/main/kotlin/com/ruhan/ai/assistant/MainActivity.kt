@@ -55,7 +55,7 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        if (preferencesManager.biometricLockEnabled) {
+        if (biometricManager.isAvailable()) {
             authenticateUser()
         } else {
             isAuthenticated = true

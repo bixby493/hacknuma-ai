@@ -74,11 +74,29 @@ class RuhanSpeechManager @Inject constructor(
 
         override fun onError(error: Int) {
             isListening = false
-            onError?.invoke(error)
-            if (isContinuousMode && error != SpeechRecognizer.ERROR_CLIENT) {
-                handler.postDelayed({ restartListening() }, 1000)
-            } else {
-                onListeningStopped?.invoke()
+            when (error) {
+                SpeechRecognizer.ERROR_NO_MATCH,
+                SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> {
+                    if (isContinuousMode) {
+                        handler.postDelayed({ restartListening() }, 500)
+                    } else {
+                        onListeningStopped?.invoke()
+                    }
+                }
+                SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> {
+                    onError?.invoke(error)
+                    onListeningStopped?.invoke()
+                }
+                SpeechRecognizer.ERROR_CLIENT -> {
+                    onListeningStopped?.invoke()
+                }
+                else -> {
+                    if (isContinuousMode) {
+                        handler.postDelayed({ restartListening() }, 1000)
+                    } else {
+                        onListeningStopped?.invoke()
+                    }
+                }
             }
         }
 
