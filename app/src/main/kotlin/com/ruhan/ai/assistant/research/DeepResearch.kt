@@ -8,6 +8,7 @@ import androidx.room.Query
 import com.ruhan.ai.assistant.data.remote.TavilyApiService
 import com.ruhan.ai.assistant.data.remote.TavilyRequest
 import com.ruhan.ai.assistant.data.repository.AIRepository
+import com.ruhan.ai.assistant.premium.NotionManager
 import com.ruhan.ai.assistant.util.PreferencesManager
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -43,7 +44,8 @@ class DeepResearch @Inject constructor(
     private val aiRepository: AIRepository,
     private val researchDao: ResearchDao,
     private val tavilyApiService: TavilyApiService,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val notionManager: NotionManager
 ) {
     suspend fun research(topic: String): String {
         val webResults = fetchWebSources(topic)
@@ -62,6 +64,13 @@ class DeepResearch @Inject constructor(
                 )
             )
         } catch (_: Exception) { }
+
+        if (notionManager.isConfigured()) {
+            try {
+                val notionResult = notionManager.saveResearchReport(topic, report)
+                return "$report\n\n$notionResult"
+            } catch (_: Exception) { }
+        }
 
         return report
     }

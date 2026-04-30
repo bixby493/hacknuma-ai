@@ -122,10 +122,19 @@ class PreferencesManager(context: Context) {
         get() = prefs.getBoolean(KEY_LOCK_SETUP, false)
         set(value) = prefs.edit().putBoolean(KEY_LOCK_SETUP, value).apply()
 
+    var notionApiKey: String
+        get() = prefs.getString(KEY_NOTION_API, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_NOTION_API, value).apply()
+
+    var notionDatabaseId: String
+        get() = prefs.getString(KEY_NOTION_DB_ID, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_NOTION_DB_ID, value).apply()
+
     fun hasGroqKey(): Boolean = groqApiKey.isNotBlank()
     fun hasGeminiKey(): Boolean = geminiApiKey.isNotBlank()
     fun hasHuggingFaceKey(): Boolean = huggingFaceApiKey.isNotBlank()
     fun hasTavilyKey(): Boolean = tavilyApiKey.isNotBlank()
+    fun hasNotionKey(): Boolean = notionApiKey.isNotBlank() && notionDatabaseId.isNotBlank()
 
     companion object {
         private const val KEY_GROQ_API = "groq_api_key"
@@ -154,5 +163,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_LOCK_TYPE = "lock_type"
         private const val KEY_LOCK_PIN = "lock_pin"
         private const val KEY_LOCK_SETUP = "lock_setup"
+        private const val KEY_NOTION_API = "notion_api_key"
+        private const val KEY_NOTION_DB_ID = "notion_database_id"
     }
 }

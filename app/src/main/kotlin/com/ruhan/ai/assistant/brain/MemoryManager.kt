@@ -8,6 +8,7 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import com.ruhan.ai.assistant.premium.NotionManager
 import com.ruhan.ai.assistant.util.PreferencesManager
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -54,7 +55,8 @@ interface MemoryDao {
 @Singleton
 class MemoryManager @Inject constructor(
     private val memoryDao: MemoryDao,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val notionManager: NotionManager
 ) {
     companion object {
         const val TYPE_FACT = "fact"
@@ -121,6 +123,9 @@ class MemoryManager @Inject constructor(
                 importance = importance
             )
         )
+        if (notionManager.isConfigured()) {
+            try { notionManager.saveMemory(key, "$type: $value") } catch (_: Exception) {}
+        }
     }
 
     suspend fun rememberFact(fact: String) {

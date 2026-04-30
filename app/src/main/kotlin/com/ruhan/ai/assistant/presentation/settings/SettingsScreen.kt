@@ -131,6 +131,36 @@ fun SettingsScreen(
                 colors = colors
             )
 
+            ApiKeyField(
+                label = "Notion API Key",
+                value = uiState.notionApiKey,
+                onChange = viewModel::updateNotionApiKey,
+                status = uiState.notionKeyStatus,
+                onTest = viewModel::testNotionKey,
+                link = "https://www.notion.so/my-integrations",
+                colors = colors
+            )
+
+            OutlinedTextField(
+                value = uiState.notionDatabaseId,
+                onValueChange = viewModel::updateNotionDatabaseId,
+                label = { Text("Notion Database ID", color = colors.textSecondary) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = colors.textPrimary,
+                    unfocusedTextColor = colors.textPrimary,
+                    focusedBorderColor = colors.accent,
+                    unfocusedBorderColor = colors.textSecondary,
+                    cursorColor = colors.accent
+                ),
+                singleLine = true
+            )
+            Text(
+                "Research, Notes, Memories sab Notion mein save honge",
+                color = colors.textSecondary,
+                fontSize = 11.sp
+            )
+
             // SECTION 3 — Voice
             SectionHeader("Voice", colors.accent)
             SettingsSwitch("Always Listening", uiState.alwaysListening, viewModel::toggleAlwaysListening, colors)

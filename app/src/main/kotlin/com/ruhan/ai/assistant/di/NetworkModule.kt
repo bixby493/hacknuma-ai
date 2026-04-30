@@ -3,6 +3,7 @@ package com.ruhan.ai.assistant.di
 import com.ruhan.ai.assistant.data.remote.GeminiApiService
 import com.ruhan.ai.assistant.data.remote.GroqApiService
 import com.ruhan.ai.assistant.data.remote.HuggingFaceApiService
+import com.ruhan.ai.assistant.data.remote.NotionApiService
 import com.ruhan.ai.assistant.data.remote.TavilyApiService
 import dagger.Module
 import dagger.Provides
@@ -100,5 +101,22 @@ object NetworkModule {
     @Singleton
     fun provideTavilyApiService(@Named("tavily") retrofit: Retrofit): TavilyApiService {
         return retrofit.create(TavilyApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @Named("notion")
+    fun provideNotionRetrofit(client: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api.notion.com/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotionApiService(@Named("notion") retrofit: Retrofit): NotionApiService {
+        return retrofit.create(NotionApiService::class.java)
     }
 }

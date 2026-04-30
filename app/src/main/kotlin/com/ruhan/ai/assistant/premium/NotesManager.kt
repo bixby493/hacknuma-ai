@@ -39,11 +39,17 @@ interface NoteDao {
 
 @Singleton
 class NotesManager @Inject constructor(
-    private val noteDao: NoteDao
+    private val noteDao: NoteDao,
+    private val notionManager: NotionManager
 ) {
-    suspend fun addNote(content: String, category: String = "general") {
+    @Suppress("UNUSED_PARAMETER")
+    suspend fun addNote(content: String, category: String = "general"): String {
         val autoCategory = categorize(content)
         noteDao.insert(NoteEntity(content = content, category = autoCategory))
+        if (notionManager.isConfigured()) {
+            try { notionManager.saveNote(content, autoCategory) } catch (_: Exception) {}
+        }
+        return "Note save ho gaya!"
     }
 
     suspend fun getAllNotes(): List<NoteEntity> = noteDao.getAll()

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ruhan.ai.assistant.data.repository.AIRepository
+import com.ruhan.ai.assistant.premium.NotionManager
 import com.ruhan.ai.assistant.util.PreferencesManager
 import com.ruhan.ai.assistant.voice.RuhanVoiceEngine
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +37,9 @@ data class SettingsUiState(
     val geminiKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
     val hfKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
     val tavilyKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
+    val notionApiKey: String = "",
+    val notionDatabaseId: String = "",
+    val notionKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
     val biometricLockEnabled: Boolean = false,
     val fakeCrashEnabled: Boolean = false,
     val breakInPhotoEnabled: Boolean = false,
@@ -52,7 +56,8 @@ class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val preferencesManager: PreferencesManager,
     private val aiRepository: AIRepository,
-    private val voiceEngine: RuhanVoiceEngine
+    private val voiceEngine: RuhanVoiceEngine,
+    private val notionManager: NotionManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(loadSettings())
@@ -75,6 +80,8 @@ class SettingsViewModel @Inject constructor(
             geminiApiKey = preferencesManager.geminiApiKey,
             huggingFaceApiKey = preferencesManager.huggingFaceApiKey,
             tavilyApiKey = preferencesManager.tavilyApiKey,
+            notionApiKey = preferencesManager.notionApiKey,
+            notionDatabaseId = preferencesManager.notionDatabaseId,
             language = preferencesManager.language,
             theme = preferencesManager.theme,
             biometricLockEnabled = preferencesManager.biometricLockEnabled,
@@ -237,6 +244,26 @@ class SettingsViewModel @Inject constructor(
             val success = aiRepository.testTavilyKey(_uiState.value.tavilyApiKey)
             _uiState.value = _uiState.value.copy(
                 tavilyKeyStatus = if (success) KeyTestStatus.SUCCESS else KeyTestStatus.FAILED
+            )
+        }
+    }
+
+    fun updateNotionApiKey(key: String) {
+        preferencesManager.notionApiKey = key
+        _uiState.value = _uiState.value.copy(notionApiKey = key, notionKeyStatus = KeyTestStatus.IDLE)
+    }
+
+    fun updateNotionDatabaseId(id: String) {
+        preferencesManager.notionDatabaseId = id
+        _uiState.value = _uiState.value.copy(notionDatabaseId = id, notionKeyStatus = KeyTestStatus.IDLE)
+    }
+
+    fun testNotionKey() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(notionKeyStatus = KeyTestStatus.TESTING)
+            val success = notionManager.testConnection()
+            _uiState.value = _uiState.value.copy(
+                notionKeyStatus = if (success) KeyTestStatus.SUCCESS else KeyTestStatus.FAILED
             )
         }
     }
