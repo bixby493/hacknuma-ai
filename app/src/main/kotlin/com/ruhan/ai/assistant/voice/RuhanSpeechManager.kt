@@ -105,40 +105,25 @@ class RuhanSpeechManager @Inject constructor(
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             val text = matches?.firstOrNull()?.trim() ?: ""
             if (text.isNotBlank()) {
+                // Strip wake word if present, but process ALL speech
                 val wakeWord = preferencesManager.wakeWord.lowercase()
-                val lower = text.lowercase()
-                if (isContinuousMode) {
-                    // In continuous mode, check for wake word
-                    if (lower.contains("ruhan") ||
-                        lower.contains(wakeWord) ||
-                        lower.contains("hello ruhan") ||
-                        lower.contains("ruhan sun") ||
-                        lower.contains("ruha") ||
-                        lower.contains("rohan")
-                    ) {
-                        val command = lower
-                            .replace("hello ruhan", "")
-                            .replace("ruhan sun", "")
-                            .replace(wakeWord, "")
-                            .replace("ruhan", "")
-                            .replace("ruha", "")
-                            .replace("rohan", "")
-                            .trim()
-                        onFinalResult?.invoke(command.ifBlank { text })
-                    }
-                    // Auto-restart listening for next command
-                    handler.postDelayed({ restartListening() }, 500)
-                } else {
-                    // Single mode — process everything
-                    onFinalResult?.invoke(text)
-                    onListeningStopped?.invoke()
-                }
+                var command = text.lowercase()
+                    .replace("hello ruhan", "")
+                    .replace("ruhan sun", "")
+                    .replace(wakeWord, "")
+                    .replace("ruhan", "")
+                    .replace("ruha", "")
+                    .replace("rohan", "")
+                    .trim()
+                if (command.isBlank()) command = text
+
+                // Always process the command
+                onFinalResult?.invoke(command)
+            }
+            if (isContinuousMode) {
+                handler.postDelayed({ restartListening() }, 500)
             } else {
-                if (isContinuousMode) {
-                    handler.postDelayed({ restartListening() }, 500)
-                } else {
-                    onListeningStopped?.invoke()
-                }
+                onListeningStopped?.invoke()
             }
         }
 

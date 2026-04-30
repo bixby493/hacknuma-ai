@@ -82,7 +82,7 @@ fun RuhanScreen(
             .fillMaxSize()
             .background(colors.background)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().padding(bottom = 56.dp)) {
             TopAppBar(
                 title = {
                     Column {

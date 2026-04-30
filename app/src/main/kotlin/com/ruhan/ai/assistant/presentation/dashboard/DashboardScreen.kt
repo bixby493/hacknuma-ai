@@ -106,6 +106,7 @@ fun DashboardScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
+            .padding(bottom = 56.dp)
     ) {
         TopAppBar(
             title = {
