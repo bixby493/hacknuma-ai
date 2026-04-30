@@ -26,10 +26,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.automirrored.filled.ScreenShare
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -240,10 +242,23 @@ fun RuhanScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Screen Capture / Optics
+                IconButton(
+                    onClick = { viewModel.processInput("screen par kya hai analyze karo") }
+                ) {
+                    Icon(
+                        Icons.Default.CameraAlt,
+                        "Screen Capture",
+                        tint = colors.textSecondary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                // Live Voice
                 IconButton(
                     onClick = {
                         if (uiState.isLiveVoiceActive) viewModel.stopLiveVoice()
@@ -254,10 +269,11 @@ fun RuhanScreen(
                         if (uiState.isLiveVoiceActive) Icons.Default.Close else Icons.Default.GraphicEq,
                         "Live Voice",
                         tint = if (uiState.isLiveVoiceActive) Color.Green else colors.textSecondary,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(26.dp)
                     )
                 }
 
+                // Main Mic Button
                 IconButton(
                     onClick = {
                         if (uiState.isListening) viewModel.stopListening()
@@ -278,12 +294,25 @@ fun RuhanScreen(
                     )
                 }
 
+                // Keyboard
                 IconButton(onClick = { viewModel.toggleKeyboard() }) {
                     Icon(
                         Icons.Default.Keyboard,
                         "Keyboard",
                         tint = if (uiState.showKeyboard) colors.accent else colors.textSecondary,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                // Screen Share
+                IconButton(
+                    onClick = { viewModel.processInput("screen share karo") }
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ScreenShare,
+                        "Screen Share",
+                        tint = colors.textSecondary,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }

@@ -91,12 +91,12 @@ class MainActivity : FragmentActivity() {
                         LockScreen()
                     } else {
                         val navController = rememberNavController()
-                        var currentTab by remember { mutableStateOf("dashboard") }
+                        var currentTab by remember { mutableStateOf("main") }
 
                         Box(modifier = Modifier.fillMaxSize()) {
                             NavHost(
                                 navController = navController,
-                                startDestination = "dashboard",
+                                startDestination = "main",
                                 modifier = Modifier.fillMaxSize()
                             ) {
                                 composable("dashboard") {
