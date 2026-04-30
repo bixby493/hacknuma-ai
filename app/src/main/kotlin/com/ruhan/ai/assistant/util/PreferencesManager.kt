@@ -51,8 +51,36 @@ class PreferencesManager(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_FLOATING_BUTTON, value).apply()
 
     var voiceSpeed: Float
-        get() = prefs.getFloat(KEY_VOICE_SPEED, 1.0f)
+        get() = prefs.getFloat(KEY_VOICE_SPEED, 0.9f)
         set(value) = prefs.edit().putFloat(KEY_VOICE_SPEED, value).apply()
+
+    var voicePitch: Float
+        get() = prefs.getFloat(KEY_VOICE_PITCH, 0.85f)
+        set(value) = prefs.edit().putFloat(KEY_VOICE_PITCH, value).apply()
+
+    var biometricLockEnabled: Boolean
+        get() = prefs.getBoolean(KEY_BIOMETRIC_LOCK, false)
+        set(value) = prefs.edit().putBoolean(KEY_BIOMETRIC_LOCK, value).apply()
+
+    var fakeCrashEnabled: Boolean
+        get() = prefs.getBoolean(KEY_FAKE_CRASH, false)
+        set(value) = prefs.edit().putBoolean(KEY_FAKE_CRASH, value).apply()
+
+    var breakInPhotoEnabled: Boolean
+        get() = prefs.getBoolean(KEY_BREAK_IN_PHOTO, false)
+        set(value) = prefs.edit().putBoolean(KEY_BREAK_IN_PHOTO, value).apply()
+
+    var dailyBriefingEnabled: Boolean
+        get() = prefs.getBoolean(KEY_DAILY_BRIEFING, false)
+        set(value) = prefs.edit().putBoolean(KEY_DAILY_BRIEFING, value).apply()
+
+    var memoryEncryption: Boolean
+        get() = prefs.getBoolean(KEY_MEMORY_ENCRYPTION, true)
+        set(value) = prefs.edit().putBoolean(KEY_MEMORY_ENCRYPTION, value).apply()
+
+    var wakeSensitivity: Float
+        get() = prefs.getFloat(KEY_WAKE_SENSITIVITY, 0.5f)
+        set(value) = prefs.edit().putFloat(KEY_WAKE_SENSITIVITY, value).apply()
 
     var dailyBriefingHour: Int
         get() = prefs.getInt(KEY_BRIEFING_HOUR, 8)
@@ -93,6 +121,13 @@ class PreferencesManager(context: Context) {
         private const val KEY_ALWAYS_LISTENING = "always_listening"
         private const val KEY_FLOATING_BUTTON = "floating_button"
         private const val KEY_VOICE_SPEED = "voice_speed"
+        private const val KEY_VOICE_PITCH = "voice_pitch"
+        private const val KEY_BIOMETRIC_LOCK = "biometric_lock"
+        private const val KEY_FAKE_CRASH = "fake_crash"
+        private const val KEY_BREAK_IN_PHOTO = "break_in_photo"
+        private const val KEY_DAILY_BRIEFING = "daily_briefing"
+        private const val KEY_MEMORY_ENCRYPTION = "memory_encryption"
+        private const val KEY_WAKE_SENSITIVITY = "wake_sensitivity"
         private const val KEY_BRIEFING_HOUR = "briefing_hour"
         private const val KEY_BRIEFING_MINUTE = "briefing_minute"
         private const val KEY_EMERGENCY_CONTACT = "emergency_contact"

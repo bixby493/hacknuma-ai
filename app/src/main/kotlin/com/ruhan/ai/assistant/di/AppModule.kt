@@ -2,8 +2,13 @@ package com.ruhan.ai.assistant.di
 
 import android.content.Context
 import androidx.room.Room
+import com.ruhan.ai.assistant.brain.MemoryDao
+import com.ruhan.ai.assistant.brain.WorkflowDao
 import com.ruhan.ai.assistant.data.local.AppDatabase
 import com.ruhan.ai.assistant.data.local.ConversationDao
+import com.ruhan.ai.assistant.premium.NoteDao
+import com.ruhan.ai.assistant.research.DocumentDao
+import com.ruhan.ai.assistant.research.ResearchDao
 import com.ruhan.ai.assistant.util.PreferencesManager
 import dagger.Module
 import dagger.Provides
@@ -30,6 +35,36 @@ object AppModule {
     @Singleton
     fun provideConversationDao(database: AppDatabase): ConversationDao {
         return database.conversationDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMemoryDao(database: AppDatabase): MemoryDao {
+        return database.memoryDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkflowDao(database: AppDatabase): WorkflowDao {
+        return database.workflowDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNoteDao(database: AppDatabase): NoteDao {
+        return database.noteDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideResearchDao(database: AppDatabase): ResearchDao {
+        return database.researchDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDocumentDao(database: AppDatabase): DocumentDao {
+        return database.documentDao()
     }
 
     @Provides

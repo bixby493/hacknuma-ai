@@ -20,6 +20,7 @@ class AIRepository @Inject constructor(
     private val groqApiService: GroqApiService,
     private val geminiApiService: GeminiApiService,
     private val tavilyApiService: TavilyApiService,
+    private val huggingFaceApiService: com.ruhan.ai.assistant.data.remote.HuggingFaceApiService,
     private val preferencesManager: PreferencesManager
 ) {
 
@@ -145,6 +146,42 @@ class AIRepository @Inject constructor(
             response.candidates != null
         } catch (e: Exception) {
             false
+        }
+    }
+
+    suspend fun testHuggingFaceKey(apiKey: String): Boolean {
+        return try {
+            val response = huggingFaceApiService.textToSpeech(
+                authHeader = "Bearer $apiKey",
+                request = com.ruhan.ai.assistant.data.remote.HuggingFaceRequest(inputs = "test")
+            )
+            response.contentLength() > 0
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun testTavilyKey(apiKey: String): Boolean {
+        return try {
+            val response = tavilyApiService.search(
+                TavilyRequest(
+                    apiKey = apiKey,
+                    query = "test",
+                    maxResults = 1
+                )
+            )
+            response.results != null
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun searchWeb(query: String): String? {
+        return try {
+            val result = webSearch(query)
+            result
+        } catch (_: Exception) {
+            null
         }
     }
 }

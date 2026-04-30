@@ -1,312 +1,268 @@
-# RUHAN AI — Your Personal Jarvis-like Android Assistant
+# RUHAN AI — Premium Android AI Assistant
 
-> **"Han Boss, bolo."**
+**Version 2.0 PREMIUM** | **Package:** `com.ruhan.ai.assistant` | **Min SDK 26 (Android 8)** | **Target SDK 36 (Android 16)**
 
-Ruhan AI is an intelligent, voice-controlled personal AI assistant for Android — inspired by Jarvis. It speaks **Hinglish** (Hindi + English mix), controls your phone via voice commands, and uses cutting-edge AI models for conversation, vision, and speech.
+> *"Namaste Boss. Main Ruhan hoon — aapka personal AI assistant."*
 
-**Version:** 1.0.0  
-**Min SDK:** 26 (Android 8)  
-**Target SDK:** 34  
-**Language:** Kotlin 100%  
-**Architecture:** MVVM + Clean Architecture  
-**UI:** Jetpack Compose + Material Design 3
+Ruhan is a Jarvis-like AI assistant for Android with voice control, phone automation, screen analysis, deep research, memory system, and 15 premium features.
 
 ---
 
-## Features
+## Quick Setup
 
-- **AI-Powered Conversations** — Powered by Groq (LLaMA 3.3 70B) for fast, intelligent responses
-- **Screen Analysis** — Uses Gemini 1.5 Flash to understand and describe what's on your screen
-- **Natural Voice** — HuggingFace TTS for Hindi/Hinglish voice output, with Android TTS fallback
-- **Phone Control** — Make calls, send SMS, open apps, control settings — all by voice
-- **Wake Word Detection** — Say "Hello Ruhan" or "Ruhan sun" to activate
-- **Floating Button** — Always-accessible orb that floats over other apps
-- **Smart Reminders** — Set reminders with natural language
-- **Emergency Mode** — Instantly contact your emergency number
-- **Offline Mode** — Basic commands work without internet
-- **Conversation Memory** — Remembers your recent conversation context
-- **Beautiful UI** — Dark AMOLED theme with animated glowing orb
+1. Clone and build:
+```bash
+git clone https://github.com/bixby493/hacknuma-ai.git
+cd hacknuma-ai
+echo "sdk.dir=/path/to/android/sdk" > local.properties
+./gradlew assembleDebug
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+2. Open the app → Settings → Add API Keys:
+   - **Groq** (Main AI Brain): [console.groq.com](https://console.groq.com)
+   - **Gemini** (Vision + Live Voice): [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+   - **HuggingFace** (TTS): [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
+   - **Tavily** (Web Search): [app.tavily.com](https://app.tavily.com)
+
+3. Grant permissions when prompted (microphone, contacts, phone, SMS, location)
+
+4. Enable Accessibility Service for Ghost Control:
+   - Settings → Accessibility → Ruhan AI Ghost Control → Enable
 
 ---
 
-## Voice Commands
+## Voice Commands (50+)
 
 ### Phone Calls
 | Command | Action |
 |---------|--------|
-| `"Ruhan [name] ko call kar"` | Find contact and call |
-| `"Ruhan phone kar [name] ko"` | Same as above |
+| "Ruhan [name] ko call kar" | Call a contact |
+| "Ruhan Bhai ko call kar" | Call by nickname |
+| "Utha lo" | Answer incoming call |
+| "Kaat do" | Reject incoming call |
 
-### SMS Messages
+### SMS & WhatsApp
 | Command | Action |
 |---------|--------|
-| `"Ruhan [name] ko message bhej — [text]"` | Send SMS to contact |
-| `"Ruhan [name] ko text bhej — [text]"` | Same as above |
-
-### WhatsApp
-| Command | Action |
-|---------|--------|
-| `"Ruhan WhatsApp pe [name] ko bhej — [message]"` | Open WhatsApp with pre-filled message |
+| "Ruhan [name] ko message bhej — [text]" | Send SMS |
+| "Ruhan WhatsApp pe [name] ko bhej — [message]" | Send WhatsApp |
 
 ### App Control
 | Command | Action |
 |---------|--------|
-| `"Ruhan YouTube khol"` | Open YouTube |
-| `"Ruhan WhatsApp khol"` | Open WhatsApp |
-| `"Ruhan camera khol"` | Open Camera |
-| `"Ruhan [any app name] khol"` | Open any installed app |
+| "Ruhan YouTube khol" | Open YouTube |
+| "Ruhan WhatsApp khol" | Open WhatsApp |
+| "Ruhan camera khol" | Open Camera |
+| "Ruhan [any app] khol" | Open any installed app |
 
-### Phone Settings
+### Settings Control
 | Command | Action |
 |---------|--------|
-| `"Ruhan WiFi on/off kar"` | Toggle WiFi |
-| `"Ruhan Bluetooth on/off kar"` | Toggle Bluetooth |
-| `"Ruhan brightness badha/kam kar"` | Adjust brightness |
-| `"Ruhan volume badha/kam kar"` | Adjust volume |
-| `"Ruhan Do Not Disturb on/off kar"` | Toggle DND |
-| `"Ruhan flashlight on/off kar"` | Toggle flashlight/torch |
-| `"Ruhan airplane mode on kar"` | Open airplane mode settings |
+| "Ruhan WiFi on kar" | Toggle WiFi |
+| "Ruhan Bluetooth on kar" | Toggle Bluetooth |
+| "Ruhan flashlight on kar" | Toggle flashlight |
+| "Ruhan Do Not Disturb on kar" | Toggle DND |
+| "Ruhan airplane mode on kar" | Open airplane settings |
+| "Ruhan hotspot on kar" | Open hotspot settings |
+| "Ruhan dark mode on kar" | Toggle dark mode |
+| "Ruhan silent mode on kar" | Set vibrate mode |
+| "Ruhan mobile data on kar" | Open data settings |
+| "Ruhan NFC on kar" | Open NFC settings |
+| "Ruhan location off kar" | Open location settings |
+| "Ruhan battery saver on kar" | Open battery saver |
+
+### Display & Volume
+| Command | Action |
+|---------|--------|
+| "Ruhan brightness 50% karo" | Set brightness |
+| "Ruhan brightness badha" | Max brightness |
+| "Ruhan brightness kam kar" | Low brightness |
+| "Ruhan volume 70% karo" | Set volume |
+| "Ruhan volume max karo" | Max volume |
+| "Ruhan volume mute karo" | Mute volume |
+
+### Screen & Vision
+| Command | Action |
+|---------|--------|
+| "Ruhan yeh kya hai?" | Analyze current screen |
+| "Ruhan yeh screen dekh" | Screenshot + Gemini analysis |
+| "Ruhan yeh kya likha hai?" | Extract text from screen |
 
 ### Phone Info
 | Command | Action |
 |---------|--------|
-| `"Ruhan battery kitni hai?"` | Check battery level |
-| `"Ruhan time kya hai?"` | Get current time |
-| `"Ruhan aaj ka date kya hai?"` | Get current date |
-| `"Ruhan network kaisa hai?"` | Check network/WiFi status |
+| "Ruhan battery kitni hai?" | Check battery level |
+| "Ruhan time kya hai?" | Current time |
+| "Ruhan date kya hai?" | Current date |
+| "Ruhan network kaisa hai?" | Network status + speed |
 
-### Screen Reading
+### Memory System
 | Command | Action |
 |---------|--------|
-| `"Ruhan yeh kya hai?"` | Capture and analyze current screen |
-| `"Ruhan screen dekh"` | Same as above |
+| "Ruhan yaad rakho ki [fact]" | Store a memory |
+| "Ruhan [name] matlab [real name]" | Set nickname |
+| "Ruhan tumhe kya pata hai?" | Show all memories |
+| "Mera [X] ka number [Y] hai" | Auto-remember facts |
+
+### Research & Search
+| Command | Action |
+|---------|--------|
+| "Ruhan [topic] search karo" | Web search + summary |
+| "Ruhan [topic] par research karo" | Deep research report |
+| "Ruhan [topic] kya hai?" | AI-powered answer |
+
+### Notes
+| Command | Action |
+|---------|--------|
+| "Ruhan note karo — [text]" | Save a note |
+| "Ruhan mere notes dikha" | Show all notes |
+
+### Location
+| Command | Action |
+|---------|--------|
+| "Ruhan meri location [name] ko bhejo" | Share location |
+| "Ruhan [place] kaise jaun?" | Navigate to place |
 
 ### Reminders
 | Command | Action |
 |---------|--------|
-| `"Ruhan kal subah 8 baje yaad dila [task]"` | Set reminder for 8 AM |
-| `"Ruhan remind kar [task]"` | Set reminder (1 hour default) |
-
-### Web Search
-| Command | Action |
-|---------|--------|
-| `"Ruhan [topic] search kar"` | Search the web (uses Tavily API) |
-| `"Ruhan latest news"` | Get latest news |
+| "Ruhan 30 minute baad yaad dila [task]" | Set reminder |
+| "Ruhan kal subah yaad dila [task]" | Morning reminder |
+| "Ruhan 2 ghante baad yaad dila [task]" | Hour-based reminder |
 
 ### Emergency
 | Command | Action |
 |---------|--------|
-| `"Ruhan help"` | Send emergency SMS + call emergency contact |
-| `"Ruhan emergency"` | Same as above |
+| "Ruhan help" | Emergency mode |
+| "Ruhan emergency" | SMS + call emergency contact |
 
-### General Conversation
+### Live Voice
 | Command | Action |
 |---------|--------|
-| Any question or conversation | Ruhan responds using Groq AI |
-| `"Maine pehle kya kaha tha?"` | Shows conversation history |
+| "Ruhan live voice shuru karo" | Start Gemini Live conversation |
+| Tap live voice button | Real-time audio with Gemini |
+
+### System Diagnostics
+| Command | Action |
+|---------|--------|
+| "Ruhan phone ka health report do" | CPU, RAM, battery, device info |
+| "Ruhan WiFi scan karo" | Nearby WiFi networks |
+| "Ruhan system diagnostics" | Full system report |
+
+### Email
+| Command | Action |
+|---------|--------|
+| "Ruhan emails check karo" | Check Gmail |
+| "Ruhan [name] ko email bhejo" | Send email |
 
 ---
 
-## API Key Setup
+## Premium Features (15)
 
-Ruhan AI requires API keys to function. All keys are stored securely using **EncryptedSharedPreferences**.
+### 1. RUHAN Live Voice
+Real-time voice conversation via Gemini Live API WebSocket. Stream audio in and out with zero delay. Interrupt Ruhan mid-sentence.
 
-### 1. Groq API Key (Required — Main AI Brain)
-- **Model:** llama-3.3-70b-versatile
-- **Get your key:** [https://console.groq.com](https://console.groq.com)
-- Sign up → Create API Key → Copy and paste in Ruhan Settings
+### 2. Screen Peeler
+MediaProjection API captures screen → Gemini Vision analyzes content. Identifies text, UI elements, form fields, and explains what's on screen.
 
-### 2. Gemini API Key (Recommended — Vision & Screen Analysis)
-- **Model:** gemini-1.5-flash
-- **Get your key:** [https://aistudio.google.com/apikey](https://aistudio.google.com/apikey)
-- Sign in with Google → Create API Key → Copy and paste in Ruhan Settings
+### 3. Ghost Control
+AccessibilityService enables Ruhan to interact with other apps — tap buttons, type text, scroll, navigate settings, and automate multi-step actions.
 
-### 3. HuggingFace API Token (Optional — Natural Hindi Voice)
-- **Model:** facebook/mms-tts-hin
-- **Get your token:** [https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
-- Sign up → Settings → Access Tokens → New Token → Copy and paste
-- **Note:** If not provided, Ruhan will use Android's built-in TextToSpeech
+### 4. Deep Research
+Tavily API searches 10+ sources → Groq generates comprehensive report with executive summary, key findings, and detailed analysis. Saved to Room DB.
 
-### 4. Tavily API Key (Optional — Web Search)
-- **Get your key:** [https://app.tavily.com](https://app.tavily.com)
-- Sign up → Get API Key → Copy and paste in Ruhan Settings
-- **Note:** If not provided, Ruhan will use Groq AI to answer questions from its knowledge
+### 5. Memory System
+Short-term (last 20 messages), long-term (important facts), nicknames, and preferences. Auto-triggers on "yaad rakho", "matlab", "mera X hai".
 
----
+### 6. Smart Drop Zone
+Share any content to Ruhan from other apps via Android's share sheet — images, PDFs, text, links are automatically analyzed.
 
-## Permissions Guide
+### 7. Workflow Automation
+WorkManager-based scheduled command chains. Set daily routines like "subah 7 baje weather batao, Gmail check karo, news batao".
 
-Ruhan AI requests the following permissions to function fully:
+### 8. RAG Oracle
+Add documents (PDF, text, chat exports) → semantic search finds relevant content → Groq generates context-aware answers.
 
-| Permission | Purpose |
-|-----------|---------|
-| **RECORD_AUDIO** | Voice input and wake word detection |
-| **CALL_PHONE** | Making phone calls via voice command |
-| **READ_CONTACTS** | Finding contacts by name |
-| **SEND_SMS** | Sending text messages |
-| **READ_PHONE_STATE** | Detecting incoming calls |
-| **ANSWER_PHONE_CALLS** | Answering/rejecting calls via voice |
-| **POST_NOTIFICATIONS** | Reminders and foreground service |
-| **FOREGROUND_SERVICE** | Background listening and monitoring |
-| **SYSTEM_ALERT_WINDOW** | Floating Ruhan button overlay |
-| **WRITE_SETTINGS** | Brightness control |
-| **BLUETOOTH_CONNECT** | Bluetooth toggle |
-| **ACCESS_FINE_LOCATION** | Emergency location sharing |
-| **CAMERA** | Camera access for screen capture |
-| **INTERNET** | API communication |
+### 9. Hacker Mode
+Network analysis (WiFi scan, signal strength), system diagnostics (CPU, RAM, storage, battery health), app intelligence (permissions, data usage).
 
-**Note:** You can deny any permission — Ruhan will work with reduced functionality and inform you when a feature requires a missing permission.
+### 10. Wormhole
+WiFi P2P based peer-to-peer connection for file transfer between Ruhan-enabled devices without internet.
+
+### 11. Live Location
+GPS location → Google Maps link → Share via WhatsApp/SMS. Navigation support with ETA.
+
+### 12. Gmail Manager
+Send emails via Gmail intent. Email composition with recipient, subject, and body via voice commands.
+
+### 13. Notes Manager
+Room DB notes with auto-categorization (work/personal/ideas/shopping). Search, view, and export notes.
+
+### 14. Premium Lock
+Biometric authentication (fingerprint/face), PIN with break-in detection (silent selfie on wrong attempts), fake crash screen.
+
+### 15. Complete Settings Control
+Voice control for display (brightness, dark mode, screen timeout), sound (volume, ringtone, silent/vibrate), network (WiFi, Bluetooth, NFC, hotspot, data, location), battery (battery saver), and notifications (DND).
 
 ---
 
-## How to Enable Always-On Mode
+## Architecture
 
-1. Open Ruhan AI → Settings (gear icon)
-2. Toggle **"Always Listening"** ON
-3. Grant **Microphone** and **Notification** permissions when prompted
-4. Ruhan will start a foreground service with a persistent notification
-5. Say **"Hello Ruhan"** or **"Ruhan sun"** from any screen to activate
-6. The service automatically restarts on device reboot
-
-### Floating Button
-1. Settings → Toggle **"Floating Button"** ON
-2. Grant **"Display over other apps"** permission when prompted
-3. A small glowing orb will appear on your screen
-4. **Tap** to open Ruhan, **drag** to move it around
-
----
+```
+MVVM + Clean Architecture
+├── voice/           RuhanSpeechManager, RuhanVoiceEngine, GeminiLiveVoice
+├── brain/           RuhanBrain, CommandParser, MemoryManager, WorkflowEngine
+├── phone/           SettingsController
+├── accessibility/   RuhanAccessibilityService (Ghost Control)
+├── screen/          ScreenCapture, ScreenAnalyzer
+├── research/        DeepResearch, RagOracle
+├── premium/         GmailManager, LocationManager, NotesManager, WormholeManager
+├── security/        BiometricManager
+├── data/
+│   ├── local/       Room DB (conversations, memories, notes, workflows, research, documents)
+│   ├── remote/      Groq, Gemini, HuggingFace, Tavily API services
+│   └── repository/  AIRepository, PhoneRepository, ConversationRepository
+├── di/              Hilt DI modules
+├── presentation/    Jetpack Compose UI + ViewModels
+├── service/         ForegroundService, WakeWordDetector, Receivers
+└── util/            PreferencesManager, ContactsHelper, PhoneController
+```
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|-----------|
-| Language | Kotlin 100% |
-| UI | Jetpack Compose + Material Design 3 |
-| Architecture | MVVM + Clean Architecture |
-| DI | Dagger Hilt |
-| Async | Coroutines + StateFlow |
-| Database | Room (conversation history) |
-| Settings | EncryptedSharedPreferences |
-| Networking | Retrofit + OkHttp |
-| Scheduling | AlarmManager |
-| Voice Input | Android SpeechRecognizer |
-| Voice Output | HuggingFace TTS + Android TTS fallback |
-| Navigation | Navigation Compose |
-| Permissions | Accompanist Permissions |
+- **Language:** 100% Kotlin
+- **UI:** Jetpack Compose + Material Design 3
+- **DI:** Dagger Hilt
+- **Database:** Room (6 tables)
+- **Network:** Retrofit + OkHttp
+- **Async:** Coroutines + StateFlow
+- **Security:** EncryptedSharedPreferences + Biometric
+- **Scheduling:** WorkManager + AlarmManager
+- **Voice:** Android SpeechRecognizer + TextToSpeech + Gemini Live WebSocket
+- **Accessibility:** AccessibilityService for Ghost Control
+- **Screen:** MediaProjection API
 
----
+## Permissions
 
-## Project Structure
+The app requests permissions as needed:
+- `RECORD_AUDIO` — Voice input
+- `CALL_PHONE`, `READ_CONTACTS`, `SEND_SMS` — Phone control
+- `ACCESS_FINE_LOCATION` — Location sharing
+- `CAMERA` — Break-in detection photo
+- `FOREGROUND_SERVICE` — Background listening
+- `SYSTEM_ALERT_WINDOW` — Floating button
+- `WRITE_SETTINGS` — Brightness/display control
+- `BLUETOOTH_CONNECT`, `NFC`, `CHANGE_WIFI_STATE` — Hardware control
+- `BIND_ACCESSIBILITY_SERVICE` — Ghost Control
 
-```
-app/src/main/kotlin/com/ruhan/ai/assistant/
-├── RuhanApp.kt                          # Application class (Hilt + Notification channels)
-├── MainActivity.kt                      # Entry point with Navigation Compose
-├── di/
-│   ├── AppModule.kt                     # Room, Preferences DI
-│   └── NetworkModule.kt                 # Retrofit instances for 4 APIs
-├── data/
-│   ├── local/
-│   │   ├── AppDatabase.kt              # Room database
-│   │   ├── ConversationDao.kt          # DAO for chat history
-│   │   └── ConversationEntity.kt       # Message data class
-│   ├── remote/
-│   │   ├── GroqApiService.kt           # Groq LLaMA API
-│   │   ├── GeminiApiService.kt         # Google Gemini API
-│   │   ├── HuggingFaceApiService.kt    # HF TTS API
-│   │   └── TavilyApiService.kt         # Tavily Search API
-│   └── repository/
-│       ├── AIRepository.kt             # AI logic (chat, vision, search)
-│       ├── PhoneRepository.kt          # Phone actions + reminders
-│       └── ConversationRepository.kt   # Chat persistence
-├── domain/usecase/
-│   ├── ProcessCommandUseCase.kt        # Main command parser + router
-│   ├── MakeCallUseCase.kt              # Call a contact
-│   ├── SendSmsUseCase.kt               # Send SMS
-│   ├── ControlSettingsUseCase.kt       # Phone settings control
-│   └── AnalyzeScreenUseCase.kt         # Screen capture + Gemini analysis
-├── presentation/
-│   ├── main/
-│   │   ├── RuhanScreen.kt              # Main UI with orb, chat, controls
-│   │   └── RuhanViewModel.kt           # Main screen state management
-│   ├── settings/
-│   │   ├── SettingsScreen.kt           # Full settings UI
-│   │   └── SettingsViewModel.kt        # Settings state management
-│   └── components/
-│       ├── RuhanOrb.kt                 # Animated glowing orb
-│       ├── ConversationBubble.kt       # Chat message bubbles
-│       ├── WaveformVisualizer.kt       # Audio waveform animation
-│       └── FloatingRuhanButton.kt      # Floating overlay button
-├── service/
-│   ├── RuhanForegroundService.kt       # Background service + wake word
-│   ├── FloatingButtonService.kt        # Floating button overlay
-│   ├── WakeWordDetector.kt             # Wake word detection engine
-│   ├── CallMonitorReceiver.kt          # Incoming call detection
-│   ├── BootReceiver.kt                 # Auto-start on boot
-│   └── ReminderReceiver.kt            # Reminder notifications
-└── util/
-    ├── PreferencesManager.kt           # Encrypted settings + API keys
-    ├── VoiceManager.kt                 # TTS engine (HF + Android fallback)
-    ├── ContactsHelper.kt              # Contact search
-    ├── PhoneController.kt             # Phone hardware control
-    └── ScreenshotHelper.kt            # Screen capture via PixelCopy
-```
+## Build
 
----
-
-## Build & Install
-
-### Prerequisites
-- Android Studio Hedgehog (2023.1.1) or later
-- JDK 17
-- Android SDK 34
-
-### Build
 ```bash
-# Clone the repo
-git clone <repo-url>
-cd ruhan-ai
-
-# Build debug APK
-./gradlew assembleDebug
-
-# APK location
-ls app/build/outputs/apk/debug/app-debug.apk
-```
-
-### Install on device
-```bash
-adb install app/build/outputs/apk/debug/app-debug.apk
+./gradlew assembleDebug    # Debug APK (~19MB)
+./gradlew assembleRelease  # Release APK (requires signing config)
 ```
 
 ---
 
-## First Launch
-
-1. Install and open Ruhan AI
-2. Ruhan greets you: *"Namaste Boss. Main Ruhan hoon — aapka personal AI assistant."*
-3. Go to **Settings** → Enter your **Groq API Key** (minimum required)
-4. Optionally add Gemini, HuggingFace, and Tavily keys
-5. Tap the **Test** button next to each key to verify
-6. Return to main screen and start talking!
-
----
-
-## Settings
-
-| Setting | Description | Default |
-|---------|-------------|---------|
-| Boss ka Naam | What Ruhan calls you | "Boss" |
-| Wake Word | Custom activation phrase | "hello ruhan" |
-| Always Listening | Background wake word detection | Off |
-| Floating Button | Overlay button on all apps | Off |
-| Voice Speed | TTS speed (0.5x – 2.0x) | 1.0x |
-| Emergency Contact | Phone number for emergencies | Not set |
-| Language | Hinglish / Hindi / English | Hinglish |
-| Theme | AMOLED / Dark / Light | AMOLED |
-
----
-
-## License
-
-MIT License — see [LICENSE](LICENSE) for details.
+**Built with Kotlin + Jetpack Compose | MVVM + Clean Architecture | Dagger Hilt**

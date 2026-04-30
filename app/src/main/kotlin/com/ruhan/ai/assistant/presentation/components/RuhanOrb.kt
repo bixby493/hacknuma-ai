@@ -75,18 +75,67 @@ fun RuhanOrb(
     val primaryColor = when (state) {
         OrbState.IDLE -> Color(0xFF0088FF)
         OrbState.LISTENING -> Color(0xFF00E5FF)
-        OrbState.THINKING -> Color.White
+        OrbState.THINKING -> Color(0xFFFFD700)
         OrbState.SPEAKING -> Color(0xFF00FF88)
     }
 
     val secondaryColor = when (state) {
         OrbState.IDLE -> Color(0xFF0044AA)
         OrbState.LISTENING -> Color(0xFF0099CC)
-        OrbState.THINKING -> Color(0xFFCCCCCC)
+        OrbState.THINKING -> Color(0xFFFFA500)
         OrbState.SPEAKING -> Color(0xFF00AA55)
     }
 
+    val ringExpand by infiniteTransition.animateFloat(
+        initialValue = 0.5f,
+        targetValue = 1.5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "ring"
+    )
+
+    val particleAngle by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(3000, easing = LinearEasing)
+        ),
+        label = "particles"
+    )
+
     Canvas(modifier = modifier.size(200.dp)) {
+        val center = Offset(size.width / 2, size.height / 2)
+        val baseRadius = size.minDimension / 3
+
+        if (state == OrbState.LISTENING) {
+            for (i in 0..2) {
+                val scale = ringExpand + i * 0.3f
+                val alpha = (1f - (scale - 0.5f) / 1.5f).coerceIn(0f, 0.5f)
+                drawCircle(
+                    color = primaryColor.copy(alpha = alpha),
+                    radius = baseRadius * scale,
+                    center = center,
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2f)
+                )
+            }
+        }
+
+        if (state == OrbState.THINKING) {
+            for (i in 0..7) {
+                val angle = Math.toRadians((particleAngle + i * 45.0).toDouble())
+                val dist = baseRadius * 1.3f
+                val px = center.x + kotlin.math.cos(angle).toFloat() * dist
+                val py = center.y + kotlin.math.sin(angle).toFloat() * dist
+                drawCircle(
+                    color = Color(0xFFFFD700).copy(alpha = glowAlpha),
+                    radius = 4f,
+                    center = Offset(px, py)
+                )
+            }
+        }
+
         drawOrb(
             primaryColor = primaryColor,
             secondaryColor = secondaryColor,
@@ -94,6 +143,19 @@ fun RuhanOrb(
             rotation = rotation,
             glowAlpha = glowAlpha
         )
+
+        if (state == OrbState.SPEAKING) {
+            for (i in 0..4) {
+                val waveRadius = baseRadius * (1.1f + i * 0.15f) * pulseScale
+                val waveAlpha = (0.4f - i * 0.08f).coerceAtLeast(0.05f)
+                drawCircle(
+                    color = Color(0xFF00FF88).copy(alpha = waveAlpha),
+                    radius = waveRadius,
+                    center = center,
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.5f)
+                )
+            }
+        }
     }
 }
 

@@ -1,10 +1,13 @@
 package com.ruhan.ai.assistant.presentation.settings
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ruhan.ai.assistant.data.repository.AIRepository
 import com.ruhan.ai.assistant.util.PreferencesManager
+import com.ruhan.ai.assistant.voice.RuhanVoiceEngine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +19,9 @@ data class SettingsUiState(
     val wakeWord: String = "hello ruhan",
     val alwaysListening: Boolean = false,
     val floatingButton: Boolean = false,
-    val voiceSpeed: Float = 1.0f,
+    val voiceSpeed: Float = 0.9f,
+    val voicePitch: Float = 0.85f,
+    val dailyBriefingEnabled: Boolean = false,
     val dailyBriefingHour: Int = 8,
     val dailyBriefingMinute: Int = 0,
     val emergencyContact: String = "",
@@ -28,7 +33,13 @@ data class SettingsUiState(
     val theme: String = "amoled",
     val groqKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
     val geminiKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
-    val hfKeyStatus: KeyTestStatus = KeyTestStatus.IDLE
+    val hfKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
+    val tavilyKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
+    val biometricLockEnabled: Boolean = false,
+    val fakeCrashEnabled: Boolean = false,
+    val breakInPhotoEnabled: Boolean = false,
+    val memoryEncryption: Boolean = true,
+    val wakeSensitivity: Float = 0.5f
 )
 
 enum class KeyTestStatus {
@@ -37,8 +48,10 @@ enum class KeyTestStatus {
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val preferencesManager: PreferencesManager,
-    private val aiRepository: AIRepository
+    private val aiRepository: AIRepository,
+    private val voiceEngine: RuhanVoiceEngine
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(loadSettings())
@@ -51,6 +64,8 @@ class SettingsViewModel @Inject constructor(
             alwaysListening = preferencesManager.alwaysListening,
             floatingButton = preferencesManager.floatingButtonEnabled,
             voiceSpeed = preferencesManager.voiceSpeed,
+            voicePitch = preferencesManager.voicePitch,
+            dailyBriefingEnabled = preferencesManager.dailyBriefingEnabled,
             dailyBriefingHour = preferencesManager.dailyBriefingHour,
             dailyBriefingMinute = preferencesManager.dailyBriefingMinute,
             emergencyContact = preferencesManager.emergencyContact,
@@ -59,7 +74,12 @@ class SettingsViewModel @Inject constructor(
             huggingFaceApiKey = preferencesManager.huggingFaceApiKey,
             tavilyApiKey = preferencesManager.tavilyApiKey,
             language = preferencesManager.language,
-            theme = preferencesManager.theme
+            theme = preferencesManager.theme,
+            biometricLockEnabled = preferencesManager.biometricLockEnabled,
+            fakeCrashEnabled = preferencesManager.fakeCrashEnabled,
+            breakInPhotoEnabled = preferencesManager.breakInPhotoEnabled,
+            memoryEncryption = preferencesManager.memoryEncryption,
+            wakeSensitivity = preferencesManager.wakeSensitivity
         )
     }
 
@@ -86,6 +106,18 @@ class SettingsViewModel @Inject constructor(
     fun updateVoiceSpeed(speed: Float) {
         preferencesManager.voiceSpeed = speed
         _uiState.value = _uiState.value.copy(voiceSpeed = speed)
+        voiceEngine.updateSettings()
+    }
+
+    fun updateVoicePitch(pitch: Float) {
+        preferencesManager.voicePitch = pitch
+        _uiState.value = _uiState.value.copy(voicePitch = pitch)
+        voiceEngine.updateSettings()
+    }
+
+    fun toggleDailyBriefing(enabled: Boolean) {
+        preferencesManager.dailyBriefingEnabled = enabled
+        _uiState.value = _uiState.value.copy(dailyBriefingEnabled = enabled)
     }
 
     fun updateBriefingTime(hour: Int, minute: Int) {
@@ -119,7 +151,7 @@ class SettingsViewModel @Inject constructor(
 
     fun updateTavilyKey(key: String) {
         preferencesManager.tavilyApiKey = key
-        _uiState.value = _uiState.value.copy(tavilyApiKey = key)
+        _uiState.value = _uiState.value.copy(tavilyApiKey = key, tavilyKeyStatus = KeyTestStatus.IDLE)
     }
 
     fun updateLanguage(language: String) {
@@ -130,6 +162,35 @@ class SettingsViewModel @Inject constructor(
     fun updateTheme(theme: String) {
         preferencesManager.theme = theme
         _uiState.value = _uiState.value.copy(theme = theme)
+    }
+
+    fun toggleBiometricLock(enabled: Boolean) {
+        preferencesManager.biometricLockEnabled = enabled
+        _uiState.value = _uiState.value.copy(biometricLockEnabled = enabled)
+    }
+
+    fun toggleFakeCrash(enabled: Boolean) {
+        preferencesManager.fakeCrashEnabled = enabled
+        _uiState.value = _uiState.value.copy(fakeCrashEnabled = enabled)
+    }
+
+    fun toggleBreakInPhoto(enabled: Boolean) {
+        preferencesManager.breakInPhotoEnabled = enabled
+        _uiState.value = _uiState.value.copy(breakInPhotoEnabled = enabled)
+    }
+
+    fun toggleMemoryEncryption(enabled: Boolean) {
+        preferencesManager.memoryEncryption = enabled
+        _uiState.value = _uiState.value.copy(memoryEncryption = enabled)
+    }
+
+    fun updateWakeSensitivity(sensitivity: Float) {
+        preferencesManager.wakeSensitivity = sensitivity
+        _uiState.value = _uiState.value.copy(wakeSensitivity = sensitivity)
+    }
+
+    fun testVoice() {
+        voiceEngine.testVoice()
     }
 
     fun testGroqKey() {
@@ -148,6 +209,26 @@ class SettingsViewModel @Inject constructor(
             val success = aiRepository.testGeminiKey(_uiState.value.geminiApiKey)
             _uiState.value = _uiState.value.copy(
                 geminiKeyStatus = if (success) KeyTestStatus.SUCCESS else KeyTestStatus.FAILED
+            )
+        }
+    }
+
+    fun testHuggingFaceKey() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(hfKeyStatus = KeyTestStatus.TESTING)
+            val success = aiRepository.testHuggingFaceKey(_uiState.value.huggingFaceApiKey)
+            _uiState.value = _uiState.value.copy(
+                hfKeyStatus = if (success) KeyTestStatus.SUCCESS else KeyTestStatus.FAILED
+            )
+        }
+    }
+
+    fun testTavilyKey() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(tavilyKeyStatus = KeyTestStatus.TESTING)
+            val success = aiRepository.testTavilyKey(_uiState.value.tavilyApiKey)
+            _uiState.value = _uiState.value.copy(
+                tavilyKeyStatus = if (success) KeyTestStatus.SUCCESS else KeyTestStatus.FAILED
             )
         }
     }
