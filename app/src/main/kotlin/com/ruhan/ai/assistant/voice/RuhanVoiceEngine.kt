@@ -35,29 +35,49 @@ class RuhanVoiceEngine @Inject constructor(
 
     private fun configureTts() {
         val engine = tts ?: return
-        engine.language = Locale("hi", "IN")
+
+        val hindiLocale = Locale("hi", "IN")
+        val result = engine.setLanguage(hindiLocale)
+        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+            engine.setLanguage(Locale("en", "IN"))
+        }
+
         applyVoiceSettings(engine)
     }
 
     private fun applyVoiceSettings(engine: TextToSpeech) {
         val isMale = preferencesManager.voiceGender == "male"
-        engine.setPitch(if (isMale) preferencesManager.voicePitch else preferencesManager.voicePitch + 0.3f)
-        engine.setSpeechRate(preferencesManager.voiceSpeed)
+        val basePitch = preferencesManager.voicePitch
+        val baseSpeed = preferencesManager.voiceSpeed
+
+        engine.setPitch(if (isMale) basePitch else basePitch + 0.35f)
+        engine.setSpeechRate(baseSpeed)
 
         val voices = engine.voices ?: return
-        val hindiVoices = voices.filter { voice ->
-            (voice.locale.language == "hi" || voice.name.contains("hi-in", ignoreCase = true) ||
-                    voice.name.contains("hindi", ignoreCase = true))
-        }
 
-        val selectedVoice = if (isMale) {
-            hindiVoices.firstOrNull { it.name.contains("male", ignoreCase = true) }
-                ?: hindiVoices.firstOrNull { !it.name.contains("female", ignoreCase = true) }
-                ?: hindiVoices.firstOrNull()
+        val hindiVoices = voices.filter { v ->
+            v.locale.language == "hi" ||
+                    v.name.contains("hi-in", ignoreCase = true) ||
+                    v.name.contains("hi_in", ignoreCase = true) ||
+                    v.name.contains("hindi", ignoreCase = true)
+        }.sortedByDescending { it.quality }
+
+        val indianEnglishVoices = voices.filter { v ->
+            (v.locale.language == "en" && v.locale.country == "IN") ||
+                    v.name.contains("en-in", ignoreCase = true) ||
+                    v.name.contains("en_in", ignoreCase = true)
+        }.sortedByDescending { it.quality }
+
+        val allCandidates = hindiVoices + indianEnglishVoices
+
+        val selectedVoice: Voice? = if (isMale) {
+            allCandidates.firstOrNull { it.name.contains("male", ignoreCase = true) && !it.name.contains("female", ignoreCase = true) }
+                ?: allCandidates.firstOrNull { !it.name.contains("female", ignoreCase = true) }
+                ?: allCandidates.firstOrNull()
         } else {
-            hindiVoices.firstOrNull { it.name.contains("female", ignoreCase = true) }
-                ?: hindiVoices.lastOrNull()
-                ?: hindiVoices.firstOrNull()
+            allCandidates.firstOrNull { it.name.contains("female", ignoreCase = true) }
+                ?: allCandidates.lastOrNull()
+                ?: allCandidates.firstOrNull()
         }
 
         selectedVoice?.let { engine.voice = it }

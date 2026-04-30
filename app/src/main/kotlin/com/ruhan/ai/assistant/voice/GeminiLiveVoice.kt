@@ -39,7 +39,6 @@ class GeminiLiveVoice @Inject constructor(
 ) {
     private var webSocket: WebSocket? = null
     private var audioRecord: AudioRecord? = null
-    private var audioTrack: AudioTrack? = null
     private var recordingJob: Job? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -49,6 +48,9 @@ class GeminiLiveVoice @Inject constructor(
     private val _transcript = MutableStateFlow("")
     val transcript: StateFlow<String> = _transcript
 
+    private val _errorMessage = MutableStateFlow("")
+    val errorMessage: StateFlow<String> = _errorMessage
+
     var onTranscript: ((String) -> Unit)? = null
 
     private val sampleRate = 16000
@@ -56,67 +58,82 @@ class GeminiLiveVoice @Inject constructor(
     private val audioEncoding = AudioFormat.ENCODING_PCM_16BIT
 
     fun startLiveSession() {
-        val apiKey = preferencesManager.geminiApiKey
-        if (apiKey.isBlank()) {
-            _state.value = LiveVoiceState.ERROR
-            return
-        }
+        try {
+            val apiKey = preferencesManager.geminiApiKey
+            if (apiKey.isBlank()) {
+                _errorMessage.value = "Gemini API key set karo Settings mein"
+                _state.value = LiveVoiceState.ERROR
+                return
+            }
 
-        _state.value = LiveVoiceState.CONNECTING
+            stopLiveSessionSync()
+            _state.value = LiveVoiceState.CONNECTING
+            _errorMessage.value = ""
 
-        val url = "wss://generativelanguage.googleapis.com/ws/" +
-                "google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent" +
-                "?key=$apiKey"
+            val url = "wss://generativelanguage.googleapis.com/ws/" +
+                    "google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent" +
+                    "?key=$apiKey"
 
-        val request = Request.Builder().url(url).build()
+            val request = Request.Builder().url(url).build()
 
-        webSocket = okHttpClient.newWebSocket(request, object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                val setup = JSONObject().apply {
-                    put("setup", JSONObject().apply {
-                        put("model", "models/gemini-2.0-flash-live")
-                        put("generationConfig", JSONObject().apply {
-                            put("responseModalities", JSONArray().put("AUDIO").put("TEXT"))
-                            put("speechConfig", JSONObject().apply {
-                                put("voiceConfig", JSONObject().apply {
-                                    put("prebuiltVoiceConfig", JSONObject().apply {
-                                        put("voiceName", "Aoede")
+            webSocket = okHttpClient.newWebSocket(request, object : WebSocketListener() {
+                override fun onOpen(webSocket: WebSocket, response: Response) {
+                    try {
+                        val setup = JSONObject().apply {
+                            put("setup", JSONObject().apply {
+                                put("model", "models/gemini-2.0-flash-live")
+                                put("generationConfig", JSONObject().apply {
+                                    put("responseModalities", JSONArray().put("AUDIO").put("TEXT"))
+                                    put("speechConfig", JSONObject().apply {
+                                        put("voiceConfig", JSONObject().apply {
+                                            put("prebuiltVoiceConfig", JSONObject().apply {
+                                                put("voiceName", "Aoede")
+                                            })
+                                        })
                                     })
                                 })
+                                put("systemInstruction", JSONObject().apply {
+                                    put("parts", JSONArray().put(JSONObject().apply {
+                                        put("text", "You are RUHAN, a Jarvis-like AI assistant. " +
+                                                "Speak in Hinglish. Be calm, confident. " +
+                                                "Call user '${preferencesManager.bossName}'. " +
+                                                "Keep replies SHORT. You ARE Ruhan.")
+                                    }))
+                                })
                             })
-                        })
-                        put("systemInstruction", JSONObject().apply {
-                            put("parts", JSONArray().put(JSONObject().apply {
-                                put("text", "You are RUHAN, a Jarvis-like AI assistant. " +
-                                        "Speak in Hinglish. Be calm, confident. " +
-                                        "Call user '${preferencesManager.bossName}'. " +
-                                        "Keep replies SHORT. You ARE Ruhan.")
-                            }))
-                        })
-                    })
+                        }
+                        webSocket.send(setup.toString())
+                        _state.value = LiveVoiceState.LISTENING
+                        startAudioCapture(webSocket)
+                    } catch (e: Exception) {
+                        _errorMessage.value = "Setup failed: ${e.message}"
+                        _state.value = LiveVoiceState.ERROR
+                    }
                 }
-                webSocket.send(setup.toString())
-                _state.value = LiveVoiceState.LISTENING
-                startAudioCapture(webSocket)
-            }
 
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                handleTextResponse(text)
-            }
+                override fun onMessage(webSocket: WebSocket, text: String) {
+                    handleTextResponse(text)
+                }
 
-            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                playAudio(bytes.toByteArray())
-            }
+                override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+                    playAudio(bytes.toByteArray())
+                }
 
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                _state.value = LiveVoiceState.ERROR
-                stopLiveSession()
-            }
+                override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                    _errorMessage.value = t.message ?: "Connection failed"
+                    _state.value = LiveVoiceState.ERROR
+                    cleanupResources()
+                }
 
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                _state.value = LiveVoiceState.IDLE
-            }
-        })
+                override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                    _state.value = LiveVoiceState.IDLE
+                    cleanupResources()
+                }
+            })
+        } catch (e: Exception) {
+            _errorMessage.value = "Live voice start failed: ${e.message}"
+            _state.value = LiveVoiceState.ERROR
+        }
     }
 
     private fun handleTextResponse(text: String) {
@@ -159,6 +176,11 @@ class GeminiLiveVoice @Inject constructor(
         recordingJob = scope.launch {
             try {
                 val bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioEncoding)
+                if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
+                    _errorMessage.value = "Audio recording not supported"
+                    _state.value = LiveVoiceState.ERROR
+                    return@launch
+                }
                 audioRecord = AudioRecord(
                     MediaRecorder.AudioSource.MIC,
                     sampleRate,
@@ -166,10 +188,17 @@ class GeminiLiveVoice @Inject constructor(
                     audioEncoding,
                     bufferSize * 2
                 )
+
+                if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
+                    _errorMessage.value = "Microphone access failed"
+                    _state.value = LiveVoiceState.ERROR
+                    return@launch
+                }
+
                 audioRecord?.startRecording()
 
                 val buffer = ByteArray(bufferSize)
-                while (isActive && _state.value != LiveVoiceState.IDLE) {
+                while (isActive && _state.value != LiveVoiceState.IDLE && _state.value != LiveVoiceState.ERROR) {
                     val read = audioRecord?.read(buffer, 0, buffer.size) ?: -1
                     if (read > 0) {
                         val b64 = android.util.Base64.encodeToString(
@@ -184,20 +213,33 @@ class GeminiLiveVoice @Inject constructor(
                                 }))
                             })
                         }
-                        ws.send(msg.toString())
+                        try {
+                            ws.send(msg.toString())
+                        } catch (_: Exception) {
+                            break
+                        }
                     }
                 }
             } catch (_: SecurityException) {
+                _errorMessage.value = "Microphone permission denied"
+                _state.value = LiveVoiceState.ERROR
+            } catch (e: Exception) {
+                _errorMessage.value = "Audio capture error: ${e.message}"
                 _state.value = LiveVoiceState.ERROR
             } finally {
-                audioRecord?.stop()
-                audioRecord?.release()
+                try {
+                    audioRecord?.stop()
+                } catch (_: Exception) { }
+                try {
+                    audioRecord?.release()
+                } catch (_: Exception) { }
                 audioRecord = null
             }
         }
     }
 
     private fun playAudio(audioData: ByteArray) {
+        if (audioData.isEmpty()) return
         scope.launch {
             withContext(Dispatchers.IO) {
                 try {
@@ -207,6 +249,8 @@ class GeminiLiveVoice @Inject constructor(
                         AudioFormat.CHANNEL_OUT_MONO,
                         AudioFormat.ENCODING_PCM_16BIT
                     )
+                    if (minBuf == AudioTrack.ERROR || minBuf == AudioTrack.ERROR_BAD_VALUE) return@withContext
+
                     val track = AudioTrack.Builder()
                         .setAudioAttributes(
                             AudioAttributes.Builder()
@@ -228,7 +272,8 @@ class GeminiLiveVoice @Inject constructor(
                     track.write(audioData, 0, audioData.size)
                     track.play()
 
-                    while (track.playbackHeadPosition < audioData.size / 2) {
+                    val totalFrames = audioData.size / 2
+                    while (track.playbackHeadPosition < totalFrames) {
                         kotlinx.coroutines.delay(50)
                     }
                     track.stop()
@@ -240,20 +285,34 @@ class GeminiLiveVoice @Inject constructor(
     }
 
     fun interrupt() {
-        audioTrack?.stop()
         _state.value = LiveVoiceState.LISTENING
     }
 
-    fun stopLiveSession() {
-        scope.launch {
-            recordingJob?.cancelAndJoin()
+    private fun cleanupResources() {
+        try {
+            recordingJob?.cancel()
             recordingJob = null
+        } catch (_: Exception) { }
+        try {
             audioRecord?.stop()
+        } catch (_: Exception) { }
+        try {
             audioRecord?.release()
-            audioRecord = null
+        } catch (_: Exception) { }
+        audioRecord = null
+    }
+
+    private fun stopLiveSessionSync() {
+        cleanupResources()
+        try {
             webSocket?.close(1000, "Session ended")
-            webSocket = null
-            _state.value = LiveVoiceState.IDLE
-        }
+        } catch (_: Exception) { }
+        webSocket = null
+    }
+
+    fun stopLiveSession() {
+        stopLiveSessionSync()
+        _state.value = LiveVoiceState.IDLE
+        _errorMessage.value = ""
     }
 }

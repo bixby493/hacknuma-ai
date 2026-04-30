@@ -128,6 +128,16 @@ class RuhanViewModel @Inject constructor(
                         LiveVoiceState.ERROR -> "Live voice error"
                     }
                 )
+                if (state == LiveVoiceState.ERROR) {
+                    val errorMsg = geminiLiveVoice.errorMessage.value
+                    if (errorMsg.isNotBlank()) {
+                        val msg = "${preferencesManager.bossName}, $errorMsg"
+                        viewModelScope.launch {
+                            try { conversationRepository.saveMessage(msg, isUser = false) } catch (_: Exception) {}
+                            speak(msg)
+                        }
+                    }
+                }
             }
         }
         viewModelScope.launch {
