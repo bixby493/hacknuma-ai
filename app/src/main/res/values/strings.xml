@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ruhan AI</string>
+    <string name="ruhan_tagline">Han Boss, bolo.</string>
+    <string name="notification_channel_name">Ruhan AI Service</string>
+    <string name="notification_channel_description">Keeps Ruhan AI running in the background</string>
+    <string name="reminder_channel_name">Ruhan Reminders</string>
+    <string name="reminder_channel_description">Reminders set by Ruhan AI</string>
+</resources>
