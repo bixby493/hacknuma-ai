@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ruhan_cyan">#FF00E5FF</color>
+    <color name="ruhan_dark">#FF000000</color>
+    <color name="ruhan_white">#FFFFFFFF</color>
+    <color name="ruhan_green">#FF00FF88</color>
+    <color name="ruhan_blue">#FF0088FF</color>
+</resources>
