@@ -60,6 +60,23 @@ class SettingsController @Inject constructor(
                 openSettings(Settings.ACTION_NFC_SETTINGS)
                 "$boss, NFC settings khol raha hoon."
             }
+            "rotation" -> {
+                try {
+                    Settings.System.putInt(
+                        context.contentResolver,
+                        Settings.System.ACCELEROMETER_ROTATION,
+                        if (enable) 1 else 0
+                    )
+                    "$boss, auto-rotate ${if (enable) "on" else "off"} kar diya."
+                } catch (_: Exception) {
+                    openSettings(Settings.ACTION_DISPLAY_SETTINGS)
+                    "$boss, display settings khol raha hoon."
+                }
+            }
+            "focus_mode" -> {
+                openSettings(Settings.ACTION_SOUND_SETTINGS)
+                "$boss, focus mode settings khol raha hoon."
+            }
             else -> "$boss, yeh setting abhi control nahi kar sakta."
         }
     }

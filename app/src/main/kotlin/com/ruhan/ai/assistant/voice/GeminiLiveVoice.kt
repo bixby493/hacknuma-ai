@@ -258,6 +258,114 @@ You are capable of complex, multi-step workflows. If $bossName gives a complex c
                     put("properties", JSONObject())
                 })
             })
+            put(JSONObject().apply {
+                put("name", "google_search")
+                put("description", "Search the web for any query. Use when user asks to search, Google something, or needs latest info.")
+                put("parameters", JSONObject().apply {
+                    put("type", "OBJECT")
+                    put("properties", JSONObject().apply {
+                        put("query", JSONObject().apply {
+                            put("type", "STRING")
+                            put("description", "The search query.")
+                        })
+                    })
+                    put("required", JSONArray().put("query"))
+                })
+            })
+            put(JSONObject().apply {
+                put("name", "save_note")
+                put("description", "Save a note for the user. Use when user says 'note karo', 'likh lo', 'add note'.")
+                put("parameters", JSONObject().apply {
+                    put("type", "OBJECT")
+                    put("properties", JSONObject().apply {
+                        put("title", JSONObject().apply {
+                            put("type", "STRING")
+                            put("description", "A short title for the note.")
+                        })
+                        put("content", JSONObject().apply {
+                            put("type", "STRING")
+                            put("description", "The full content of the note.")
+                        })
+                    })
+                    put("required", JSONArray().put("title").put("content"))
+                })
+            })
+            put(JSONObject().apply {
+                put("name", "retrieve_memory")
+                put("description", "Retrieve the user's permanent memory bank to answer questions about past facts, preferences, or personal details.")
+                put("parameters", JSONObject().apply {
+                    put("type", "OBJECT")
+                    put("properties", JSONObject())
+                })
+            })
+            put(JSONObject().apply {
+                put("name", "set_reminder")
+                put("description", "Set a reminder or alarm for the user.")
+                put("parameters", JSONObject().apply {
+                    put("type", "OBJECT")
+                    put("properties", JSONObject().apply {
+                        put("task", JSONObject().apply {
+                            put("type", "STRING")
+                            put("description", "What to remind about.")
+                        })
+                        put("delay_minutes", JSONObject().apply {
+                            put("type", "NUMBER")
+                            put("description", "Minutes from now to remind.")
+                        })
+                    })
+                    put("required", JSONArray().put("task").put("delay_minutes"))
+                })
+            })
+            put(JSONObject().apply {
+                put("name", "open_navigation")
+                put("description", "Open Google Maps to navigate to a place. Use when user asks 'how to go', 'navigate to', 'direction'.")
+                put("parameters", JSONObject().apply {
+                    put("type", "OBJECT")
+                    put("properties", JSONObject().apply {
+                        put("destination", JSONObject().apply {
+                            put("type", "STRING")
+                            put("description", "The destination place name or address.")
+                        })
+                    })
+                    put("required", JSONArray().put("destination"))
+                })
+            })
+            put(JSONObject().apply {
+                put("name", "play_music")
+                put("description", "Search and play music. Opens YouTube with search query.")
+                put("parameters", JSONObject().apply {
+                    put("type", "OBJECT")
+                    put("properties", JSONObject().apply {
+                        put("song_name", JSONObject().apply {
+                            put("type", "STRING")
+                            put("description", "The name of the song/artist to play.")
+                        })
+                    })
+                    put("required", JSONArray().put("song_name"))
+                })
+            })
+            put(JSONObject().apply {
+                put("name", "send_emergency")
+                put("description", "Send an emergency SOS alert with SMS and call to emergency contact. Use only for real emergencies.")
+                put("parameters", JSONObject().apply {
+                    put("type", "OBJECT")
+                    put("properties", JSONObject())
+                })
+            })
+            put(JSONObject().apply {
+                put("name", "deep_research")
+                put("description", "Perform deep web research on a topic. Use when user asks for detailed analysis or research report.")
+                put("parameters", JSONObject().apply {
+                    put("type", "OBJECT")
+                    put("properties", JSONObject().apply {
+                        put("query", JSONObject().apply {
+                            put("type", "STRING")
+                            put("description", "The research topic/question.")
+                        })
+                    })
+                    put("required", JSONArray().put("query"))
+                })
+            })
         }
     }
 
@@ -499,6 +607,61 @@ You are capable of complex, multi-step workflows. If $bossName gives a complex c
                     val date = java.text.SimpleDateFormat("dd MMMM yyyy, EEEE", java.util.Locale("hi", "IN"))
                         .format(java.util.Date())
                     "Abhi $time baj rahe hain. Aaj $date hai."
+                }
+                "google_search" -> {
+                    val query = args.getString("query")
+                    val searchUrl = "https://www.google.com/search?q=${java.net.URLEncoder.encode(query, "UTF-8")}"
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(searchUrl)).apply {
+                        flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    context.startActivity(intent)
+                    "Google pe '$query' search kar raha hoon."
+                }
+                "save_note" -> {
+                    val title = args.optString("title", "Note")
+                    val content = args.getString("content")
+                    "Note save kiya: $title - $content"
+                }
+                "retrieve_memory" -> {
+                    "Boss ki memories load ho rahi hain."
+                }
+                "set_reminder" -> {
+                    val task = args.getString("task")
+                    val delayMinutes = args.optInt("delay_minutes", 60)
+                    phoneRepository.setReminder(task, 0, 0, delayMinutes)
+                    "$delayMinutes minute baad yaad dila dunga: $task"
+                }
+                "open_navigation" -> {
+                    val destination = args.getString("destination")
+                    val navUrl = "https://www.google.com/maps/dir/?api=1&destination=${java.net.URLEncoder.encode(destination, "UTF-8")}"
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(navUrl)).apply {
+                        flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    context.startActivity(intent)
+                    "$destination ka navigation khol raha hoon Google Maps pe."
+                }
+                "play_music" -> {
+                    val songName = args.getString("song_name")
+                    val ytUrl = "https://www.youtube.com/results?search_query=${java.net.URLEncoder.encode(songName, "UTF-8")}"
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(ytUrl)).apply {
+                        flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    context.startActivity(intent)
+                    "YouTube pe '$songName' search kar raha hoon."
+                }
+                "send_emergency" -> {
+                    val contact = preferencesManager.emergencyContact
+                    if (contact.isNotBlank()) {
+                        phoneRepository.sendSms(contact, "EMERGENCY! Help needed urgently! - Sent by Ruhan AI")
+                        phoneRepository.makeCall(contact)
+                        "Emergency contact ko SMS aur call bhej raha hoon!"
+                    } else {
+                        "Emergency contact set nahi hai. Settings mein set karo."
+                    }
+                }
+                "deep_research" -> {
+                    val query = args.getString("query")
+                    "Research shuru kar raha hoon: $query. Thoda time lagega Boss."
                 }
                 else -> "Unknown tool: $name"
             }

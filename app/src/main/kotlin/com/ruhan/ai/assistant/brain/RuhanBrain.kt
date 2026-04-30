@@ -244,8 +244,7 @@ class RuhanBrain @Inject constructor(
             flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
         }
         try {
-            (context as? android.content.Context)?.startActivity(intent)
-                ?: context.startActivity(intent)
+            context.startActivity(intent)
             return BrainResponse.Speak("$boss, YouTube pe '$query' search kar raha hoon.")
         } catch (_: Exception) {
             return BrainResponse.Speak("$boss, music app nahi khul raha.")
