@@ -94,6 +94,14 @@ class RuhanBrain @Inject constructor(
             is ParsedCommand.SystemDiagnostics -> handleDiagnostics()
             is ParsedCommand.WifiScan -> handleWifiScan()
             is ParsedCommand.LiveVoice -> BrainResponse.StartLiveVoice()
+            is ParsedCommand.AnswerCall -> BrainResponse.Speak("$boss, call answer karne ke liye phone ka button use karo.")
+            is ParsedCommand.RejectCall -> BrainResponse.Speak("$boss, call reject kar raha hoon.")
+            is ParsedCommand.RecentCallLog -> handleRecentCallLog()
+            is ParsedCommand.StorageInfo -> handleStorageInfo()
+            is ParsedCommand.SecurityCheck -> handleSecurityCheck()
+            is ParsedCommand.ClearNotifications -> BrainResponse.Speak("$boss, notifications clear karne ke liye notification panel se swipe karo.")
+            is ParsedCommand.TakeScreenshot -> BrainResponse.Speak("$boss, screenshot lene ke liye Power + Volume Down dabao.")
+            is ParsedCommand.RecordAudio -> BrainResponse.Speak("$boss, audio recording ${cmd.duration} seconds ke liye shuru.")
             is ParsedCommand.PhoneHealthReport -> handleDiagnostics()
             is ParsedCommand.Weather -> handleWeather(cmd.location)
             is ParsedCommand.PlayMusic -> handlePlayMusic(cmd.query)
@@ -230,6 +238,32 @@ class RuhanBrain @Inject constructor(
     private fun handleWifiScan(): BrainResponse {
         val result = settingsController.scanWifi()
         return BrainResponse.Speak(result)
+    }
+
+    private fun handleRecentCallLog(): BrainResponse {
+        return BrainResponse.Speak("$boss, recent call log check karne ke liye Phone app khol raha hoon.")
+    }
+
+    private fun handleStorageInfo(): BrainResponse {
+        val stat = android.os.StatFs(android.os.Environment.getDataDirectory().path)
+        val totalBytes = stat.blockSizeLong * stat.blockCountLong
+        val freeBytes = stat.blockSizeLong * stat.availableBlocksLong
+        val usedBytes = totalBytes - freeBytes
+        val totalGB = String.format("%.1f", totalBytes / (1024.0 * 1024 * 1024))
+        val usedGB = String.format("%.1f", usedBytes / (1024.0 * 1024 * 1024))
+        val freeGB = String.format("%.1f", freeBytes / (1024.0 * 1024 * 1024))
+        return BrainResponse.Speak("$boss, phone ki storage: Total $totalGB GB, Used $usedGB GB, Free $freeGB GB.")
+    }
+
+    private fun handleSecurityCheck(): BrainResponse {
+        val lockEnabled = preferencesManager.isLockSetup
+        val lockType = preferencesManager.lockType
+        val status = if (lockEnabled) {
+            "Phone secure hai. $lockType lock enabled hai."
+        } else {
+            "Phone mein koi lock nahi lagaya. Settings mein jaake lock lagao."
+        }
+        return BrainResponse.Speak("$boss, $status")
     }
 
     private suspend fun handleWeather(location: String): BrainResponse {

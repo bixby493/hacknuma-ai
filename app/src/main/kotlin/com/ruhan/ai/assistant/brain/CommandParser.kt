@@ -38,6 +38,14 @@ sealed class ParsedCommand {
     data object SystemDiagnostics : ParsedCommand()
     data object WifiScan : ParsedCommand()
     data object LiveVoice : ParsedCommand()
+    data object AnswerCall : ParsedCommand()
+    data object RejectCall : ParsedCommand()
+    data object RecentCallLog : ParsedCommand()
+    data object StorageInfo : ParsedCommand()
+    data object SecurityCheck : ParsedCommand()
+    data object ClearNotifications : ParsedCommand()
+    data object TakeScreenshot : ParsedCommand()
+    data class RecordAudio(val duration: Int = 30) : ParsedCommand()
     data class PhoneHealthReport(val detail: String = "") : ParsedCommand()
     data class AiChat(val message: String) : ParsedCommand()
 }
@@ -48,7 +56,8 @@ class CommandParser @Inject constructor() {
     fun parse(input: String): ParsedCommand {
         val text = input.lowercase().trim()
 
-        return parseCall(text)
+        return parseCallControl(text)
+            ?: parseCall(text)
             ?: parseSms(text)
             ?: parseWhatsApp(text)
             ?: parseCloseApp(text)
@@ -62,6 +71,8 @@ class CommandParser @Inject constructor() {
             ?: parseMusic(text)
             ?: parseScreenAnalysis(text)
             ?: parsePhoneInfo(text)
+            ?: parseStorageInfo(text)
+            ?: parseSecurityCheck(text)
             ?: parseEmergency(text)
             ?: parseMemory(text)
             ?: parseResearch(text)
@@ -73,7 +84,16 @@ class CommandParser @Inject constructor() {
             ?: parseTranslate(text)
             ?: parseCalculate(text)
             ?: parseLiveVoice(text)
+            ?: parseScreenshot(text)
+            ?: parseClearNotifications(text)
             ?: ParsedCommand.AiChat(input)
+    }
+
+    private fun parseCallControl(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(uthao|answer|pick\\s*up|receive).*"))) return ParsedCommand.AnswerCall
+        if (text.matches(Regex(".*(kaat\\s*do|reject|decline|hang\\s*up|rakh\\s*do).*"))) return ParsedCommand.RejectCall
+        if (text.matches(Regex(".*(recent\\s*call|call\\s*log|call\\s*history|last\\s*call|kaun.*call).*"))) return ParsedCommand.RecentCallLog
+        return null
     }
 
     private fun parseCall(text: String): ParsedCommand? {
@@ -334,6 +354,34 @@ class CommandParser @Inject constructor() {
     private fun parseLiveVoice(text: String): ParsedCommand? {
         if (text.matches(Regex(".*(live\\s*voice|live\\s*baat|real.*time.*baat|live\\s*mode|live\\s*conversation).*")))
             return ParsedCommand.LiveVoice
+        return null
+    }
+
+    private fun parseStorageInfo(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(storage|memory|space|jagah|kitni jagah|ram)\\s*(check|karo|dikha|batao|kitni|hai|status).*")))
+            return ParsedCommand.StorageInfo
+        if (text.matches(Regex(".*(storage|space|jagah).*")))
+            return ParsedCommand.StorageInfo
+        return null
+    }
+
+    private fun parseSecurityCheck(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(phone\\s*secure|security\\s*check|safe|surakshit|secure).*")))
+            return ParsedCommand.SecurityCheck
+        return null
+    }
+
+    private fun parseScreenshot(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(screenshot|screen\\s*capture|ss\\s*le).*")))
+            return ParsedCommand.TakeScreenshot
+        return null
+    }
+
+    private fun parseClearNotifications(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(notification|notif)\\s*(clear|saaf|hata|band|delete).*")))
+            return ParsedCommand.ClearNotifications
+        if (text.matches(Regex(".*(clear|saaf|hata)\\s*(notification|notif).*")))
+            return ParsedCommand.ClearNotifications
         return null
     }
 
