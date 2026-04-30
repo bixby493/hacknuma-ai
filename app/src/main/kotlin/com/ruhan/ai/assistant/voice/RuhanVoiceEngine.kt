@@ -36,25 +36,37 @@ class RuhanVoiceEngine @Inject constructor(
     private fun configureTts() {
         val engine = tts ?: return
         engine.language = Locale("hi", "IN")
-        engine.setPitch(preferencesManager.voicePitch)
+        applyVoiceSettings(engine)
+    }
+
+    private fun applyVoiceSettings(engine: TextToSpeech) {
+        val isMale = preferencesManager.voiceGender == "male"
+        engine.setPitch(if (isMale) preferencesManager.voicePitch else preferencesManager.voicePitch + 0.3f)
         engine.setSpeechRate(preferencesManager.voiceSpeed)
 
-        val hindiVoice: Voice? = engine.voices?.filter { voice ->
-            voice.locale.language == "hi" && !voice.isNetworkConnectionRequired
-        }?.minByOrNull { it.quality }
+        val voices = engine.voices ?: return
+        val hindiVoices = voices.filter { voice ->
+            (voice.locale.language == "hi" || voice.name.contains("hi-in", ignoreCase = true) ||
+                    voice.name.contains("hindi", ignoreCase = true))
+        }
 
-        val fallbackVoice: Voice? = engine.voices?.filter { voice ->
-            voice.name.contains("hi-in", ignoreCase = true) ||
-                    voice.name.contains("hindi", ignoreCase = true)
-        }?.firstOrNull()
+        val selectedVoice = if (isMale) {
+            hindiVoices.firstOrNull { it.name.contains("male", ignoreCase = true) }
+                ?: hindiVoices.firstOrNull { !it.name.contains("female", ignoreCase = true) }
+                ?: hindiVoices.firstOrNull()
+        } else {
+            hindiVoices.firstOrNull { it.name.contains("female", ignoreCase = true) }
+                ?: hindiVoices.lastOrNull()
+                ?: hindiVoices.firstOrNull()
+        }
 
-        (hindiVoice ?: fallbackVoice)?.let { engine.voice = it }
+        selectedVoice?.let { engine.voice = it }
     }
 
     fun updateSettings() {
         if (!isReady) return
-        tts?.setPitch(preferencesManager.voicePitch)
-        tts?.setSpeechRate(preferencesManager.voiceSpeed)
+        val engine = tts ?: return
+        applyVoiceSettings(engine)
     }
 
     suspend fun speak(

@@ -258,9 +258,15 @@ class RuhanViewModel @Inject constructor(
 
     private fun processInput(text: String) {
         viewModelScope.launch {
-            conversationRepository.saveMessage(text, isUser = true)
+            try {
+                conversationRepository.saveMessage(text, isUser = true)
+            } catch (_: Exception) { }
 
-            val response = brain.process(text)
+            val response = try {
+                brain.process(text)
+            } catch (e: Exception) {
+                BrainResponse.Speak("Boss, kuch gadbad ho gayi. Dobara try karo.")
+            }
             when (response) {
                 is BrainResponse.Speak -> {
                     conversationRepository.saveMessage(response.text, isUser = false)

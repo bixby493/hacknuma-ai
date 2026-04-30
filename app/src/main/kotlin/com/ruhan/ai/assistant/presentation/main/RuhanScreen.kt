@@ -25,11 +25,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -52,15 +52,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ruhan.ai.assistant.presentation.components.ConversationBubble
 import com.ruhan.ai.assistant.presentation.components.RuhanOrb
 import com.ruhan.ai.assistant.presentation.components.WaveformVisualizer
-
-private val CyanColor = Color(0xFF00E5FF)
-private val DarkBg = Color(0xFF000000)
+import com.ruhan.ai.assistant.presentation.theme.RuhanThemeColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +67,7 @@ fun RuhanScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val listState = rememberLazyListState()
+    val colors = RuhanThemeColors.current
 
     LaunchedEffect(uiState.conversations.size) {
         if (uiState.conversations.isNotEmpty()) {
@@ -80,7 +78,7 @@ fun RuhanScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBg)
+            .background(colors.background)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
@@ -88,7 +86,7 @@ fun RuhanScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "R U H A N",
-                            color = CyanColor,
+                            color = colors.accent,
                             fontWeight = FontWeight.Bold,
                             fontSize = 22.sp,
                             letterSpacing = 4.sp
@@ -96,36 +94,34 @@ fun RuhanScreen(
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = "Taiyaar hoon Boss",
-                            color = Color.Gray,
+                            color = colors.textSecondary,
                             fontSize = 12.sp
                         )
                     }
                 },
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, "Settings", tint = CyanColor)
+                        Icon(Icons.Default.Settings, "Settings", tint = colors.accent)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkBg)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = colors.background)
             )
 
-            // API Status Chips
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 2.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                StatusChip("Groq", uiState.groqStatus)
+                StatusChip("Groq", uiState.groqStatus, colors.chipBg)
                 Spacer(modifier = Modifier.width(6.dp))
-                StatusChip("Gemini", uiState.geminiStatus)
+                StatusChip("Gemini", uiState.geminiStatus, colors.chipBg)
                 Spacer(modifier = Modifier.width(6.dp))
-                StatusChip("HF", uiState.hfStatus)
+                StatusChip("HF", uiState.hfStatus, colors.chipBg)
                 Spacer(modifier = Modifier.width(6.dp))
-                StatusChip("Tavily", uiState.tavilyStatus)
+                StatusChip("Tavily", uiState.tavilyStatus, colors.chipBg)
             }
 
-            // Orb Section
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -140,13 +136,13 @@ fun RuhanScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = uiState.statusText,
-                        color = Color.Gray,
+                        color = colors.textSecondary,
                         fontSize = 14.sp
                     )
                     if (uiState.currentTranscript.isNotBlank()) {
                         Text(
                             text = "\"${uiState.currentTranscript}\"",
-                            color = CyanColor.copy(alpha = 0.7f),
+                            color = colors.accent.copy(alpha = 0.7f),
                             fontSize = 13.sp,
                             modifier = Modifier.padding(top = 4.dp)
                         )
@@ -162,7 +158,6 @@ fun RuhanScreen(
                 }
             }
 
-            // Waveform
             AnimatedVisibility(
                 visible = uiState.isListening,
                 enter = fadeIn(),
@@ -170,6 +165,7 @@ fun RuhanScreen(
             ) {
                 WaveformVisualizer(
                     isActive = uiState.isListening,
+                    color = colors.accent,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(40.dp)
@@ -177,7 +173,6 @@ fun RuhanScreen(
                 )
             }
 
-            // Conversation History
             LazyColumn(
                 state = listState,
                 modifier = Modifier
@@ -190,12 +185,15 @@ fun RuhanScreen(
                     ConversationBubble(
                         message = message.message,
                         isUser = message.isUser,
-                        timestamp = message.timestamp
+                        timestamp = message.timestamp,
+                        userBubbleColor = colors.userBubble,
+                        ruhanBubbleColor = colors.ruhanBubble,
+                        userTextColor = colors.textPrimary,
+                        ruhanTextColor = colors.ruhanText
                     )
                 }
             }
 
-            // Keyboard Input
             AnimatedVisibility(
                 visible = uiState.showKeyboard,
                 enter = slideInVertically(initialOffsetY = { it }),
@@ -211,25 +209,24 @@ fun RuhanScreen(
                         value = uiState.textInput,
                         onValueChange = { viewModel.onTextInputChanged(it) },
                         modifier = Modifier.weight(1f),
-                        placeholder = { Text("Boss, kya likhna hai?", color = Color.Gray) },
+                        placeholder = { Text("Boss, kya likhna hai?", color = colors.textSecondary) },
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
-                            focusedBorderColor = CyanColor,
-                            unfocusedBorderColor = Color.DarkGray,
-                            cursorColor = CyanColor
+                            focusedTextColor = colors.textPrimary,
+                            unfocusedTextColor = colors.textPrimary,
+                            focusedBorderColor = colors.accent,
+                            unfocusedBorderColor = colors.inputBorder,
+                            cursorColor = colors.accent
                         ),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                         keyboardActions = KeyboardActions(onSend = { viewModel.submitTextInput() }),
                         singleLine = true
                     )
                     IconButton(onClick = { viewModel.submitTextInput() }) {
-                        Icon(Icons.Default.Send, "Send", tint = CyanColor)
+                        Icon(Icons.AutoMirrored.Filled.Send, "Send", tint = colors.accent)
                     }
                 }
             }
 
-            // Bottom Bar
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -237,7 +234,6 @@ fun RuhanScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Live Voice Button
                 IconButton(
                     onClick = {
                         if (uiState.isLiveVoiceActive) viewModel.stopLiveVoice()
@@ -247,12 +243,11 @@ fun RuhanScreen(
                     Icon(
                         if (uiState.isLiveVoiceActive) Icons.Default.Close else Icons.Default.GraphicEq,
                         "Live Voice",
-                        tint = if (uiState.isLiveVoiceActive) Color.Green else Color.Gray,
+                        tint = if (uiState.isLiveVoiceActive) Color.Green else colors.textSecondary,
                         modifier = Modifier.size(28.dp)
                     )
                 }
 
-                // Mic Button
                 IconButton(
                     onClick = {
                         if (uiState.isListening) viewModel.stopListening()
@@ -261,59 +256,58 @@ fun RuhanScreen(
                     modifier = Modifier
                         .size(64.dp)
                         .background(
-                            if (uiState.isListening) CyanColor else Color(0xFF1A1A1A),
+                            if (uiState.isListening) colors.accent else colors.card,
                             CircleShape
                         )
                 ) {
                     Icon(
                         if (uiState.isListening) Icons.Default.Close else Icons.Default.Mic,
                         "Microphone",
-                        tint = if (uiState.isListening) DarkBg else CyanColor,
+                        tint = if (uiState.isListening) colors.background else colors.accent,
                         modifier = Modifier.size(32.dp)
                     )
                 }
 
-                // Keyboard Button
                 IconButton(onClick = { viewModel.toggleKeyboard() }) {
                     Icon(
                         Icons.Default.Keyboard,
                         "Keyboard",
-                        tint = if (uiState.showKeyboard) CyanColor else Color.Gray,
+                        tint = if (uiState.showKeyboard) colors.accent else colors.textSecondary,
                         modifier = Modifier.size(28.dp)
                     )
                 }
             }
         }
 
-        // Confirmation Dialog
         uiState.pendingConfirmation?.let { question ->
             AlertDialog(
                 onDismissRequest = { viewModel.cancelAction() },
-                title = { Text("Ruhan", color = CyanColor) },
-                text = { Text(question, color = Color.White) },
+                title = { Text("Ruhan", color = colors.accent) },
+                text = { Text(question, color = colors.textPrimary) },
                 confirmButton = {
                     Button(
                         onClick = { viewModel.confirmAction() },
-                        colors = ButtonDefaults.buttonColors(containerColor = CyanColor)
-                    ) { Text("Han", color = DarkBg) }
+                        colors = ButtonDefaults.buttonColors(containerColor = colors.accent)
+                    ) { Text("Han", color = colors.background) }
                 },
                 dismissButton = {
                     OutlinedButton(onClick = { viewModel.cancelAction() }) {
-                        Text("Nahi", color = Color.Gray)
+                        Text("Nahi", color = colors.textSecondary)
                     }
                 },
-                containerColor = Color(0xFF1A1A1A)
+                containerColor = colors.card
             )
         }
     }
 }
 
 @Composable
-private fun StatusChip(name: String, isActive: Boolean) {
+private fun StatusChip(name: String, isActive: Boolean, chipBg: Color) {
     val color = if (isActive) Color.Green else Color.Red
+    val colors = RuhanThemeColors.current
     Row(
         modifier = Modifier
-            .background(Color(0xFF111111), RoundedCornerShape(12.dp))
+            .background(chipBg, RoundedCornerShape(12.dp))
             .padding(horizontal = 8.dp, vertical = 3.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -323,6 +317,6 @@ private fun StatusChip(name: String, isActive: Boolean) {
                 .background(color, CircleShape)
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(name, color = Color.Gray, fontSize = 10.sp)
+        Text(name, color = colors.textSecondary, fontSize = 10.sp)
     }
 }

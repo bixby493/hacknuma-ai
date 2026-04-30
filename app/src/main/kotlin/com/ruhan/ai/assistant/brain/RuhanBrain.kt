@@ -34,6 +34,14 @@ class RuhanBrain @Inject constructor(
     private val boss get() = preferencesManager.bossName
 
     suspend fun process(input: String): BrainResponse {
+        return try {
+            processInternal(input)
+        } catch (e: Exception) {
+            BrainResponse.Speak("$boss, ek error aa gaya: ${e.message ?: "unknown error"}. Dobara try karo.")
+        }
+    }
+
+    private suspend fun processInternal(input: String): BrainResponse {
         if (memoryManager.parseAndStore(input)) {
             return BrainResponse.Speak("Yaad rakh liya, $boss!")
         }
@@ -196,6 +204,7 @@ class RuhanBrain @Inject constructor(
         return BrainResponse.Speak("$boss, $place ka rasta dikha raha hoon.")
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun handleEmail(recipient: String, subject: String, body: String): BrainResponse {
         return BrainResponse.Speak("$boss, Gmail integration ke liye Settings mein Gmail connect karo.")
     }
@@ -217,6 +226,6 @@ class RuhanBrain @Inject constructor(
 
         val extraContext = if (context.isNotBlank()) "\n\nMemory context:\n$context" else ""
         val response = aiRepository.chat(message + extraContext)
-        return BrainResponse.Speak(response ?: "$boss, abhi AI se connect nahi ho pa raha.")
+        return BrainResponse.Speak(response)
     }
 }

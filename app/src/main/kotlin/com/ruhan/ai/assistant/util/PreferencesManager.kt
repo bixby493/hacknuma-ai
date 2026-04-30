@@ -106,6 +106,10 @@ class PreferencesManager(context: Context) {
         get() = prefs.getBoolean(KEY_FIRST_BOOT, true)
         set(value) = prefs.edit().putBoolean(KEY_FIRST_BOOT, value).apply()
 
+    var voiceGender: String
+        get() = prefs.getString(KEY_VOICE_GENDER, "male") ?: "male"
+        set(value) = prefs.edit().putString(KEY_VOICE_GENDER, value).apply()
+
     fun hasGroqKey(): Boolean = groqApiKey.isNotBlank()
     fun hasGeminiKey(): Boolean = geminiApiKey.isNotBlank()
     fun hasHuggingFaceKey(): Boolean = huggingFaceApiKey.isNotBlank()
@@ -134,5 +138,6 @@ class PreferencesManager(context: Context) {
         private const val KEY_LANGUAGE = "language"
         private const val KEY_THEME = "theme"
         private const val KEY_FIRST_BOOT = "first_boot"
+        private const val KEY_VOICE_GENDER = "voice_gender"
     }
 }

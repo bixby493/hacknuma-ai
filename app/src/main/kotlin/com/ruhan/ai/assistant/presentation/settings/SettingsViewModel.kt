@@ -21,6 +21,7 @@ data class SettingsUiState(
     val floatingButton: Boolean = false,
     val voiceSpeed: Float = 0.9f,
     val voicePitch: Float = 0.85f,
+    val voiceGender: String = "male",
     val dailyBriefingEnabled: Boolean = false,
     val dailyBriefingHour: Int = 8,
     val dailyBriefingMinute: Int = 0,
@@ -65,6 +66,7 @@ class SettingsViewModel @Inject constructor(
             floatingButton = preferencesManager.floatingButtonEnabled,
             voiceSpeed = preferencesManager.voiceSpeed,
             voicePitch = preferencesManager.voicePitch,
+            voiceGender = preferencesManager.voiceGender,
             dailyBriefingEnabled = preferencesManager.dailyBriefingEnabled,
             dailyBriefingHour = preferencesManager.dailyBriefingHour,
             dailyBriefingMinute = preferencesManager.dailyBriefingMinute,
@@ -112,6 +114,12 @@ class SettingsViewModel @Inject constructor(
     fun updateVoicePitch(pitch: Float) {
         preferencesManager.voicePitch = pitch
         _uiState.value = _uiState.value.copy(voicePitch = pitch)
+        voiceEngine.updateSettings()
+    }
+
+    fun updateVoiceGender(gender: String) {
+        preferencesManager.voiceGender = gender
+        _uiState.value = _uiState.value.copy(voiceGender = gender)
         voiceEngine.updateSettings()
     }
 

@@ -25,7 +25,11 @@ fun ConversationBubble(
     message: String,
     isUser: Boolean,
     timestamp: Long,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    userBubbleColor: Color = Color(0xFF1A1A2E),
+    ruhanBubbleColor: Color = Color(0xFF003344),
+    userTextColor: Color = Color.White,
+    ruhanTextColor: Color = Color(0xFF00E5FF)
 ) {
     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
     val timeString = timeFormat.format(Date(timestamp))
@@ -42,7 +46,7 @@ fun ConversationBubble(
             Box(
                 modifier = Modifier
                     .background(
-                        color = if (isUser) Color(0xFF1A1A2E) else Color(0xFF003344),
+                        color = if (isUser) userBubbleColor else ruhanBubbleColor,
                         shape = RoundedCornerShape(
                             topStart = 16.dp,
                             topEnd = 16.dp,
@@ -54,7 +58,7 @@ fun ConversationBubble(
             ) {
                 Text(
                     text = message,
-                    color = if (isUser) Color.White else Color(0xFF00E5FF),
+                    color = if (isUser) userTextColor else ruhanTextColor,
                     fontSize = 15.sp,
                     lineHeight = 20.sp
                 )

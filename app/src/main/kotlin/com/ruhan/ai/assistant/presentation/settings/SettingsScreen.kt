@@ -3,8 +3,10 @@ package com.ruhan.ai.assistant.presentation.settings
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -48,10 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-private val CyanColor = Color(0xFF00E5FF)
-private val DarkBg = Color(0xFF000000)
-private val CardBg = Color(0xFF111111)
+import com.ruhan.ai.assistant.presentation.theme.RuhanThemeColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,21 +60,21 @@ fun SettingsScreen(
     onNavigateBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
+    val colors = RuhanThemeColors.current
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBg)
+            .background(colors.background)
     ) {
         TopAppBar(
-            title = { Text("Settings", color = CyanColor, fontWeight = FontWeight.Bold) },
+            title = { Text("Settings", color = colors.accent, fontWeight = FontWeight.Bold) },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = CyanColor)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = colors.accent)
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkBg)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = colors.background)
         )
 
         Column(
@@ -84,12 +84,12 @@ fun SettingsScreen(
                 .padding(horizontal = 16.dp)
         ) {
             // SECTION 1 — Identity
-            SectionHeader("Identity")
-            SettingsTextField("Boss ka Naam", uiState.bossName, viewModel::updateBossName)
-            SettingsTextField("Wake Word", uiState.wakeWord, viewModel::updateWakeWord)
+            SectionHeader("Identity", colors.accent)
+            SettingsTextField("Boss ka Naam", uiState.bossName, viewModel::updateBossName, colors)
+            SettingsTextField("Wake Word", uiState.wakeWord, viewModel::updateWakeWord, colors)
 
             // SECTION 2 — API Keys
-            SectionHeader("API Keys")
+            SectionHeader("API Keys", colors.accent)
 
             ApiKeyField(
                 label = "Groq API Key",
@@ -97,7 +97,8 @@ fun SettingsScreen(
                 onChange = viewModel::updateGroqKey,
                 status = uiState.groqKeyStatus,
                 onTest = viewModel::testGroqKey,
-                link = "https://console.groq.com"
+                link = "https://console.groq.com",
+                colors = colors
             )
 
             ApiKeyField(
@@ -106,7 +107,8 @@ fun SettingsScreen(
                 onChange = viewModel::updateGeminiKey,
                 status = uiState.geminiKeyStatus,
                 onTest = viewModel::testGeminiKey,
-                link = "https://aistudio.google.com/apikey"
+                link = "https://aistudio.google.com/apikey",
+                colors = colors
             )
 
             ApiKeyField(
@@ -115,7 +117,8 @@ fun SettingsScreen(
                 onChange = viewModel::updateHuggingFaceKey,
                 status = uiState.hfKeyStatus,
                 onTest = viewModel::testHuggingFaceKey,
-                link = "https://huggingface.co/settings/tokens"
+                link = "https://huggingface.co/settings/tokens",
+                colors = colors
             )
 
             ApiKeyField(
@@ -124,68 +127,148 @@ fun SettingsScreen(
                 onChange = viewModel::updateTavilyKey,
                 status = uiState.tavilyKeyStatus,
                 onTest = viewModel::testTavilyKey,
-                link = "https://app.tavily.com"
+                link = "https://app.tavily.com",
+                colors = colors
             )
 
             // SECTION 3 — Voice
-            SectionHeader("Voice")
-            SettingsSwitch("Always Listening", uiState.alwaysListening, viewModel::toggleAlwaysListening)
+            SectionHeader("Voice", colors.accent)
+            SettingsSwitch("Always Listening", uiState.alwaysListening, viewModel::toggleAlwaysListening, colors)
 
-            Text("Voice Speed: ${String.format("%.1f", uiState.voiceSpeed)}x", color = Color.Gray, fontSize = 13.sp)
+            // Voice Gender Selection
+            Text("Voice Gender", color = colors.textSecondary, fontSize = 13.sp)
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                val genders = listOf("male" to "Male", "female" to "Female")
+                genders.forEach { (value, label) ->
+                    val isSelected = uiState.voiceGender == value
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(
+                                if (isSelected) colors.accent.copy(alpha = 0.2f) else colors.card,
+                                RoundedCornerShape(12.dp)
+                            )
+                            .border(
+                                width = if (isSelected) 2.dp else 1.dp,
+                                color = if (isSelected) colors.accent else colors.inputBorder,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clickable { viewModel.updateVoiceGender(value) }
+                            .padding(vertical = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            label,
+                            color = if (isSelected) colors.accent else colors.textSecondary,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text("Voice Speed: ${String.format("%.1f", uiState.voiceSpeed)}x", color = colors.textSecondary, fontSize = 13.sp)
             Slider(
                 value = uiState.voiceSpeed,
                 onValueChange = viewModel::updateVoiceSpeed,
                 valueRange = 0.5f..2.0f,
-                colors = SliderDefaults.colors(thumbColor = CyanColor, activeTrackColor = CyanColor)
+                colors = SliderDefaults.colors(thumbColor = colors.accent, activeTrackColor = colors.accent)
             )
 
-            Text("Voice Pitch: ${String.format("%.2f", uiState.voicePitch)}", color = Color.Gray, fontSize = 13.sp)
+            Text("Voice Pitch: ${String.format("%.2f", uiState.voicePitch)}", color = colors.textSecondary, fontSize = 13.sp)
             Slider(
                 value = uiState.voicePitch,
                 onValueChange = viewModel::updateVoicePitch,
                 valueRange = 0.5f..1.5f,
-                colors = SliderDefaults.colors(thumbColor = CyanColor, activeTrackColor = CyanColor)
+                colors = SliderDefaults.colors(thumbColor = colors.accent, activeTrackColor = colors.accent)
             )
 
-            Text("Wake Sensitivity: ${String.format("%.1f", uiState.wakeSensitivity)}", color = Color.Gray, fontSize = 13.sp)
+            Text("Wake Sensitivity: ${String.format("%.1f", uiState.wakeSensitivity)}", color = colors.textSecondary, fontSize = 13.sp)
             Slider(
                 value = uiState.wakeSensitivity,
                 onValueChange = viewModel::updateWakeSensitivity,
                 valueRange = 0.1f..1.0f,
-                colors = SliderDefaults.colors(thumbColor = CyanColor, activeTrackColor = CyanColor)
+                colors = SliderDefaults.colors(thumbColor = colors.accent, activeTrackColor = colors.accent)
             )
 
             OutlinedButton(
                 onClick = { viewModel.testVoice() },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Test Voice", color = CyanColor)
+                Text("Test Voice", color = colors.accent)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // SECTION 4 — Automation
-            SectionHeader("Automation")
-            SettingsSwitch("Daily Briefing", uiState.dailyBriefingEnabled, viewModel::toggleDailyBriefing)
-            SettingsSwitch("Floating Button", uiState.floatingButton, viewModel::toggleFloatingButton)
+            // SECTION 4 — Theme
+            SectionHeader("Theme", colors.accent)
+            Text("Select Theme", color = colors.textSecondary, fontSize = 13.sp)
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val themes = listOf(
+                    "amoled" to "AMOLED",
+                    "dark" to "Dark",
+                    "light" to "Light"
+                )
+                themes.forEach { (value, label) ->
+                    val isSelected = uiState.theme == value
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(
+                                if (isSelected) colors.accent.copy(alpha = 0.2f) else colors.card,
+                                RoundedCornerShape(12.dp)
+                            )
+                            .border(
+                                width = if (isSelected) 2.dp else 1.dp,
+                                color = if (isSelected) colors.accent else colors.inputBorder,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clickable { viewModel.updateTheme(value) }
+                            .padding(vertical = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            label,
+                            color = if (isSelected) colors.accent else colors.textSecondary,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            }
 
-            // SECTION 5 — Privacy & Security
-            SectionHeader("Privacy & Security")
-            SettingsSwitch("Biometric Lock", uiState.biometricLockEnabled, viewModel::toggleBiometricLock)
-            SettingsSwitch("Fake Crash Screen", uiState.fakeCrashEnabled, viewModel::toggleFakeCrash)
-            SettingsSwitch("Break-in Photo", uiState.breakInPhotoEnabled, viewModel::toggleBreakInPhoto)
-            SettingsSwitch("Memory Encryption", uiState.memoryEncryption, viewModel::toggleMemoryEncryption)
-            SettingsTextField("Emergency Contact", uiState.emergencyContact, viewModel::updateEmergencyContact)
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // SECTION 6 — Premium
-            SectionHeader("Premium")
+            // SECTION 5 — Automation
+            SectionHeader("Automation", colors.accent)
+            SettingsSwitch("Daily Briefing", uiState.dailyBriefingEnabled, viewModel::toggleDailyBriefing, colors)
+            SettingsSwitch("Floating Button", uiState.floatingButton, viewModel::toggleFloatingButton, colors)
+
+            // SECTION 6 — Privacy & Security
+            SectionHeader("Privacy & Security", colors.accent)
+            SettingsSwitch("Biometric Lock", uiState.biometricLockEnabled, viewModel::toggleBiometricLock, colors)
+            SettingsSwitch("Fake Crash Screen", uiState.fakeCrashEnabled, viewModel::toggleFakeCrash, colors)
+            SettingsSwitch("Break-in Photo", uiState.breakInPhotoEnabled, viewModel::toggleBreakInPhoto, colors)
+            SettingsSwitch("Memory Encryption", uiState.memoryEncryption, viewModel::toggleMemoryEncryption, colors)
+            SettingsTextField("Emergency Contact", uiState.emergencyContact, viewModel::updateEmergencyContact, colors)
+
+            // SECTION 7 — Premium
+            SectionHeader("Premium", colors.accent)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(CardBg, RoundedCornerShape(12.dp))
+                    .background(colors.card, RoundedCornerShape(12.dp))
                     .padding(16.dp)
             ) {
-                Text("You are a Premium Boss!", color = CyanColor, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text("You are a Premium Boss!", color = colors.accent, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(8.dp))
                 val features = listOf(
                     "Live Voice Conversation", "Screen Peeler", "Ghost Control",
@@ -205,43 +288,60 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun SectionHeader(title: String) {
+private fun SectionHeader(
+    title: String,
+    accent: Color
+) {
     Spacer(modifier = Modifier.height(16.dp))
     Text(
         text = title.uppercase(),
-        color = CyanColor,
+        color = accent,
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
         letterSpacing = 2.sp,
         modifier = Modifier.padding(vertical = 8.dp)
     )
-    @Suppress("DEPRECATION")
-    androidx.compose.material3.Divider(color = Color(0xFF222222))
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(Color(0xFF222222))
+    )
     Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable
-private fun SettingsTextField(label: String, value: String, onChange: (String) -> Unit) {
+private fun SettingsTextField(
+    label: String,
+    value: String,
+    onChange: (String) -> Unit,
+    colors: com.ruhan.ai.assistant.presentation.theme.RuhanColors
+) {
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
-        label = { Text(label, color = Color.Gray) },
+        label = { Text(label, color = colors.textSecondary) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = Color.White,
-            unfocusedTextColor = Color.White,
-            focusedBorderColor = CyanColor,
-            unfocusedBorderColor = Color(0xFF333333),
-            cursorColor = CyanColor
+            focusedTextColor = colors.textPrimary,
+            unfocusedTextColor = colors.textPrimary,
+            focusedBorderColor = colors.accent,
+            unfocusedBorderColor = colors.inputBorder,
+            cursorColor = colors.accent
         ),
         singleLine = true
     )
 }
 
 @Composable
-private fun SettingsSwitch(label: String, checked: Boolean, onToggle: (Boolean) -> Unit) {
+private fun SettingsSwitch(
+    label: String,
+    checked: Boolean,
+    onToggle: (Boolean) -> Unit,
+    colors: com.ruhan.ai.assistant.presentation.theme.RuhanColors
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -249,13 +349,13 @@ private fun SettingsSwitch(label: String, checked: Boolean, onToggle: (Boolean) 
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(label, color = Color.White, fontSize = 15.sp)
+        Text(label, color = colors.textPrimary, fontSize = 15.sp)
         Switch(
             checked = checked,
             onCheckedChange = onToggle,
             colors = SwitchDefaults.colors(
-                checkedThumbColor = CyanColor,
-                checkedTrackColor = CyanColor.copy(alpha = 0.3f)
+                checkedThumbColor = colors.accent,
+                checkedTrackColor = colors.accent.copy(alpha = 0.3f)
             )
         )
     }
@@ -268,14 +368,15 @@ private fun ApiKeyField(
     onChange: (String) -> Unit,
     status: KeyTestStatus,
     onTest: () -> Unit,
-    link: String
+    link: String,
+    colors: com.ruhan.ai.assistant.presentation.theme.RuhanColors
 ) {
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(CardBg, RoundedCornerShape(12.dp))
+            .background(colors.card, RoundedCornerShape(12.dp))
             .padding(12.dp)
     ) {
         Row(
@@ -285,15 +386,15 @@ private fun ApiKeyField(
             OutlinedTextField(
                 value = value,
                 onValueChange = onChange,
-                label = { Text(label, color = Color.Gray) },
+                label = { Text(label, color = colors.textSecondary) },
                 modifier = Modifier.weight(1f),
                 visualTransformation = PasswordVisualTransformation(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    focusedBorderColor = CyanColor,
-                    unfocusedBorderColor = Color(0xFF333333),
-                    cursorColor = CyanColor
+                    focusedTextColor = colors.textPrimary,
+                    unfocusedTextColor = colors.textPrimary,
+                    focusedBorderColor = colors.accent,
+                    unfocusedBorderColor = colors.inputBorder,
+                    cursorColor = colors.accent
                 ),
                 singleLine = true
             )
@@ -305,7 +406,7 @@ private fun ApiKeyField(
                     containerColor = when (status) {
                         KeyTestStatus.SUCCESS -> Color.Green
                         KeyTestStatus.FAILED -> Color.Red
-                        else -> CyanColor
+                        else -> colors.accent
                     }
                 ),
                 modifier = Modifier.height(48.dp)
@@ -318,14 +419,14 @@ private fun ApiKeyField(
                     )
                     KeyTestStatus.SUCCESS -> Icon(Icons.Default.Check, "Success", tint = Color.White)
                     KeyTestStatus.FAILED -> Icon(Icons.Default.Close, "Failed", tint = Color.White)
-                    KeyTestStatus.IDLE -> Text("TEST", color = DarkBg, fontSize = 12.sp)
+                    KeyTestStatus.IDLE -> Text("TEST", color = colors.background, fontSize = 12.sp)
                 }
             }
         }
 
         Text(
             text = "Get key: $link",
-            color = CyanColor.copy(alpha = 0.7f),
+            color = colors.accent.copy(alpha = 0.7f),
             fontSize = 11.sp,
             modifier = Modifier
                 .padding(top = 4.dp)
