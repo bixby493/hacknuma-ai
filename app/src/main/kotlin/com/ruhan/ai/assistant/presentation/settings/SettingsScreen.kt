@@ -213,9 +213,9 @@ fun SettingsScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val themes = listOf(
+                    "hacker" to "HACKER",
                     "amoled" to "AMOLED",
-                    "dark" to "Dark",
-                    "light" to "Light"
+                    "dark" to "DARK"
                 )
                 themes.forEach { (value, label) ->
                     val isSelected = uiState.theme == value
@@ -305,7 +305,7 @@ private fun SectionHeader(
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(Color(0xFF222222))
+            .background(Color(0xFF1A3A1A))
     )
     Spacer(modifier = Modifier.height(8.dp))
 }

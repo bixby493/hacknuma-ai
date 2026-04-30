@@ -39,7 +39,7 @@ fun FloatingRuhanButton(
         drawCircle(
             brush = Brush.radialGradient(
                 colors = listOf(
-                    Color(0xFF00E5FF).copy(alpha = 0.3f),
+                    Color(0xFF00FF41).copy(alpha = 0.3f),
                     Color.Transparent
                 ),
                 center = center,
@@ -52,9 +52,9 @@ fun FloatingRuhanButton(
         drawCircle(
             brush = Brush.radialGradient(
                 colors = listOf(
-                    Color(0xFF00E5FF),
-                    Color(0xFF0088FF),
-                    Color(0xFF003366)
+                    Color(0xFF00FF41),
+                    Color(0xFF00CC33),
+                    Color(0xFF004411)
                 ),
                 center = center,
                 radius = radius * pulse

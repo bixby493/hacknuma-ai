@@ -73,17 +73,17 @@ fun RuhanOrb(
     )
 
     val primaryColor = when (state) {
-        OrbState.IDLE -> Color(0xFF0088FF)
-        OrbState.LISTENING -> Color(0xFF00E5FF)
-        OrbState.THINKING -> Color(0xFFFFD700)
-        OrbState.SPEAKING -> Color(0xFF00FF88)
+        OrbState.IDLE -> Color(0xFF00CC33)
+        OrbState.LISTENING -> Color(0xFF00FF41)
+        OrbState.THINKING -> Color(0xFF33FF66)
+        OrbState.SPEAKING -> Color(0xFF00FF00)
     }
 
     val secondaryColor = when (state) {
-        OrbState.IDLE -> Color(0xFF0044AA)
-        OrbState.LISTENING -> Color(0xFF0099CC)
-        OrbState.THINKING -> Color(0xFFFFA500)
-        OrbState.SPEAKING -> Color(0xFF00AA55)
+        OrbState.IDLE -> Color(0xFF006618)
+        OrbState.LISTENING -> Color(0xFF009922)
+        OrbState.THINKING -> Color(0xFF00AA33)
+        OrbState.SPEAKING -> Color(0xFF008822)
     }
 
     val ringExpand by infiniteTransition.animateFloat(
@@ -129,7 +129,7 @@ fun RuhanOrb(
                 val px = center.x + kotlin.math.cos(angle).toFloat() * dist
                 val py = center.y + kotlin.math.sin(angle).toFloat() * dist
                 drawCircle(
-                    color = Color(0xFFFFD700).copy(alpha = glowAlpha),
+                    color = Color(0xFF33FF66).copy(alpha = glowAlpha),
                     radius = 4f,
                     center = Offset(px, py)
                 )

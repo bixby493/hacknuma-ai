@@ -31,7 +31,7 @@ data class SettingsUiState(
     val huggingFaceApiKey: String = "",
     val tavilyApiKey: String = "",
     val language: String = "hinglish",
-    val theme: String = "amoled",
+    val theme: String = "hacker",
     val groqKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
     val geminiKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,
     val hfKeyStatus: KeyTestStatus = KeyTestStatus.IDLE,

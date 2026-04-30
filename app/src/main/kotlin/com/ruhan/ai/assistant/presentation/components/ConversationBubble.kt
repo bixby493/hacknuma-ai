@@ -26,10 +26,10 @@ fun ConversationBubble(
     isUser: Boolean,
     timestamp: Long,
     modifier: Modifier = Modifier,
-    userBubbleColor: Color = Color(0xFF1A1A2E),
-    ruhanBubbleColor: Color = Color(0xFF003344),
-    userTextColor: Color = Color.White,
-    ruhanTextColor: Color = Color(0xFF00E5FF)
+    userBubbleColor: Color = Color(0xFF0A1F0A),
+    ruhanBubbleColor: Color = Color(0xFF002200),
+    userTextColor: Color = Color(0xFF00FF41),
+    ruhanTextColor: Color = Color(0xFF00FF41)
 ) {
     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
     val timeString = timeFormat.format(Date(timestamp))

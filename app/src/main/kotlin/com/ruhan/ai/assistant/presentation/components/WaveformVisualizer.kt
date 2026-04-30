@@ -23,7 +23,7 @@ import kotlin.math.sin
 fun WaveformVisualizer(
     isActive: Boolean,
     modifier: Modifier = Modifier,
-    color: Color = Color(0xFF00E5FF),
+    color: Color = Color(0xFF00FF41),
     barCount: Int = 30
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "waveform")

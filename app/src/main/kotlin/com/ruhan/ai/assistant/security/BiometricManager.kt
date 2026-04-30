@@ -87,6 +87,8 @@ class BiometricManager @Inject constructor(
         }
     }
 
+    fun captureBreakInPhoto(activity: FragmentActivity) = captureIntruderPhoto(activity)
+
     private fun captureIntruderPhoto(activity: FragmentActivity) {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "Break-in attempt detected!", Toast.LENGTH_LONG).show()

@@ -99,7 +99,7 @@ class PreferencesManager(context: Context) {
         set(value) = prefs.edit().putString(KEY_LANGUAGE, value).apply()
 
     var theme: String
-        get() = prefs.getString(KEY_THEME, "amoled") ?: "amoled"
+        get() = prefs.getString(KEY_THEME, "hacker") ?: "hacker"
         set(value) = prefs.edit().putString(KEY_THEME, value).apply()
 
     var isFirstBoot: Boolean
@@ -109,6 +109,18 @@ class PreferencesManager(context: Context) {
     var voiceGender: String
         get() = prefs.getString(KEY_VOICE_GENDER, "male") ?: "male"
         set(value) = prefs.edit().putString(KEY_VOICE_GENDER, value).apply()
+
+    var lockType: String
+        get() = prefs.getString(KEY_LOCK_TYPE, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_LOCK_TYPE, value).apply()
+
+    var lockPin: String
+        get() = prefs.getString(KEY_LOCK_PIN, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_LOCK_PIN, value).apply()
+
+    var isLockSetup: Boolean
+        get() = prefs.getBoolean(KEY_LOCK_SETUP, false)
+        set(value) = prefs.edit().putBoolean(KEY_LOCK_SETUP, value).apply()
 
     fun hasGroqKey(): Boolean = groqApiKey.isNotBlank()
     fun hasGeminiKey(): Boolean = geminiApiKey.isNotBlank()
@@ -139,5 +151,8 @@ class PreferencesManager(context: Context) {
         private const val KEY_THEME = "theme"
         private const val KEY_FIRST_BOOT = "first_boot"
         private const val KEY_VOICE_GENDER = "voice_gender"
+        private const val KEY_LOCK_TYPE = "lock_type"
+        private const val KEY_LOCK_PIN = "lock_pin"
+        private const val KEY_LOCK_SETUP = "lock_setup"
     }
 }
