@@ -19,11 +19,14 @@ data class TavilyRequest(
     @SerializedName("search_depth")
     val searchDepth: String = "basic",
     @SerializedName("max_results")
-    val maxResults: Int = 3
+    val maxResults: Int = 3,
+    @SerializedName("include_answer")
+    val includeAnswer: Boolean = false
 )
 
 data class TavilyResponse(
-    val results: List<TavilyResult>?
+    val results: List<TavilyResult>?,
+    val answer: String? = null
 )
 
 data class TavilyResult(

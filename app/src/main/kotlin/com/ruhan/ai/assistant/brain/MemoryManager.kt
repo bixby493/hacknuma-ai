@@ -186,9 +186,10 @@ class MemoryManager @Inject constructor(
         val lower = text.lowercase().trim()
         return when {
             lower.startsWith("ruhan yaad rakho") || lower.startsWith("yaad rakho") ||
-                    lower.startsWith("remember that") || lower.startsWith("ruhan remember") -> {
+                    lower.startsWith("remember that") || lower.startsWith("ruhan remember") ||
+                    lower.startsWith("yaad rakh") -> {
                 val fact = text
-                    .replace(Regex("^(ruhan\\s+)?(yaad\\s+rakho\\s*(ki\\s+)?|remember\\s+(that\\s+)?)", RegexOption.IGNORE_CASE), "")
+                    .replace(Regex("^(ruhan\\s+)?(yaad\\s+rakh(o)?\\s*(ki\\s+)?|remember\\s+(that\\s+)?)", RegexOption.IGNORE_CASE), "")
                     .trim()
                 if (fact.isNotBlank()) {
                     rememberFact(fact)
@@ -200,6 +201,43 @@ class MemoryManager @Inject constructor(
                 val parts = text.split(Regex("\\s+matlab\\s+", RegexOption.IGNORE_CASE))
                 if (parts.size == 2 && parts[0].trim().isNotBlank() && parts[1].trim().isNotBlank()) {
                     rememberNickname(parts[0].trim(), parts[1].trim())
+                    true
+                } else false
+            }
+
+            lower.matches(Regex(".*mera\\s+(naam|name)\\s+(.+)\\s+(hai|he|h).*")) -> {
+                val nameMatch = Regex("mera\\s+(naam|name)\\s+(.+?)\\s+(hai|he|h)", RegexOption.IGNORE_CASE).find(text)
+                val name = nameMatch?.groupValues?.get(2)?.trim()
+                if (!name.isNullOrBlank()) {
+                    rememberFact("Boss ka naam $name hai")
+                    rememberPreference("boss_real_name", name)
+                    true
+                } else false
+            }
+
+            lower.matches(Regex(".*mera\\s+(.+?)\\s+(ka|ki|ke)\\s+(number|phone)\\s+(.+)\\s+(hai|he|h).*")) -> {
+                val match = Regex("mera\\s+(.+?)\\s+(ka|ki|ke)\\s+(number|phone)\\s+(.+?)\\s+(hai|he|h)", RegexOption.IGNORE_CASE).find(text)
+                val person = match?.groupValues?.get(1)?.trim()
+                val number = match?.groupValues?.get(4)?.trim()
+                if (!person.isNullOrBlank() && !number.isNullOrBlank()) {
+                    rememberFact("$person ka number $number hai")
+                    true
+                } else false
+            }
+
+            lower.matches(Regex(".*mujhe\\s+(.+?)\\s+(pasand|favorite|favourite).*")) ||
+                    lower.matches(Regex(".*mera\\s+favorite\\s+(.+?)\\s+(hai|he|h).*")) -> {
+                val fact = text.replace(Regex("^(ruhan\\s+)?", RegexOption.IGNORE_CASE), "").trim()
+                rememberPreference("preference", fact)
+                true
+            }
+
+            lower.matches(Regex(".*main\\s+(.+?)\\s+ko\\s+(.+?)\\s+(bolta|bulata|kehta).*")) -> {
+                val match = Regex("main\\s+(.+?)\\s+ko\\s+(.+?)\\s+(bolta|bulata|kehta)", RegexOption.IGNORE_CASE).find(text)
+                val realName = match?.groupValues?.get(1)?.trim()
+                val nickname = match?.groupValues?.get(2)?.trim()
+                if (!realName.isNullOrBlank() && !nickname.isNullOrBlank()) {
+                    rememberNickname(nickname, realName)
                     true
                 } else false
             }

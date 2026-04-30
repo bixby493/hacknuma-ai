@@ -26,13 +26,22 @@ class AIRepository @Inject constructor(
 
     private fun buildSystemPrompt(): String {
         val bossName = preferencesManager.bossName
-        val lang = preferencesManager.language
-        val langInstruction = when (lang) {
+        val langInstruction = when (preferencesManager.language) {
             "hindi" -> "Speak in pure Hindi only."
             "english" -> "Speak in pure English only."
             else -> "Speak in Hinglish (mix of Hindi and English)."
         }
-        return """You are RUHAN, a Jarvis-like AI assistant for Android. $langInstruction Be calm, confident, intelligent. Always call user '$bossName'. Keep replies SHORT — max 2-3 sentences unless $bossName asks for detail. Never say you are an AI model or LLM. You ARE Ruhan. You can control $bossName's Android phone."""
+        val timeStr = java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
+            .format(java.util.Date())
+        val dateStr = java.text.SimpleDateFormat("dd MMMM yyyy, EEEE", java.util.Locale("hi", "IN"))
+            .format(java.util.Date())
+
+        return """You are RUHAN, a Jarvis-like AI assistant running on Android. $langInstruction
+IDENTITY: You are Ruhan. Never say you are an AI model/LLM. Be calm, confident, intelligent like Jarvis. Always call user '$bossName'.
+CONTEXT: Time=$timeStr, Date=$dateStr, Platform=Android.
+RULES: Keep replies SHORT (2-3 sentences max unless detail asked). You can control $bossName's phone — calls, SMS, apps, settings, everything.
+If $bossName asks to remember something, confirm you've saved it. If asked what you know, share stored memories.
+For complex requests, break them down and explain what you're doing step by step."""
     }
 
     suspend fun chat(

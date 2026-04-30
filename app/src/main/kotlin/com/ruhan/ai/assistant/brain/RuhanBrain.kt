@@ -53,6 +53,7 @@ class RuhanBrain @Inject constructor(
             is ParsedCommand.Sms -> handleSms(cmd.name, cmd.message)
             is ParsedCommand.WhatsApp -> handleWhatsApp(cmd.name, cmd.message)
             is ParsedCommand.OpenApp -> handleOpenApp(cmd.appName)
+            is ParsedCommand.CloseApp -> handleCloseApp(cmd.appName)
             is ParsedCommand.Reminder -> handleReminder(cmd.task, cmd.delayMinutes)
             is ParsedCommand.Setting -> handleSetting(cmd.setting, cmd.action)
             is ParsedCommand.Brightness -> handleBrightness(cmd.level)
@@ -94,6 +95,12 @@ class RuhanBrain @Inject constructor(
             is ParsedCommand.WifiScan -> handleWifiScan()
             is ParsedCommand.LiveVoice -> BrainResponse.StartLiveVoice()
             is ParsedCommand.PhoneHealthReport -> handleDiagnostics()
+            is ParsedCommand.Weather -> handleWeather(cmd.location)
+            is ParsedCommand.PlayMusic -> handlePlayMusic(cmd.query)
+            is ParsedCommand.SetAlarm -> handleSetAlarm(cmd.hour, cmd.minute, cmd.label)
+            is ParsedCommand.SetTimer -> handleSetTimer(cmd.seconds)
+            is ParsedCommand.Translate -> handleTranslate(cmd.text, cmd.targetLang)
+            is ParsedCommand.Calculate -> handleCalculate(cmd.expression)
             is ParsedCommand.AiChat -> handleAiChat(cmd.message)
         }
     }
@@ -140,6 +147,10 @@ class RuhanBrain @Inject constructor(
         } else {
             BrainResponse.Speak("$boss, $appName nahi mila phone mein.")
         }
+    }
+
+    private fun handleCloseApp(appName: String): BrainResponse {
+        return BrainResponse.Speak("$boss, $appName band karne ki koshish kar raha hoon. Recent apps se hatao.")
     }
 
     private fun handleReminder(task: String, delayMinutes: Int): BrainResponse {
@@ -221,6 +232,70 @@ class RuhanBrain @Inject constructor(
         return BrainResponse.Speak(result)
     }
 
+    private suspend fun handleWeather(location: String): BrainResponse {
+        val query = if (location == "current") "current weather" else "weather in $location"
+        val result = aiRepository.searchWeb(query)
+        return BrainResponse.Speak(result ?: "$boss, weather info nahi mil rahi. Internet check karo.")
+    }
+
+    private fun handlePlayMusic(query: String): BrainResponse {
+        val searchUrl = "https://www.youtube.com/results?search_query=${java.net.URLEncoder.encode(query, "UTF-8")}"
+        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(searchUrl)).apply {
+            flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        try {
+            (context as? android.content.Context)?.startActivity(intent)
+                ?: context.startActivity(intent)
+            return BrainResponse.Speak("$boss, YouTube pe '$query' search kar raha hoon.")
+        } catch (_: Exception) {
+            return BrainResponse.Speak("$boss, music app nahi khul raha.")
+        }
+    }
+
+    private fun handleSetAlarm(hour: Int, minute: Int, label: String): BrainResponse {
+        val intent = android.content.Intent(android.provider.AlarmClock.ACTION_SET_ALARM).apply {
+            putExtra(android.provider.AlarmClock.EXTRA_HOUR, hour)
+            putExtra(android.provider.AlarmClock.EXTRA_MINUTES, minute)
+            putExtra(android.provider.AlarmClock.EXTRA_MESSAGE, label)
+            putExtra(android.provider.AlarmClock.EXTRA_SKIP_UI, true)
+            flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        try {
+            context.startActivity(intent)
+            return BrainResponse.Speak("$boss, alarm $hour:${String.format("%02d", minute)} pe set kar diya.")
+        } catch (_: Exception) {
+            return BrainResponse.Speak("$boss, alarm set nahi ho raha. Clock app check karo.")
+        }
+    }
+
+    private fun handleSetTimer(seconds: Int): BrainResponse {
+        val intent = android.content.Intent(android.provider.AlarmClock.ACTION_SET_TIMER).apply {
+            putExtra(android.provider.AlarmClock.EXTRA_LENGTH, seconds)
+            putExtra(android.provider.AlarmClock.EXTRA_SKIP_UI, true)
+            flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        try {
+            context.startActivity(intent)
+            val display = if (seconds >= 60) "${seconds / 60} minute" else "$seconds second"
+            return BrainResponse.Speak("$boss, $display ka timer set kar diya.")
+        } catch (_: Exception) {
+            return BrainResponse.Speak("$boss, timer set nahi ho raha.")
+        }
+    }
+
+    private suspend fun handleTranslate(text: String, targetLang: String): BrainResponse {
+        val langName = if (targetLang == "hi") "Hindi" else "English"
+        val prompt = "Translate this to $langName: \"$text\". Only give the translation, nothing else."
+        val result = aiRepository.chat(prompt)
+        return BrainResponse.Speak(result)
+    }
+
+    private suspend fun handleCalculate(expression: String): BrainResponse {
+        val prompt = "Calculate: $expression. Give only the answer."
+        val result = aiRepository.chat(prompt)
+        return BrainResponse.Speak("$boss, answer hai: $result")
+    }
+
     private suspend fun handleAiChat(message: String): BrainResponse {
         val memContext = memoryManager.getAllMemories()
             .take(5)
@@ -236,4 +311,6 @@ class RuhanBrain @Inject constructor(
         val response = aiRepository.chat(message + extraContext, history)
         return BrainResponse.Speak(response)
     }
+
+    private val context get() = phoneRepository.getContext()
 }

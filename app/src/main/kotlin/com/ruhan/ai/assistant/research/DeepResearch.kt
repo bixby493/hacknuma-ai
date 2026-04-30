@@ -5,7 +5,10 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import com.ruhan.ai.assistant.data.remote.TavilyApiService
+import com.ruhan.ai.assistant.data.remote.TavilyRequest
 import com.ruhan.ai.assistant.data.repository.AIRepository
+import com.ruhan.ai.assistant.util.PreferencesManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,32 +41,15 @@ interface ResearchDao {
 @Singleton
 class DeepResearch @Inject constructor(
     private val aiRepository: AIRepository,
-    private val researchDao: ResearchDao
+    private val researchDao: ResearchDao,
+    private val tavilyApiService: TavilyApiService,
+    private val preferencesManager: PreferencesManager
 ) {
     suspend fun research(topic: String): String {
-        val searchResults = aiRepository.searchWeb(topic)
+        val webResults = fetchWebSources(topic)
 
-        val prompt = """
-            You are RUHAN, a research assistant. Create a research report in Hinglish on: "$topic"
-            
-            ${if (searchResults != null) "Web search results:\n$searchResults" else ""}
-            
-            Format the report as:
-            EXECUTIVE SUMMARY: (3 lines max)
-            
-            KEY FINDINGS:
-            1. ...
-            2. ...
-            3. ...
-            4. ...
-            5. ...
-            
-            DETAILED ANALYSIS: (200 words)
-            
-            Keep language Hinglish. Be concise and informative.
-        """.trimIndent()
-
-        val report = aiRepository.chat(prompt) ?: "Boss, research complete nahi ho payi. Internet check karo."
+        val prompt = buildResearchPrompt(topic, webResults)
+        val report = try { aiRepository.chat(prompt) } catch (_: Exception) { "Boss, research complete nahi ho payi. Internet check karo." }
 
         try {
             researchDao.insert(
@@ -71,14 +57,77 @@ class DeepResearch @Inject constructor(
                     topic = topic,
                     summary = report.take(200),
                     findings = report,
-                    sources = searchResults?.take(500) ?: "",
-                    confidence = if (searchResults != null) 85 else 60
+                    sources = webResults?.take(500) ?: "",
+                    confidence = calculateConfidence(webResults, report)
                 )
             )
-        } catch (_: Exception) {
-        }
+        } catch (_: Exception) { }
 
         return report
+    }
+
+    private suspend fun fetchWebSources(topic: String): String? {
+        if (!preferencesManager.hasTavilyKey()) {
+            return aiRepository.searchWeb(topic)
+        }
+
+        return try {
+            val response = tavilyApiService.search(
+                TavilyRequest(
+                    apiKey = preferencesManager.tavilyApiKey,
+                    query = topic,
+                    searchDepth = "advanced",
+                    maxResults = 8,
+                    includeAnswer = true
+                )
+            )
+
+            val answer = response.answer?.let { "Direct Answer: $it\n\n" } ?: ""
+            val sources = response.results?.mapIndexed { i, r ->
+                "Source ${i + 1}: ${r.title}\nURL: ${r.url}\nContent: ${r.content}"
+            }?.joinToString("\n\n") ?: ""
+
+            answer + sources
+        } catch (_: Exception) {
+            aiRepository.searchWeb(topic)
+        }
+    }
+
+    private fun buildResearchPrompt(topic: String, webResults: String?): String {
+        return """You are RUHAN's research engine. Create a comprehensive research report on: "$topic"
+
+${if (webResults != null) "WEB SOURCES:\n$webResults" else "No web sources available. Use your knowledge."}
+
+FORMAT YOUR REPORT EXACTLY LIKE THIS:
+
+📋 EXECUTIVE SUMMARY
+(3 concise lines summarizing the key finding)
+
+🔑 KEY FINDINGS
+1. [Most important finding]
+2. [Second finding]
+3. [Third finding]
+4. [Fourth finding]
+5. [Fifth finding]
+
+📊 DETAILED ANALYSIS
+(200-300 words of in-depth analysis)
+
+📎 SOURCES
+(List URLs if available)
+
+🎯 CONFIDENCE: [HIGH/MEDIUM/LOW]
+
+Keep language Hinglish. Be authoritative and precise. Boss ko impress karna hai."""
+    }
+
+    private fun calculateConfidence(webResults: String?, report: String): Int {
+        var score = 50
+        if (webResults != null) score += 20
+        if (webResults != null && webResults.length > 500) score += 10
+        if (report.length > 300) score += 10
+        if (report.contains("Source") || report.contains("http")) score += 10
+        return score.coerceAtMost(100)
     }
 
     suspend fun getHistory(): List<ResearchEntity> = researchDao.getAll()

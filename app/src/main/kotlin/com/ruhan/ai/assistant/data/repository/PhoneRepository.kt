@@ -81,4 +81,5 @@ class PhoneRepository @Inject constructor(
     fun getBatteryLevel(): Int = phoneController.getBatteryLevel()
     fun openApp(appName: String): Boolean = phoneController.openApp(appName)
     fun getNetworkInfo(): String = phoneController.getNetworkInfo()
+    fun getContext(): Context = context
 }
