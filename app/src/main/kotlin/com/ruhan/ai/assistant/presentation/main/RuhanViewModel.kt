@@ -57,11 +57,11 @@ class RuhanViewModel @Inject constructor(
     private var pendingOnConfirm: (suspend () -> String)? = null
 
     init {
-        setupSpeechCallbacks()
-        loadConversations()
-        updateApiStatus()
-        observeLiveVoice()
-        initializeVoice()
+        try { setupSpeechCallbacks() } catch (_: Exception) {}
+        try { loadConversations() } catch (_: Exception) {}
+        try { updateApiStatus() } catch (_: Exception) {}
+        try { observeLiveVoice() } catch (_: Exception) {}
+        try { initializeVoice() } catch (_: Exception) {}
     }
 
     private fun setupSpeechCallbacks() {
@@ -112,64 +112,74 @@ class RuhanViewModel @Inject constructor(
     }
 
     private fun initializeVoice() {
-        voiceEngine.initialize(onReady = {
-            checkFirstBoot()
-        })
+        try {
+            voiceEngine.initialize(onReady = {
+                try { checkFirstBoot() } catch (_: Exception) {}
+            })
+        } catch (_: Exception) {}
     }
 
     private fun observeLiveVoice() {
         viewModelScope.launch {
-            geminiLiveVoice.state.collect { state ->
-                val orbState = when (state) {
-                    LiveVoiceState.IDLE -> OrbState.IDLE
-                    LiveVoiceState.CONNECTING -> OrbState.THINKING
-                    LiveVoiceState.LISTENING -> OrbState.LISTENING
-                    LiveVoiceState.PROCESSING -> OrbState.THINKING
-                    LiveVoiceState.SPEAKING -> OrbState.SPEAKING
-                    LiveVoiceState.ERROR -> OrbState.IDLE
-                }
-                _uiState.value = _uiState.value.copy(
-                    orbState = orbState,
-                    isLiveVoiceActive = state != LiveVoiceState.IDLE && state != LiveVoiceState.ERROR,
-                    statusText = when (state) {
-                        LiveVoiceState.IDLE -> "Idle — Say Hello Ruhan"
-                        LiveVoiceState.CONNECTING -> "Connecting to Gemini Live..."
-                        LiveVoiceState.LISTENING -> "Live Voice — Listening..."
-                        LiveVoiceState.PROCESSING -> "Gemini processing..."
-                        LiveVoiceState.SPEAKING -> "Ruhan speaking..."
-                        LiveVoiceState.ERROR -> {
-                            val errorMsg = geminiLiveVoice.errorMessage.value
-                            if (errorMsg.isNotBlank()) errorMsg else "Live voice error"
-                        }
+            try {
+                geminiLiveVoice.state.collect { state ->
+                    val orbState = when (state) {
+                        LiveVoiceState.IDLE -> OrbState.IDLE
+                        LiveVoiceState.CONNECTING -> OrbState.THINKING
+                        LiveVoiceState.LISTENING -> OrbState.LISTENING
+                        LiveVoiceState.PROCESSING -> OrbState.THINKING
+                        LiveVoiceState.SPEAKING -> OrbState.SPEAKING
+                        LiveVoiceState.ERROR -> OrbState.IDLE
                     }
-                )
-            }
+                    _uiState.value = _uiState.value.copy(
+                        orbState = orbState,
+                        isLiveVoiceActive = state != LiveVoiceState.IDLE && state != LiveVoiceState.ERROR,
+                        statusText = when (state) {
+                            LiveVoiceState.IDLE -> "Idle — Say Hello Ruhan"
+                            LiveVoiceState.CONNECTING -> "Connecting to Gemini Live..."
+                            LiveVoiceState.LISTENING -> "Live Voice — Listening..."
+                            LiveVoiceState.PROCESSING -> "Gemini processing..."
+                            LiveVoiceState.SPEAKING -> "Ruhan speaking..."
+                            LiveVoiceState.ERROR -> {
+                                val errorMsg = geminiLiveVoice.errorMessage.value
+                                if (errorMsg.isNotBlank()) errorMsg else "Live voice error"
+                            }
+                        }
+                    )
+                }
+            } catch (_: Exception) {}
         }
         viewModelScope.launch {
-            geminiLiveVoice.transcript.collect { text ->
-                _uiState.value = _uiState.value.copy(liveTranscript = text)
-            }
+            try {
+                geminiLiveVoice.transcript.collect { text ->
+                    _uiState.value = _uiState.value.copy(liveTranscript = text)
+                }
+            } catch (_: Exception) {}
         }
     }
 
     private fun checkFirstBoot() {
-        if (preferencesManager.isFirstBoot) {
-            _uiState.value = _uiState.value.copy(isFirstBoot = true)
-            val greeting = "Namaste ${preferencesManager.bossName}. Main Ruhan hoon — aapka personal AI assistant. Aaj main aapki kya madad kar sakta hoon?"
-            viewModelScope.launch {
-                try { conversationRepository.saveMessage(greeting, isUser = false) } catch (_: Exception) {}
-                loadConversations()
-                speak(greeting)
+        try {
+            if (preferencesManager.isFirstBoot) {
+                _uiState.value = _uiState.value.copy(isFirstBoot = true)
+                val greeting = "Namaste ${preferencesManager.bossName}. Main Ruhan hoon — aapka personal AI assistant."
+                viewModelScope.launch {
+                    try { conversationRepository.saveMessage(greeting, isUser = false) } catch (_: Exception) {}
+                    try { loadConversations() } catch (_: Exception) {}
+                    try { speak(greeting) } catch (_: Exception) {}
+                }
+                preferencesManager.isFirstBoot = false
             }
-            preferencesManager.isFirstBoot = false
-        }
+        } catch (_: Exception) {}
     }
 
     private fun loadConversations() {
         viewModelScope.launch {
-            conversationRepository.getRecentConversations().collect { conversations ->
-                _uiState.value = _uiState.value.copy(conversations = conversations)
-            }
+            try {
+                conversationRepository.getRecentConversations().collect { conversations ->
+                    _uiState.value = _uiState.value.copy(conversations = conversations)
+                }
+            } catch (_: Exception) {}
         }
     }
 
@@ -183,12 +193,16 @@ class RuhanViewModel @Inject constructor(
     }
 
     fun startListening() {
-        voiceEngine.stop()
-        speechManager.startListening()
+        try {
+            voiceEngine.stop()
+            speechManager.startListening()
+        } catch (_: Exception) {
+            _uiState.value = _uiState.value.copy(statusText = "Mic access fail")
+        }
     }
 
     fun stopListening() {
-        speechManager.stopListening()
+        try { speechManager.stopListening() } catch (_: Exception) {}
         _uiState.value = _uiState.value.copy(
             orbState = OrbState.IDLE,
             statusText = "Idle — Say Hello Ruhan",
@@ -197,13 +211,17 @@ class RuhanViewModel @Inject constructor(
     }
 
     fun startLiveVoice() {
-        speechManager.stopListening()
-        voiceEngine.stop()
-        geminiLiveVoice.startLiveSession()
+        try {
+            speechManager.stopListening()
+            voiceEngine.stop()
+            geminiLiveVoice.startLiveSession()
+        } catch (_: Exception) {
+            _uiState.value = _uiState.value.copy(statusText = "Live voice start fail")
+        }
     }
 
     fun stopLiveVoice() {
-        geminiLiveVoice.stopLiveSession()
+        try { geminiLiveVoice.stopLiveSession() } catch (_: Exception) {}
     }
 
     fun onTextInputChanged(text: String) {
@@ -305,21 +323,28 @@ class RuhanViewModel @Inject constructor(
     }
 
     private suspend fun speak(text: String) {
-        voiceEngine.speak(
-            text,
-            onStart = {
-                _uiState.value = _uiState.value.copy(
-                    orbState = OrbState.SPEAKING,
-                    statusText = "Speaking..."
-                )
-            },
-            onDone = {
-                _uiState.value = _uiState.value.copy(
-                    orbState = OrbState.IDLE,
-                    statusText = "Idle — Say Hello Ruhan"
-                )
-            }
-        )
+        try {
+            voiceEngine.speak(
+                text,
+                onStart = {
+                    _uiState.value = _uiState.value.copy(
+                        orbState = OrbState.SPEAKING,
+                        statusText = "Speaking..."
+                    )
+                },
+                onDone = {
+                    _uiState.value = _uiState.value.copy(
+                        orbState = OrbState.IDLE,
+                        statusText = "Idle — Say Hello Ruhan"
+                    )
+                }
+            )
+        } catch (_: Exception) {
+            _uiState.value = _uiState.value.copy(
+                orbState = OrbState.IDLE,
+                statusText = "Idle — Say Hello Ruhan"
+            )
+        }
     }
 
     fun clearConversations() {
@@ -330,8 +355,8 @@ class RuhanViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        speechManager.destroy()
-        voiceEngine.shutdown()
-        geminiLiveVoice.stopLiveSession()
+        try { speechManager.destroy() } catch (_: Exception) {}
+        try { voiceEngine.shutdown() } catch (_: Exception) {}
+        try { geminiLiveVoice.stopLiveSession() } catch (_: Exception) {}
     }
 }

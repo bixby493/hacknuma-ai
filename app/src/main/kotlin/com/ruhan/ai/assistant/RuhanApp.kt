@@ -10,6 +10,11 @@ class RuhanApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            android.util.Log.e("RuhanAI", "Uncaught: ${throwable.message}", throwable)
+            defaultHandler?.uncaughtException(thread, throwable)
+        }
         createNotificationChannels()
     }
 

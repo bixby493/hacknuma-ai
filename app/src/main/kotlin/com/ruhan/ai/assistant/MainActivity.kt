@@ -406,13 +406,14 @@ class MainActivity : FragmentActivity() {
             }
         }
 
-        // Auto-trigger biometric on composition
         androidx.compose.runtime.LaunchedEffect(Unit) {
-            biometricManager.authenticate(
-                activity = this@MainActivity,
-                onSuccess = { isAuthenticated = true },
-                onFail = { }
-            )
+            try {
+                biometricManager.authenticate(
+                    activity = this@MainActivity,
+                    onSuccess = { isAuthenticated = true },
+                    onFail = { }
+                )
+            } catch (_: Exception) {}
         }
     }
 
