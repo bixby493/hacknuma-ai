@@ -22,14 +22,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
-
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -45,15 +42,25 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ruhan.ai.assistant.presentation.theme.RuhanThemeColors
+
+private val hackerGreen = Color(0xFF00FF41)
+private val cardBg = Color(0xFF0A0F0A)
+private val borderColor = Color(0xFF1A3A1A)
+private val deepBg = Color(0xFF050805)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,369 +70,530 @@ fun SettingsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colors = RuhanThemeColors.current
+    var selectedTab by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
     ) {
+        // Command Center Header
         TopAppBar(
-            title = { Text("Settings", color = colors.accent, fontWeight = FontWeight.Bold) },
+            title = {},
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = colors.accent)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = hackerGreen)
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = colors.background)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = deepBg)
         )
 
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(deepBg)
+                .padding(horizontal = 16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(cardBg, RoundedCornerShape(12.dp))
+                        .border(1.dp, borderColor, RoundedCornerShape(12.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Settings, null, tint = hackerGreen, modifier = Modifier.size(20.dp))
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                    Text(
+                        "Command Center",
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(6.dp)
+                                .background(hackerGreen, CircleShape)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            "SYSTEM ONLINE",
+                            color = hackerGreen,
+                            fontSize = 10.sp,
+                            fontFamily = FontFamily.Monospace,
+                            letterSpacing = 2.sp
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Tabs
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(cardBg, RoundedCornerShape(12.dp))
+                    .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                TabButton("GENERAL", Icons.Default.Settings, selectedTab == 0) { selectedTab = 0 }
+                TabButton("API KEYS", Icons.Default.Key, selectedTab == 1) { selectedTab = 1 }
+                TabButton("SECURITY", Icons.Default.Security, selectedTab == 2) { selectedTab = 2 }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
+        // Tab Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
         ) {
-            // SECTION 1 — Identity
-            SectionHeader("Identity", colors.accent)
-            SettingsTextField("Boss ka Naam", uiState.bossName, viewModel::updateBossName, colors)
-            SettingsTextField("Wake Word", uiState.wakeWord, viewModel::updateWakeWord, colors)
-
-            // SECTION 2 — External API Endpoints (Command Center style)
-            SectionHeader("External API Endpoints", colors.accent)
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xFF0A0F0A), RoundedCornerShape(16.dp))
-                    .border(1.dp, colors.accent.copy(alpha = 0.15f), RoundedCornerShape(16.dp))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                ApiKeyField(
-                    label = "GEMINI PRO CORE",
-                    value = uiState.geminiApiKey,
-                    onChange = viewModel::updateGeminiKey,
-                    status = uiState.geminiKeyStatus,
-                    onTest = viewModel::testGeminiKey,
-                    link = "https://aistudio.google.com/apikey",
-                    colors = colors
-                )
-
-                ApiKeyField(
-                    label = "GROQ FAST INFERENCING",
-                    value = uiState.groqApiKey,
-                    onChange = viewModel::updateGroqKey,
-                    status = uiState.groqKeyStatus,
-                    onTest = viewModel::testGroqKey,
-                    link = "https://console.groq.com",
-                    colors = colors
-                )
-
-                ApiKeyField(
-                    label = "HUGGING FACE VISION",
-                    value = uiState.huggingFaceApiKey,
-                    onChange = viewModel::updateHuggingFaceKey,
-                    status = uiState.hfKeyStatus,
-                    onTest = viewModel::testHuggingFaceKey,
-                    link = "https://huggingface.co/settings/tokens",
-                    colors = colors
-                )
-
-                ApiKeyField(
-                    label = "TAVILY RESEARCH AGENT",
-                    value = uiState.tavilyApiKey,
-                    onChange = viewModel::updateTavilyKey,
-                    status = uiState.tavilyKeyStatus,
-                    onTest = viewModel::testTavilyKey,
-                    link = "https://app.tavily.com",
-                    colors = colors
-                )
-
-                ApiKeyField(
-                    label = "NOTION SYNC ENGINE",
-                    value = uiState.notionApiKey,
-                    onChange = viewModel::updateNotionApiKey,
-                    status = uiState.notionKeyStatus,
-                    onTest = viewModel::testNotionKey,
-                    link = "https://www.notion.so/my-integrations",
-                    colors = colors
-                )
-
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        "NOTION DATABASE ID",
-                        color = colors.textSecondary.copy(alpha = 0.7f),
-                        fontSize = 10.sp,
-                        letterSpacing = 2.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                    OutlinedTextField(
-                        value = uiState.notionDatabaseId,
-                        onValueChange = viewModel::updateNotionDatabaseId,
-                        placeholder = { Text("Database ID paste karo...", color = Color(0xFF333833)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = colors.textPrimary,
-                            unfocusedTextColor = colors.textPrimary,
-                            focusedBorderColor = colors.accent.copy(alpha = 0.3f),
-                            unfocusedBorderColor = colors.textSecondary.copy(alpha = 0.15f),
-                            cursorColor = colors.accent
-                        ),
-                        singleLine = true
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFF050805), RoundedCornerShape(8.dp))
-                        .padding(12.dp),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Icon(
-                        Icons.Default.Lock,
-                        contentDescription = null,
-                        tint = colors.textSecondary.copy(alpha = 0.5f),
-                        modifier = Modifier.size(14.dp).padding(top = 2.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        "[SECURITY NOTICE]: All API keys are encrypted and stored strictly in your local device. RUHAN does not transmit these keys to any centralized server.",
-                        color = colors.textSecondary.copy(alpha = 0.5f),
-                        fontSize = 10.sp,
-                        lineHeight = 14.sp
-                    )
-                }
+            when (selectedTab) {
+                0 -> GeneralTab(uiState, viewModel)
+                1 -> ApiKeysTab(uiState, viewModel)
+                2 -> SecurityTab(uiState, viewModel)
             }
-
-            // SECTION 3 — Voice
-            SectionHeader("Voice", colors.accent)
-            SettingsSwitch("Always Listening", uiState.alwaysListening, viewModel::toggleAlwaysListening, colors)
-
-            // Voice Gender Selection
-            Text("Voice Gender", color = colors.textSecondary, fontSize = 13.sp)
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                val genders = listOf("male" to "Male", "female" to "Female")
-                genders.forEach { (value, label) ->
-                    val isSelected = uiState.voiceGender == value
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(
-                                if (isSelected) colors.accent.copy(alpha = 0.2f) else colors.card,
-                                RoundedCornerShape(12.dp)
-                            )
-                            .border(
-                                width = if (isSelected) 2.dp else 1.dp,
-                                color = if (isSelected) colors.accent else colors.inputBorder,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .clickable { viewModel.updateVoiceGender(value) }
-                            .padding(vertical = 12.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            label,
-                            color = if (isSelected) colors.accent else colors.textSecondary,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text("Voice Speed: ${String.format("%.1f", uiState.voiceSpeed)}x", color = colors.textSecondary, fontSize = 13.sp)
-            Slider(
-                value = uiState.voiceSpeed,
-                onValueChange = viewModel::updateVoiceSpeed,
-                valueRange = 0.5f..2.0f,
-                colors = SliderDefaults.colors(thumbColor = colors.accent, activeTrackColor = colors.accent)
-            )
-
-            Text("Voice Pitch: ${String.format("%.2f", uiState.voicePitch)}", color = colors.textSecondary, fontSize = 13.sp)
-            Slider(
-                value = uiState.voicePitch,
-                onValueChange = viewModel::updateVoicePitch,
-                valueRange = 0.5f..1.5f,
-                colors = SliderDefaults.colors(thumbColor = colors.accent, activeTrackColor = colors.accent)
-            )
-
-            Text("Wake Sensitivity: ${String.format("%.1f", uiState.wakeSensitivity)}", color = colors.textSecondary, fontSize = 13.sp)
-            Slider(
-                value = uiState.wakeSensitivity,
-                onValueChange = viewModel::updateWakeSensitivity,
-                valueRange = 0.1f..1.0f,
-                colors = SliderDefaults.colors(thumbColor = colors.accent, activeTrackColor = colors.accent)
-            )
-
-            OutlinedButton(
-                onClick = { viewModel.testVoice() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Test Voice", color = colors.accent)
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // SECTION 4 — Theme
-            SectionHeader("Theme", colors.accent)
-            Text("Select Theme", color = colors.textSecondary, fontSize = 13.sp)
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                val themes = listOf(
-                    "hacker" to "HACKER",
-                    "amoled" to "AMOLED",
-                    "dark" to "DARK"
-                )
-                themes.forEach { (value, label) ->
-                    val isSelected = uiState.theme == value
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(
-                                if (isSelected) colors.accent.copy(alpha = 0.2f) else colors.card,
-                                RoundedCornerShape(12.dp)
-                            )
-                            .border(
-                                width = if (isSelected) 2.dp else 1.dp,
-                                color = if (isSelected) colors.accent else colors.inputBorder,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .clickable { viewModel.updateTheme(value) }
-                            .padding(vertical = 12.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            label,
-                            color = if (isSelected) colors.accent else colors.textSecondary,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // SECTION 5 — Automation
-            SectionHeader("Automation", colors.accent)
-            SettingsSwitch("Daily Briefing", uiState.dailyBriefingEnabled, viewModel::toggleDailyBriefing, colors)
-            SettingsSwitch("Floating Button", uiState.floatingButton, viewModel::toggleFloatingButton, colors)
-
-            // SECTION 6 — Privacy & Security
-            SectionHeader("Privacy & Security", colors.accent)
-            SettingsSwitch("Biometric Lock", uiState.biometricLockEnabled, viewModel::toggleBiometricLock, colors)
-            SettingsSwitch("Fake Crash Screen", uiState.fakeCrashEnabled, viewModel::toggleFakeCrash, colors)
-            SettingsSwitch("Break-in Photo", uiState.breakInPhotoEnabled, viewModel::toggleBreakInPhoto, colors)
-            SettingsSwitch("Memory Encryption", uiState.memoryEncryption, viewModel::toggleMemoryEncryption, colors)
-            SettingsTextField("Emergency Contact", uiState.emergencyContact, viewModel::updateEmergencyContact, colors)
-
-            // SECTION 7 — Premium
-            SectionHeader("Premium", colors.accent)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(colors.card, RoundedCornerShape(12.dp))
-                    .padding(16.dp)
-            ) {
-                Text("You are a Premium Boss!", color = colors.accent, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Spacer(modifier = Modifier.height(8.dp))
-                val features = listOf(
-                    "Live Voice Conversation", "Screen Peeler", "Ghost Control",
-                    "Deep Research", "Memory System", "Smart Drop Zone",
-                    "Workflow Automation", "RAG Oracle", "Hacker Mode",
-                    "Wormhole P2P", "Live Location", "Gmail Manager",
-                    "Notes Manager", "Premium Lock", "Complete Settings"
-                )
-                features.forEach { feature ->
-                    Text("  $feature", color = Color.Green, fontSize = 13.sp)
-                }
-            }
-
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
 @Composable
-private fun SectionHeader(
-    title: String,
-    accent: Color
+private fun TabButton(
+    label: String,
+    icon: ImageVector,
+    isSelected: Boolean,
+    onClick: () -> Unit
 ) {
-    Spacer(modifier = Modifier.height(16.dp))
-    Text(
-        text = title.uppercase(),
-        color = accent,
-        fontWeight = FontWeight.Bold,
-        fontSize = 14.sp,
-        letterSpacing = 2.sp,
-        modifier = Modifier.padding(vertical = 8.dp)
-    )
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(1.dp)
-            .background(Color(0xFF1A3A1A))
-    )
-    Spacer(modifier = Modifier.height(8.dp))
+            .background(
+                if (isSelected) Color(0xFF1A2A1A) else Color.Transparent,
+                RoundedCornerShape(8.dp)
+            )
+            .border(
+                if (isSelected) 1.dp else 0.dp,
+                if (isSelected) hackerGreen.copy(alpha = 0.3f) else Color.Transparent,
+                RoundedCornerShape(8.dp)
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = if (isSelected) hackerGreen else Color.Gray,
+                modifier = Modifier.size(14.dp)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                label,
+                color = if (isSelected) Color.White else Color.Gray,
+                fontSize = 11.sp,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                letterSpacing = 1.sp
+            )
+        }
+    }
 }
 
-@Composable
-private fun SettingsTextField(
-    label: String,
-    value: String,
-    onChange: (String) -> Unit,
-    colors: com.ruhan.ai.assistant.presentation.theme.RuhanColors
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onChange,
-        label = { Text(label, color = colors.textSecondary) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = colors.textPrimary,
-            unfocusedTextColor = colors.textPrimary,
-            focusedBorderColor = colors.accent,
-            unfocusedBorderColor = colors.inputBorder,
-            cursorColor = colors.accent
-        ),
-        singleLine = true
-    )
-}
+// ═══════════════════ GENERAL TAB ═══════════════════
 
 @Composable
-private fun SettingsSwitch(
-    label: String,
-    checked: Boolean,
-    onToggle: (Boolean) -> Unit,
-    colors: com.ruhan.ai.assistant.presentation.theme.RuhanColors
+private fun GeneralTab(
+    uiState: SettingsUiState,
+    viewModel: SettingsViewModel
 ) {
+    // AI Personality Matrix
+    CardSection(title = "AI Personality Matrix", trailing = "${uiState.bossName.length}/150 WORDS") {
+        OutlinedTextField(
+            value = uiState.bossName,
+            onValueChange = viewModel::updateBossName,
+            placeholder = {
+                Text(
+                    "Define who RUHAN is. Example: 'You are a sassy, highly technical assistant...'",
+                    color = Color(0xFF333833),
+                    fontSize = 12.sp
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedBorderColor = borderColor,
+                unfocusedBorderColor = borderColor,
+                cursorColor = hackerGreen,
+                focusedContainerColor = cardBg,
+                unfocusedContainerColor = cardBg
+            )
+        )
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // User Designation + Voice Profile
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        CardSection(
+            title = "User Designation",
+            modifier = Modifier.weight(1f)
+        ) {
+            OutlinedTextField(
+                value = uiState.wakeWord,
+                onValueChange = viewModel::updateWakeWord,
+                placeholder = { Text("Hacknuma", color = Color(0xFF333833)) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = borderColor,
+                    unfocusedBorderColor = borderColor,
+                    cursorColor = hackerGreen,
+                    focusedContainerColor = cardBg,
+                    unfocusedContainerColor = cardBg
+                ),
+                singleLine = true
+            )
+        }
+
+        CardSection(
+            title = "OS Voice Profile",
+            modifier = Modifier.weight(1f)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                val genders = listOf("female" to "FEMALE", "male" to "MALE")
+                genders.forEach { (value, label) ->
+                    val isSelected = uiState.voiceGender == value
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(
+                                if (isSelected) hackerGreen.copy(alpha = 0.15f) else Color(0xFF2A2A2A),
+                                RoundedCornerShape(8.dp)
+                            )
+                            .border(
+                                1.dp,
+                                if (isSelected) hackerGreen.copy(alpha = 0.3f) else Color.Transparent,
+                                RoundedCornerShape(8.dp)
+                            )
+                            .clickable { viewModel.updateVoiceGender(value) }
+                            .padding(vertical = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            label,
+                            color = if (isSelected) hackerGreen else Color.Gray,
+                            fontSize = 11.sp,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // Voice Settings
+    CardSection(title = "Voice Configuration") {
+        SliderSetting("Voice Speed", uiState.voiceSpeed, viewModel::updateVoiceSpeed, 0.5f, 2.0f)
+        Spacer(modifier = Modifier.height(8.dp))
+        SliderSetting("Voice Pitch", uiState.voicePitch, viewModel::updateVoicePitch, 0.5f, 1.5f)
+        Spacer(modifier = Modifier.height(8.dp))
+        SliderSetting("Wake Sensitivity", uiState.wakeSensitivity, viewModel::updateWakeSensitivity, 0.1f, 1.0f)
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OutlinedButton(
+                onClick = { viewModel.testVoice() },
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text("TEST VOICE", color = hackerGreen, fontSize = 10.sp, fontFamily = FontFamily.Monospace)
+            }
+        }
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // Theme
+    CardSection(title = "Interface Theme") {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            val themes = listOf("hacker" to "HACKER", "amoled" to "AMOLED", "dark" to "DARK")
+            themes.forEach { (value, label) ->
+                val isSelected = uiState.theme == value
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(
+                            if (isSelected) hackerGreen.copy(alpha = 0.15f) else Color(0xFF1A1A1A),
+                            RoundedCornerShape(8.dp)
+                        )
+                        .border(
+                            1.dp,
+                            if (isSelected) hackerGreen.copy(alpha = 0.4f) else borderColor,
+                            RoundedCornerShape(8.dp)
+                        )
+                        .clickable { viewModel.updateTheme(value) }
+                        .padding(vertical = 12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        label,
+                        color = if (isSelected) hackerGreen else Color.Gray,
+                        fontSize = 11.sp,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                    )
+                }
+            }
+        }
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // Automation
+    CardSection(title = "Automation") {
+        SwitchRow("Always Listening", uiState.alwaysListening, viewModel::toggleAlwaysListening)
+        SwitchRow("Daily Briefing", uiState.dailyBriefingEnabled, viewModel::toggleDailyBriefing)
+        SwitchRow("Floating Button", uiState.floatingButton, viewModel::toggleFloatingButton)
+    }
+}
+
+// ═══════════════════ API KEYS TAB ═══════════════════
+
+@Composable
+private fun ApiKeysTab(
+    uiState: SettingsUiState,
+    viewModel: SettingsViewModel
+) {
+    CardSection(title = "Neural Uplink Keys") {
+        ApiKeyField(
+            label = "GEMINI PRO CORE",
+            value = uiState.geminiApiKey,
+            onChange = viewModel::updateGeminiKey,
+            status = uiState.geminiKeyStatus,
+            onTest = viewModel::testGeminiKey,
+            link = "https://aistudio.google.com/apikey"
+        )
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        ApiKeyField(
+            label = "GROQ FAST INFERENCING",
+            value = uiState.groqApiKey,
+            onChange = viewModel::updateGroqKey,
+            status = uiState.groqKeyStatus,
+            onTest = viewModel::testGroqKey,
+            link = "https://console.groq.com"
+        )
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        ApiKeyField(
+            label = "HUGGING FACE TTS",
+            value = uiState.huggingFaceApiKey,
+            onChange = viewModel::updateHuggingFaceKey,
+            status = uiState.hfKeyStatus,
+            onTest = viewModel::testHuggingFaceKey,
+            link = "https://huggingface.co/settings/tokens"
+        )
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        ApiKeyField(
+            label = "TAVILY RESEARCH AGENT",
+            value = uiState.tavilyApiKey,
+            onChange = viewModel::updateTavilyKey,
+            status = uiState.tavilyKeyStatus,
+            onTest = viewModel::testTavilyKey,
+            link = "https://app.tavily.com"
+        )
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        ApiKeyField(
+            label = "NOTION SYNC ENGINE",
+            value = uiState.notionApiKey,
+            onChange = viewModel::updateNotionApiKey,
+            status = uiState.notionKeyStatus,
+            onTest = viewModel::testNotionKey,
+            link = "https://www.notion.so/my-integrations"
+        )
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                "NOTION DATABASE ID",
+                color = Color.Gray,
+                fontSize = 9.sp,
+                fontFamily = FontFamily.Monospace,
+                letterSpacing = 2.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            OutlinedTextField(
+                value = uiState.notionDatabaseId,
+                onValueChange = viewModel::updateNotionDatabaseId,
+                placeholder = { Text("Database ID paste karo...", color = Color(0xFF333833), fontSize = 12.sp) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = hackerGreen.copy(alpha = 0.3f),
+                    unfocusedBorderColor = borderColor,
+                    cursorColor = hackerGreen,
+                    focusedContainerColor = deepBg,
+                    unfocusedContainerColor = deepBg
+                ),
+                singleLine = true
+            )
+        }
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // Security Notice
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .background(deepBg, RoundedCornerShape(8.dp))
+            .border(1.dp, borderColor, RoundedCornerShape(8.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.Top
     ) {
-        Text(label, color = colors.textPrimary, fontSize = 15.sp)
-        Switch(
-            checked = checked,
-            onCheckedChange = onToggle,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = colors.accent,
-                checkedTrackColor = colors.accent.copy(alpha = 0.3f)
-            )
+        Icon(Icons.Default.Lock, null, tint = Color.Gray, modifier = Modifier.size(14.dp))
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            "[SECURITY NOTICE]: All API keys are encrypted via AES-256-GCM and stored strictly in your device's secure storage. RUHAN does not transmit these keys to any centralized server.",
+            color = Color.Gray,
+            fontSize = 9.sp,
+            fontFamily = FontFamily.Monospace,
+            lineHeight = 14.sp
         )
+    }
+}
+
+// ═══════════════════ SECURITY TAB ═══════════════════
+
+@Composable
+private fun SecurityTab(
+    uiState: SettingsUiState,
+    viewModel: SettingsViewModel
+) {
+    CardSection(title = "Access Control") {
+        SwitchRow("Biometric Lock", uiState.biometricLockEnabled, viewModel::toggleBiometricLock)
+        SwitchRow("Fake Crash Screen", uiState.fakeCrashEnabled, viewModel::toggleFakeCrash)
+        SwitchRow("Break-in Photo Capture", uiState.breakInPhotoEnabled, viewModel::toggleBreakInPhoto)
+        SwitchRow("Memory Encryption", uiState.memoryEncryption, viewModel::toggleMemoryEncryption)
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    CardSection(title = "Emergency Protocol") {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                "EMERGENCY CONTACT",
+                color = Color.Gray,
+                fontSize = 9.sp,
+                fontFamily = FontFamily.Monospace,
+                letterSpacing = 2.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            OutlinedTextField(
+                value = uiState.emergencyContact,
+                onValueChange = viewModel::updateEmergencyContact,
+                placeholder = { Text("+91...", color = Color(0xFF333833)) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = hackerGreen.copy(alpha = 0.3f),
+                    unfocusedBorderColor = borderColor,
+                    cursorColor = hackerGreen,
+                    focusedContainerColor = deepBg,
+                    unfocusedContainerColor = deepBg
+                ),
+                singleLine = true
+            )
+        }
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    CardSection(title = "Encryption Status") {
+        StatusRow("Data Encryption", "AES-256-GCM", hackerGreen)
+        StatusRow("Key Storage", "Android Keystore", hackerGreen)
+        StatusRow("Memory Vault", if (uiState.memoryEncryption) "ENCRYPTED" else "OPEN", if (uiState.memoryEncryption) hackerGreen else Color.Yellow)
+        StatusRow("API Keys", "SECURED", hackerGreen)
+    }
+}
+
+// ═══════════════════ SHARED COMPONENTS ═══════════════════
+
+@Composable
+private fun CardSection(
+    title: String,
+    modifier: Modifier = Modifier,
+    trailing: String? = null,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(cardBg, RoundedCornerShape(12.dp))
+            .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+            .padding(14.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                title,
+                color = Color.LightGray,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+            if (trailing != null) {
+                Text(
+                    trailing,
+                    color = Color.Gray,
+                    fontSize = 9.sp,
+                    fontFamily = FontFamily.Monospace,
+                    letterSpacing = 1.sp
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        content()
     }
 }
 
@@ -436,8 +604,7 @@ private fun ApiKeyField(
     onChange: (String) -> Unit,
     status: KeyTestStatus,
     onTest: () -> Unit,
-    link: String,
-    colors: com.ruhan.ai.assistant.presentation.theme.RuhanColors
+    link: String
 ) {
     val context = LocalContext.current
 
@@ -449,14 +616,15 @@ private fun ApiKeyField(
         ) {
             Text(
                 label,
-                color = colors.textSecondary.copy(alpha = 0.7f),
-                fontSize = 10.sp,
+                color = Color.Gray,
+                fontSize = 9.sp,
+                fontFamily = FontFamily.Monospace,
                 letterSpacing = 2.sp,
                 fontWeight = FontWeight.Bold
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val statusDot = when (status) {
-                    KeyTestStatus.SUCCESS -> Color.Green
+                    KeyTestStatus.SUCCESS -> hackerGreen
                     KeyTestStatus.FAILED -> Color.Red
                     KeyTestStatus.TESTING -> Color.Yellow
                     KeyTestStatus.IDLE -> if (value.isNotBlank()) Color(0xFF335533) else Color(0xFF333333)
@@ -470,8 +638,9 @@ private fun ApiKeyField(
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         "TEST",
-                        color = colors.accent.copy(alpha = 0.6f),
+                        color = hackerGreen.copy(alpha = 0.6f),
                         fontSize = 9.sp,
+                        fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
                         modifier = Modifier.clickable { onTest() }
@@ -480,34 +649,28 @@ private fun ApiKeyField(
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF050505), RoundedCornerShape(8.dp))
-                .border(1.dp, colors.textSecondary.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
-                .padding(horizontal = 14.dp, vertical = 2.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                value = value,
-                onValueChange = onChange,
-                placeholder = { Text("Paste key here...", color = Color(0xFF333833), fontSize = 13.sp) },
-                modifier = Modifier.weight(1f),
-                visualTransformation = PasswordVisualTransformation(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = colors.textPrimary,
-                    unfocusedTextColor = colors.textPrimary,
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    cursorColor = colors.accent
-                ),
-                singleLine = true
-            )
-        }
+        OutlinedTextField(
+            value = value,
+            onValueChange = onChange,
+            placeholder = { Text("Paste key here...", color = Color(0xFF333833), fontSize = 12.sp) },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedBorderColor = hackerGreen.copy(alpha = 0.3f),
+                unfocusedBorderColor = borderColor,
+                cursorColor = hackerGreen,
+                focusedContainerColor = deepBg,
+                unfocusedContainerColor = deepBg
+            ),
+            singleLine = true
+        )
         Text(
             text = link,
-            color = colors.accent.copy(alpha = 0.4f),
+            color = hackerGreen.copy(alpha = 0.4f),
             fontSize = 9.sp,
+            fontFamily = FontFamily.Monospace,
             modifier = Modifier
                 .padding(top = 2.dp)
                 .clickable {
@@ -516,6 +679,106 @@ private fun ApiKeyField(
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     )
                 }
+        )
+    }
+}
+
+@Composable
+private fun SwitchRow(
+    label: String,
+    checked: Boolean,
+    onToggle: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(label, color = Color.LightGray, fontSize = 13.sp)
+        Switch(
+            checked = checked,
+            onCheckedChange = onToggle,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = hackerGreen,
+                checkedTrackColor = hackerGreen.copy(alpha = 0.3f),
+                uncheckedThumbColor = Color.Gray,
+                uncheckedTrackColor = Color(0xFF1A1A1A)
+            )
+        )
+    }
+}
+
+@Composable
+private fun SliderSetting(
+    label: String,
+    value: Float,
+    onChange: (Float) -> Unit,
+    min: Float,
+    max: Float
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            label,
+            color = Color.LightGray,
+            fontSize = 12.sp,
+            fontFamily = FontFamily.Monospace
+        )
+        Text(
+            String.format("%.1f", value),
+            color = hackerGreen,
+            fontSize = 12.sp,
+            fontFamily = FontFamily.Monospace,
+            fontWeight = FontWeight.Bold
+        )
+    }
+    Slider(
+        value = value,
+        onValueChange = onChange,
+        valueRange = min..max,
+        colors = SliderDefaults.colors(
+            thumbColor = hackerGreen,
+            activeTrackColor = hackerGreen,
+            inactiveTrackColor = Color(0xFF1A3A1A)
+        )
+    )
+}
+
+@Composable
+private fun StatusRow(name: String, status: String, statusColor: Color) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 3.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(5.dp)
+                    .background(statusColor, CircleShape)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                name,
+                color = Color.LightGray,
+                fontSize = 12.sp,
+                fontFamily = FontFamily.Monospace
+            )
+        }
+        Text(
+            status,
+            color = statusColor.copy(alpha = 0.8f),
+            fontSize = 10.sp,
+            fontFamily = FontFamily.Monospace,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp
         )
     }
 }

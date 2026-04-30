@@ -47,6 +47,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Settings
+import com.ruhan.ai.assistant.presentation.dashboard.DashboardScreen
 import com.ruhan.ai.assistant.presentation.main.RuhanScreen
 import com.ruhan.ai.assistant.presentation.main.RuhanViewModel
 import com.ruhan.ai.assistant.presentation.settings.SettingsScreen
@@ -87,26 +91,88 @@ class MainActivity : FragmentActivity() {
                         LockScreen()
                     } else {
                         val navController = rememberNavController()
-                        NavHost(
-                            navController = navController,
-                            startDestination = "main"
-                        ) {
-                            composable("main") {
-                                val viewModel: RuhanViewModel = hiltViewModel()
-                                RuhanScreen(
-                                    viewModel = viewModel,
-                                    onNavigateToSettings = {
-                                        navController.navigate("settings")
-                                    }
-                                )
+                        var currentTab by remember { mutableStateOf("dashboard") }
+
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            NavHost(
+                                navController = navController,
+                                startDestination = "dashboard",
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                composable("dashboard") {
+                                    currentTab = "dashboard"
+                                    DashboardScreen(
+                                        onNavigateToSettings = {
+                                            navController.navigate("settings")
+                                        }
+                                    )
+                                }
+                                composable("main") {
+                                    currentTab = "main"
+                                    val viewModel: RuhanViewModel = hiltViewModel()
+                                    RuhanScreen(
+                                        viewModel = viewModel,
+                                        onNavigateToSettings = {
+                                            navController.navigate("settings")
+                                        }
+                                    )
+                                }
+                                composable("settings") {
+                                    currentTab = "settings"
+                                    SettingsScreen(
+                                        viewModel = settingsVm,
+                                        onNavigateBack = {
+                                            navController.popBackStack()
+                                        }
+                                    )
+                                }
                             }
-                            composable("settings") {
-                                SettingsScreen(
-                                    viewModel = settingsVm,
-                                    onNavigateBack = {
-                                        navController.popBackStack()
-                                    }
-                                )
+
+                            if (currentTab != "settings") {
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .fillMaxWidth()
+                                        .background(Color(0xE6050805))
+                                        .padding(vertical = 8.dp, horizontal = 32.dp),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    BottomNavItem(
+                                        icon = Icons.Default.Dashboard,
+                                        label = "DASHBOARD",
+                                        isSelected = currentTab == "dashboard",
+                                        onClick = {
+                                            if (currentTab != "dashboard") {
+                                                navController.navigate("dashboard") {
+                                                    popUpTo("dashboard") { inclusive = true }
+                                                }
+                                            }
+                                        }
+                                    )
+                                    BottomNavItem(
+                                        icon = Icons.AutoMirrored.Filled.Chat,
+                                        label = "RUHAN",
+                                        isSelected = currentTab == "main",
+                                        onClick = {
+                                            if (currentTab != "main") {
+                                                navController.navigate("main") {
+                                                    popUpTo("dashboard")
+                                                }
+                                            }
+                                        }
+                                    )
+                                    BottomNavItem(
+                                        icon = Icons.Default.Settings,
+                                        label = "SETTINGS",
+                                        isSelected = currentTab == "settings",
+                                        onClick = {
+                                            navController.navigate("settings") {
+                                                popUpTo("dashboard")
+                                            }
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
@@ -500,6 +566,38 @@ class MainActivity : FragmentActivity() {
                 Text(title, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
                 Text(subtitle, color = Color.Gray, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
             }
+        }
+    }
+
+    @Composable
+    private fun BottomNavItem(
+        icon: ImageVector,
+        label: String,
+        isSelected: Boolean,
+        onClick: () -> Unit
+    ) {
+        val green = Color(0xFF00FF41)
+        Column(
+            modifier = Modifier
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                icon,
+                contentDescription = label,
+                tint = if (isSelected) green else Color.Gray,
+                modifier = Modifier.size(22.dp)
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                label,
+                color = if (isSelected) green else Color.Gray,
+                fontSize = 8.sp,
+                fontFamily = FontFamily.Monospace,
+                letterSpacing = 1.sp,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            )
         }
     }
 
