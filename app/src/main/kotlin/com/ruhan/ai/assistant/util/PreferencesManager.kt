@@ -136,6 +136,10 @@ class PreferencesManager(context: Context) {
     fun hasTavilyKey(): Boolean = tavilyApiKey.isNotBlank()
     fun hasNotionKey(): Boolean = notionApiKey.isNotBlank() && notionDatabaseId.isNotBlank()
 
+    fun isPremiumActivated(): Boolean = prefs.getBoolean(KEY_PREMIUM, false)
+    fun setPremiumActivated(value: Boolean) = prefs.edit().putBoolean(KEY_PREMIUM, value).apply()
+    fun setPremiumKey(key: String) = prefs.edit().putString(KEY_PREMIUM_KEY, key).apply()
+
     companion object {
         private const val KEY_GROQ_API = "groq_api_key"
         private const val KEY_GEMINI_API = "gemini_api_key"
@@ -165,5 +169,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_LOCK_SETUP = "lock_setup"
         private const val KEY_NOTION_API = "notion_api_key"
         private const val KEY_NOTION_DB_ID = "notion_database_id"
+        private const val KEY_PREMIUM = "premium_activated"
+        private const val KEY_PREMIUM_KEY = "premium_key"
     }
 }

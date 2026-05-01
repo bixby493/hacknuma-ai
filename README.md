@@ -19,11 +19,18 @@ echo "sdk.dir=/path/to/android/sdk" > local.properties
 adb install app/build/outputs/apk/debug/app-debug.apk
 ```
 
-2. Open the app → Settings → Add API Keys:
-   - **Groq** (Main AI Brain): [console.groq.com](https://console.groq.com)
-   - **Gemini** (Vision + Live Voice): [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
-   - **HuggingFace** (TTS): [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
-   - **Tavily** (Web Search): [app.tavily.com](https://app.tavily.com)
+2. Open the app → Settings → Add API Keys (**SAB FREE HAI!**):
+   - **Groq** (Main AI Brain — 30 RPM free): [console.groq.com/keys](https://console.groq.com/keys)
+   - **Gemini** (Vision + Chat — 1500/day free): [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+   - **HuggingFace** (Hindi TTS — free): [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
+   - **Tavily** (Web Search — 1000/month free): [tavily.com/#api](https://tavily.com/#api)
+   - **NVIDIA NIM** (1000/day free): [build.nvidia.com](https://build.nvidia.com/)
+   - **OpenRouter** (Multiple free models): [openrouter.ai/keys](https://openrouter.ai/keys)
+   - **Cerebras** (Ultra-fast Llama 70B free): [cloud.cerebras.ai](https://cloud.cerebras.ai/)
+   - **Mistral** (Free tier): [console.mistral.ai/api-keys](https://console.mistral.ai/api-keys/)
+   - **GitHub Models** (GPT-4o-mini free): [github.com/marketplace/models](https://github.com/marketplace/models)
+   
+   > 📋 **Full list of free APIs:** [github.com/cheahjs/free-llm-api-resources](https://github.com/cheahjs/free-llm-api-resources)
 
 3. Grant permissions when prompted (microphone, contacts, phone, SMS, location)
 
@@ -32,7 +39,39 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 
 ---
 
-## Voice Commands (50+)
+## Free vs Premium
+
+### FREE Features (Sab ke liye)
+| Feature | Description |
+|---------|-------------|
+| 70+ Voice Commands | Call, SMS, app control, file scan, screen time |
+| 7 Themes | Hacker, AMOLED, Dark, Pink, Blue, Gray, White |
+| AI Chat | Groq/Gemini powered conversations |
+| Screenshot Narrator | Auto-analyze screenshots with Gemini Vision |
+| Screen Time Tracking | Social media usage with emotional warnings |
+| Smart Clipboard | Clipboard history with auto-categorization |
+| Emergency Shake | 5 shakes = SMS + call to emergency contact |
+| File Scanner | Deep scan, junk clean, cache clear |
+| Anti-Tamper Security | Root/Xposed/Frida/debugger detection |
+| Dynamic Greetings | 20+ varied responses with shayari |
+| Offline Dictionary | 20K Hindi words, knowledge base, quotes |
+| 3D Splash Screen | Animated orb + premium boot sequence |
+| Sound Effects | 22 audio cues for UI feedback |
+| Deep Research | Tavily-powered web search |
+
+### PREMIUM Features (Paid)
+| Feature | Description |
+|---------|-------------|
+| Screen Share | Remote screen view via MediaProjection |
+| Voice Macro Recorder | Record and replay touch sequences |
+| Spam Call Therapy | AI auto-reply to spam callers |
+| Notification Time Travel | Priority reorder after phone absence |
+| Behavior Replication | One-shot task learning and replay |
+| Emotion Display | Mood-based brightness/color adaptation |
+
+---
+
+## Voice Commands (70+)
 
 ### Phone Calls
 | Command | Action |

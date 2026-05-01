@@ -437,6 +437,64 @@ private fun ApiKeysTab(
     uiState: SettingsUiState,
     viewModel: SettingsViewModel
 ) {
+    val context = LocalContext.current
+
+    // Free API Providers Info Card
+    CardSection(title = "FREE API Providers") {
+        Text(
+            "Sab FREE hai! Neeche se koi bhi provider choose karo aur API key le aao:",
+            color = Color(0xFF00FF41),
+            fontSize = 11.sp,
+            fontFamily = FontFamily.Monospace,
+            lineHeight = 16.sp
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        val freeProviders = listOf(
+            Triple("GROQ", "Fastest LLM (30 RPM free)", "https://console.groq.com/keys"),
+            Triple("GEMINI", "Google AI — Chat + Vision free (1500/day)", "https://aistudio.google.com/apikey"),
+            Triple("NVIDIA NIM", "1000 calls/day free", "https://build.nvidia.com/"),
+            Triple("OPENROUTER", "Multiple free models", "https://openrouter.ai/keys"),
+            Triple("CEREBRAS", "Ultra-fast Llama 3.3 70B free", "https://cloud.cerebras.ai/"),
+            Triple("HUGGINGFACE", "Free Hindi TTS", "https://huggingface.co/settings/tokens"),
+        )
+
+        freeProviders.forEach { (name, desc, url) ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 3.dp)
+                    .clickable {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(6.dp)
+                        .background(Color(0xFF00FF41), CircleShape)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column {
+                    Text(name, color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+                    Text(desc, color = Color.Gray, fontSize = 9.sp, fontFamily = FontFamily.Monospace)
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedButton(
+            onClick = {
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/cheahjs/free-llm-api-resources")))
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("ALL FREE APIs LIST (GitHub)", color = Color(0xFF00FF41), fontSize = 10.sp, fontFamily = FontFamily.Monospace)
+        }
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
     CardSection(title = "Neural Uplink Keys") {
         ApiKeyField(
             label = "GEMINI PRO CORE",
