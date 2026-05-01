@@ -3,8 +3,11 @@ package com.ruhan.ai.assistant.brain
 import com.ruhan.ai.assistant.data.repository.AIRepository
 import com.ruhan.ai.assistant.data.repository.ConversationRepository
 import com.ruhan.ai.assistant.data.repository.PhoneRepository
+import com.ruhan.ai.assistant.phone.AppUsageTracker
+import com.ruhan.ai.assistant.phone.EmergencyShakeDetector
 import com.ruhan.ai.assistant.phone.FileScanner
 import com.ruhan.ai.assistant.phone.SettingsController
+import com.ruhan.ai.assistant.phone.SmartClipboard
 import com.ruhan.ai.assistant.security.AntiTamperGuard
 import com.ruhan.ai.assistant.premium.LocationManager
 import com.ruhan.ai.assistant.premium.NotesManager
@@ -31,6 +34,9 @@ class RuhanBrain @Inject constructor(
     private val settingsController: SettingsController,
     private val fileScanner: FileScanner,
     private val antiTamperGuard: AntiTamperGuard,
+    private val appUsageTracker: AppUsageTracker,
+    private val smartClipboard: SmartClipboard,
+    private val emergencyShakeDetector: EmergencyShakeDetector,
     private val notesManager: NotesManager,
     private val locationManager: LocationManager,
     private val deepResearch: DeepResearch,
@@ -155,6 +161,10 @@ class RuhanBrain @Inject constructor(
             is ParsedCommand.CleanJunk -> handleCleanJunk()
             is ParsedCommand.ClearCache -> handleClearCache()
             is ParsedCommand.FindFile -> handleFindFile(cmd.query)
+            is ParsedCommand.ScreenTimeReport -> handleScreenTime()
+            is ParsedCommand.ClipboardHistory -> handleClipboardHistory()
+            is ParsedCommand.ClipboardSearch -> handleClipboardSearch(cmd.query)
+            is ParsedCommand.EmergencyStatus -> handleEmergencyStatus()
             is ParsedCommand.AiChat -> handleAiChat(cmd.message)
         }
     }
@@ -416,6 +426,32 @@ class RuhanBrain @Inject constructor(
         } catch (_: Exception) {
             BrainResponse.Speak("$boss, file dhundhne mein storage permission chahiye.")
         }
+    }
+
+    private fun handleScreenTime(): BrainResponse {
+        return try {
+            val summary = appUsageTracker.getUsageSummary()
+            val warning = appUsageTracker.getOverdoseWarning()
+            val response = if (warning != null) "$summary\n\n$warning" else summary
+            BrainResponse.Speak("$boss, $response")
+        } catch (_: Exception) {
+            BrainResponse.Speak("$boss, screen time check karne ke liye Usage Access permission chahiye. Settings > Apps > Special Access > Usage Access.")
+        }
+    }
+
+    private fun handleClipboardHistory(): BrainResponse {
+        val summary = smartClipboard.getHistorySummary()
+        return BrainResponse.Speak("$boss, $summary")
+    }
+
+    private fun handleClipboardSearch(query: String): BrainResponse {
+        val result = smartClipboard.searchClipboard(query)
+        return BrainResponse.Speak("$boss, $result")
+    }
+
+    private fun handleEmergencyStatus(): BrainResponse {
+        val status = emergencyShakeDetector.getStatus()
+        return BrainResponse.Speak("$boss, $status")
     }
 
     private val context get() = phoneRepository.getContext()

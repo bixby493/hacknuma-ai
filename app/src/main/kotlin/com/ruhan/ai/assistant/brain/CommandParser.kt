@@ -51,6 +51,10 @@ sealed class ParsedCommand {
     data object CleanJunk : ParsedCommand()
     data object ClearCache : ParsedCommand()
     data class FindFile(val query: String) : ParsedCommand()
+    data object ScreenTimeReport : ParsedCommand()
+    data object ClipboardHistory : ParsedCommand()
+    data class ClipboardSearch(val query: String) : ParsedCommand()
+    data object EmergencyStatus : ParsedCommand()
     data class AiChat(val message: String) : ParsedCommand()
 }
 
@@ -91,6 +95,7 @@ class CommandParser @Inject constructor() {
             ?: parseScreenshot(text)
             ?: parseClearNotifications(text)
             ?: parseFileCommands(text)
+            ?: parseAdvancedCommands(text)
             ?: ParsedCommand.AiChat(input)
     }
 
@@ -403,6 +408,34 @@ class CommandParser @Inject constructor() {
             return 60
         }
         return hours * 60 + mins
+    }
+
+    private fun parseAdvancedCommands(text: String): ParsedCommand? {
+        // Screen time / social media usage
+        if (text.matches(Regex(".*(screen\\s*time|social\\s*media|instagram|youtube|tiktok).*(report|kitna|usage|check|time|use).*")) ||
+            text.matches(Regex(".*(kitna|kitni|kab\\s*se).*(phone|screen|instagram|youtube|social).*")) ||
+            text.matches(Regex(".*(phone|screen).*(kitna|kitni|time|usage|report).*")) ||
+            text.matches(Regex(".*(overdose|addiction|zyada).*"))) {
+            return ParsedCommand.ScreenTimeReport
+        }
+
+        // Clipboard
+        if (text.matches(Regex(".*(clipboard|copy|paste).*(history|dikhao|show|list|kya).*")) ||
+            text.matches(Regex(".*(kya|last).*(copy|clipboard|paste).*"))) {
+            return ParsedCommand.ClipboardHistory
+        }
+        val clipSearch = Regex("(?:clipboard|copy).*(?:mein|me|search|dhundh)\\s+(.+)").find(text)
+        if (clipSearch != null) {
+            val q = clipSearch.groupValues[1].trim()
+            if (q.isNotBlank()) return ParsedCommand.ClipboardSearch(q)
+        }
+
+        // Emergency
+        if (text.matches(Regex(".*(emergency|sos|shake).*(status|kya|check|on|off|kaise).*"))) {
+            return ParsedCommand.EmergencyStatus
+        }
+
+        return null
     }
 
     private fun parseFileCommands(text: String): ParsedCommand? {
