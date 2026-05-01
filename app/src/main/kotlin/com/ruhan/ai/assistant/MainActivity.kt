@@ -50,9 +50,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Settings
+import com.ruhan.ai.assistant.phone.SoundManager
 import com.ruhan.ai.assistant.presentation.dashboard.DashboardScreen
 import com.ruhan.ai.assistant.presentation.main.RuhanScreen
 import com.ruhan.ai.assistant.presentation.main.RuhanViewModel
+import com.ruhan.ai.assistant.presentation.splash.SplashScreen
 import com.ruhan.ai.assistant.presentation.settings.SettingsScreen
 import com.ruhan.ai.assistant.presentation.settings.SettingsViewModel
 import com.ruhan.ai.assistant.presentation.theme.RuhanTheme
@@ -71,11 +73,17 @@ class MainActivity : FragmentActivity() {
     @Inject
     lateinit var biometricManager: BiometricManager
 
+    @Inject
+    lateinit var soundManager: SoundManager
+
     private var isAuthenticated by mutableStateOf(false)
+    private var showSplash by mutableStateOf(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        soundManager.initialize()
 
         setContent {
             val settingsVm: SettingsViewModel = hiltViewModel()
@@ -87,7 +95,14 @@ class MainActivity : FragmentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colors.background
                 ) {
-                    if (!isAuthenticated) {
+                    if (showSplash) {
+                        SplashScreen(
+                            onSplashComplete = {
+                                showSplash = false
+                                soundManager.playStartup()
+                            }
+                        )
+                    } else if (!isAuthenticated) {
                         LockScreen()
                     } else {
                         val navController = rememberNavController()
