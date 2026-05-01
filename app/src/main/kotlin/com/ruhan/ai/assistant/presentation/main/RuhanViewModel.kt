@@ -72,6 +72,8 @@ class RuhanViewModel @Inject constructor(
         }
 
         speechManager.onFinalResult = { text ->
+            // Pause mic while processing — prevents feedback loop
+            speechManager.pauseListening()
             _uiState.value = _uiState.value.copy(
                 currentTranscript = "",
                 isListening = false,
@@ -345,8 +347,8 @@ class RuhanViewModel @Inject constructor(
                         statusText = "Listening... Bolo 'Ruhan'",
                         isListening = true
                     )
-                    // Auto-restart listening after speaking (Jarvis style)
-                    try { speechManager.startContinuousListening() } catch (_: Exception) {}
+                    // Resume listening after speaking (Jarvis style)
+                    try { speechManager.resumeListening() } catch (_: Exception) {}
                 }
             )
         } catch (_: Exception) {
@@ -354,6 +356,8 @@ class RuhanViewModel @Inject constructor(
                 orbState = OrbState.IDLE,
                 statusText = "Idle — Say 'Ruhan'"
             )
+            // Resume listening even on error
+            try { speechManager.resumeListening() } catch (_: Exception) {}
         }
     }
 

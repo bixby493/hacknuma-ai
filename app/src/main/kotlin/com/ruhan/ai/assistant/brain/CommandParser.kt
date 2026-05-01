@@ -47,6 +47,10 @@ sealed class ParsedCommand {
     data object TakeScreenshot : ParsedCommand()
     data class RecordAudio(val duration: Int = 30) : ParsedCommand()
     data class PhoneHealthReport(val detail: String = "") : ParsedCommand()
+    data object ScanFiles : ParsedCommand()
+    data object CleanJunk : ParsedCommand()
+    data object ClearCache : ParsedCommand()
+    data class FindFile(val query: String) : ParsedCommand()
     data class AiChat(val message: String) : ParsedCommand()
 }
 
@@ -86,6 +90,7 @@ class CommandParser @Inject constructor() {
             ?: parseLiveVoice(text)
             ?: parseScreenshot(text)
             ?: parseClearNotifications(text)
+            ?: parseFileCommands(text)
             ?: ParsedCommand.AiChat(input)
     }
 
@@ -398,6 +403,46 @@ class CommandParser @Inject constructor() {
             return 60
         }
         return hours * 60 + mins
+    }
+
+    private fun parseFileCommands(text: String): ParsedCommand? {
+        // Scan
+        if (text.matches(Regex(".*(scan|analyse|analyze|check).*(file|storage|phone|memory|disk).*")) ||
+            text.matches(Regex(".*(file|storage|phone).*(scan|analyse|analyze|check).*")) ||
+            text.matches(Regex(".*(hard\\s*scan|deep\\s*scan|full\\s*scan).*"))) {
+            return ParsedCommand.ScanFiles
+        }
+        // Clean junk
+        if (text.matches(Regex(".*(kachra|junk|garbage|saaf|clean).*(kar|karo|karde|do|hatao|delete).*")) ||
+            text.matches(Regex(".*(clean|clear).*(junk|temp|garbage|kachra).*")) ||
+            text.matches(Regex(".*(saaf|clean)\\s*(kar|karo|karde).*"))) {
+            return ParsedCommand.CleanJunk
+        }
+        // Clear cache
+        if (text.matches(Regex(".*(cache|cach).*(clear|saaf|delete|hatao|remove|kar).*")) ||
+            text.matches(Regex(".*(clear|saaf|delete).*(cache|cach).*"))) {
+            return ParsedCommand.ClearCache
+        }
+        // Duplicate photo
+        if (text.matches(Regex(".*(duplicate|copy).*(photo|image|pic|file).*(delete|hatao|remove|dhundh|find).*")) ||
+            text.matches(Regex(".*(delete|hatao|remove|dhundh|find).*(duplicate|copy).*(photo|image|pic|file).*"))) {
+            return ParsedCommand.ScanFiles
+        }
+        // Find file
+        val findPatterns = listOf(
+            Regex("(?:dhundh|find|search|locate|khoj).*?(?:file|naam|name)?\\s+(.+)"),
+            Regex("(.+?)\\s+(?:dhundh|find|search|khoj)")
+        )
+        for (p in findPatterns) {
+            val m = p.find(text)
+            if (m != null) {
+                val query = (m.groupValues.getOrNull(1) ?: "").trim()
+                if (query.isNotBlank() && query.length > 1) {
+                    return ParsedCommand.FindFile(query)
+                }
+            }
+        }
+        return null
     }
 
     private fun calculateMinutesToMorning(): Int {

@@ -340,33 +340,78 @@ private fun GeneralTab(
 
     // Theme
     CardSection(title = "Interface Theme") {
+        val themes = listOf(
+            "hacker" to "HACKER" to Color(0xFF00FF41),
+            "amoled" to "AMOLED" to Color(0xFF00FF41),
+            "dark" to "DARK" to Color(0xFF44BB44),
+            "pink" to "PINK" to Color(0xFFFF1493),
+            "blue" to "BLUE" to Color(0xFF1E90FF),
+            "gray" to "GRAY" to Color(0xFF6C63FF),
+            "white" to "WHITE" to Color(0xFF00C853)
+        )
+        // First row: 4 themes
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            val themes = listOf("hacker" to "HACKER", "amoled" to "AMOLED", "dark" to "DARK")
-            themes.forEach { (value, label) ->
+            themes.take(4).forEach { (pair, themeAccent) ->
+                val (value, label) = pair
                 val isSelected = uiState.theme == value
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            if (isSelected) hackerGreen.copy(alpha = 0.15f) else Color(0xFF1A1A1A),
+                            if (isSelected) themeAccent.copy(alpha = 0.15f) else Color(0xFF1A1A1A),
                             RoundedCornerShape(8.dp)
                         )
                         .border(
                             1.dp,
-                            if (isSelected) hackerGreen.copy(alpha = 0.4f) else borderColor,
+                            if (isSelected) themeAccent.copy(alpha = 0.5f) else borderColor,
                             RoundedCornerShape(8.dp)
                         )
                         .clickable { viewModel.updateTheme(value) }
-                        .padding(vertical = 12.dp),
+                        .padding(vertical = 10.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         label,
-                        color = if (isSelected) hackerGreen else Color.Gray,
-                        fontSize = 11.sp,
+                        color = if (isSelected) themeAccent else Color.Gray,
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        // Second row: 3 themes
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            themes.drop(4).forEach { (pair, themeAccent) ->
+                val (value, label) = pair
+                val isSelected = uiState.theme == value
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(
+                            if (isSelected) themeAccent.copy(alpha = 0.15f) else Color(0xFF1A1A1A),
+                            RoundedCornerShape(8.dp)
+                        )
+                        .border(
+                            1.dp,
+                            if (isSelected) themeAccent.copy(alpha = 0.5f) else borderColor,
+                            RoundedCornerShape(8.dp)
+                        )
+                        .clickable { viewModel.updateTheme(value) }
+                        .padding(vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        label,
+                        color = if (isSelected) themeAccent else Color.Gray,
+                        fontSize = 10.sp,
                         fontFamily = FontFamily.Monospace,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                     )

@@ -3,7 +3,9 @@ package com.ruhan.ai.assistant.brain
 import com.ruhan.ai.assistant.data.repository.AIRepository
 import com.ruhan.ai.assistant.data.repository.ConversationRepository
 import com.ruhan.ai.assistant.data.repository.PhoneRepository
+import com.ruhan.ai.assistant.phone.FileScanner
 import com.ruhan.ai.assistant.phone.SettingsController
+import com.ruhan.ai.assistant.security.AntiTamperGuard
 import com.ruhan.ai.assistant.premium.LocationManager
 import com.ruhan.ai.assistant.premium.NotesManager
 import com.ruhan.ai.assistant.research.DeepResearch
@@ -27,6 +29,8 @@ class RuhanBrain @Inject constructor(
     private val phoneRepository: PhoneRepository,
     private val memoryManager: MemoryManager,
     private val settingsController: SettingsController,
+    private val fileScanner: FileScanner,
+    private val antiTamperGuard: AntiTamperGuard,
     private val notesManager: NotesManager,
     private val locationManager: LocationManager,
     private val deepResearch: DeepResearch,
@@ -43,7 +47,45 @@ class RuhanBrain @Inject constructor(
         }
     }
 
+    private fun randomGreeting(): String {
+        val b = boss
+        return listOf(
+            "Haan $b, bolo! Kya karna hai aaj?",
+            "Ji $b, main hoon. Kaise madad karun?",
+            "Bolo $b, sab tayaar hai. Koi kaam ho toh batao.",
+            "Haan ji $b! Aaj kya plan hai?",
+            "Main yahaan hoon $b. Bas ek lafz kahiye.",
+            "$b, aapka Ruhan hazir hai. Farmaaiye!",
+            "Ji janab! Bataiye kya kar sakta hoon aapke liye?",
+            "Suno $b, aaj ka vichaar — Mehnat ka koi shortcut nahi hota. Ab bolo, kya karna hai?",
+            "$b, aapki ek awaaz pe hazir! Kya hukum hai?",
+            "Haan $b! Naya din, naye iraade. Shuru karein?",
+            "Ji $b, RUHAN ready hai. Koi bhi kaam bolo!",
+            "$b, aap bole aur main karu. Batao!",
+            "Assalamu Alaikum $b! Aaj kya karna hai humein?",
+            "Bolo $b, duniya hila dete hain aaj!",
+            "$b, main hamesha yahan hoon. Bolo kya chahiye?",
+            "Ji $b! Ek shayri sunein — Himmat waale ko haar nahi milti, dhoondhne waale ko darr nahi milti. Ab kaam batao!",
+            "$b, good vibes only! Aaj kya explore karna hai?",
+            "Haan $b, taiyaar hoon. Bas ishara karo!",
+            "Hello $b! Aaj ka mood kaisa hai? Koi kaam batao!",
+            "Ji $b! Ruhan hamesha aapke saath hai. Kya madad chahiye?"
+        ).random()
+    }
+
+    private fun isGreeting(text: String): Boolean {
+        val t = text.lowercase().trim()
+        return t.isEmpty() ||
+            t == "ruhan" || t == "ruha" || t == "rohan" ||
+            t == "hello" || t == "hi" || t == "hey" ||
+            t.matches(Regex("^(hello|hi|hey|namaste|salam|assalamu|haan|bolo)\\s*(ruhan|ruha|rohan)?\\s*$"))
+    }
+
     private suspend fun processInternal(input: String): BrainResponse {
+        if (isGreeting(input)) {
+            return BrainResponse.Speak(randomGreeting())
+        }
+
         if (memoryManager.parseAndStore(input)) {
             return BrainResponse.Speak("Yaad rakh liya, $boss!")
         }
@@ -109,6 +151,10 @@ class RuhanBrain @Inject constructor(
             is ParsedCommand.SetTimer -> handleSetTimer(cmd.seconds)
             is ParsedCommand.Translate -> handleTranslate(cmd.text, cmd.targetLang)
             is ParsedCommand.Calculate -> handleCalculate(cmd.expression)
+            is ParsedCommand.ScanFiles -> handleScanFiles()
+            is ParsedCommand.CleanJunk -> handleCleanJunk()
+            is ParsedCommand.ClearCache -> handleClearCache()
+            is ParsedCommand.FindFile -> handleFindFile(cmd.query)
             is ParsedCommand.AiChat -> handleAiChat(cmd.message)
         }
     }
@@ -258,12 +304,9 @@ class RuhanBrain @Inject constructor(
     private fun handleSecurityCheck(): BrainResponse {
         val lockEnabled = preferencesManager.isLockSetup
         val lockType = preferencesManager.lockType
-        val status = if (lockEnabled) {
-            "Phone secure hai. $lockType lock enabled hai."
-        } else {
-            "Phone mein koi lock nahi lagaya. Settings mein jaake lock lagao."
-        }
-        return BrainResponse.Speak("$boss, $status")
+        val lockStatus = if (lockEnabled) "$lockType lock ON" else "Koi lock nahi"
+        val securityReport = antiTamperGuard.getSecuritySummary()
+        return BrainResponse.Speak("$boss, Lock: $lockStatus. $securityReport")
     }
 
     private suspend fun handleWeather(location: String): BrainResponse {
@@ -343,6 +386,36 @@ class RuhanBrain @Inject constructor(
         val extraContext = if (memContext.isNotBlank()) "\n\nMemory context:\n$memContext" else ""
         val response = aiRepository.chat(message + extraContext, history)
         return BrainResponse.Speak(response)
+    }
+
+    private fun handleScanFiles(): BrainResponse {
+        return try {
+            val result = fileScanner.scanFiles()
+            BrainResponse.Speak("$boss, ${result.summary}")
+        } catch (_: Exception) {
+            BrainResponse.Speak("$boss, file scan mein storage permission chahiye. Settings se allow karo.")
+        }
+    }
+
+    private fun handleCleanJunk(): BrainResponse {
+        return BrainResponse.Confirm("$boss, kachra saaf karun? Cache, temp files, empty files sab delete honge.") {
+            fileScanner.cleanJunk()
+        }
+    }
+
+    private fun handleClearCache(): BrainResponse {
+        return BrainResponse.Confirm("$boss, cache clear karun?") {
+            fileScanner.clearCache()
+        }
+    }
+
+    private fun handleFindFile(query: String): BrainResponse {
+        return try {
+            val result = fileScanner.findFile(query)
+            BrainResponse.Speak(result)
+        } catch (_: Exception) {
+            BrainResponse.Speak("$boss, file dhundhne mein storage permission chahiye.")
+        }
     }
 
     private val context get() = phoneRepository.getContext()

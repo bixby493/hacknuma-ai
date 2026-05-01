@@ -21,6 +21,7 @@ class RuhanSpeechManager @Inject constructor(
     private var speechRecognizer: SpeechRecognizer? = null
     private var isListening = false
     private var isContinuousMode = false
+    private var isPaused = false  // Paused while processing/speaking
     private val handler = Handler(Looper.getMainLooper())
 
     var onPartialResult: ((String) -> Unit)? = null
@@ -28,6 +29,19 @@ class RuhanSpeechManager @Inject constructor(
     var onListeningStarted: (() -> Unit)? = null
     var onListeningStopped: (() -> Unit)? = null
     var onError: ((Int) -> Unit)? = null
+
+    fun pauseListening() {
+        isPaused = true
+        handler.removeCallbacksAndMessages(null)
+        handler.post { speechRecognizer?.stopListening() }
+    }
+
+    fun resumeListening() {
+        isPaused = false
+        if (isContinuousMode) {
+            handler.postDelayed({ restartListening() }, 300)
+        }
+    }
 
     private fun createRecognizerIntent(): Intent {
         return Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
@@ -77,9 +91,9 @@ class RuhanSpeechManager @Inject constructor(
             when (error) {
                 SpeechRecognizer.ERROR_NO_MATCH,
                 SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> {
-                    if (isContinuousMode) {
+                    if (isContinuousMode && !isPaused) {
                         handler.postDelayed({ restartListening() }, 500)
-                    } else {
+                    } else if (!isContinuousMode) {
                         onListeningStopped?.invoke()
                     }
                 }
@@ -91,9 +105,9 @@ class RuhanSpeechManager @Inject constructor(
                     onListeningStopped?.invoke()
                 }
                 else -> {
-                    if (isContinuousMode) {
+                    if (isContinuousMode && !isPaused) {
                         handler.postDelayed({ restartListening() }, 1000)
-                    } else {
+                    } else if (!isContinuousMode) {
                         onListeningStopped?.invoke()
                     }
                 }
@@ -117,12 +131,16 @@ class RuhanSpeechManager @Inject constructor(
                     .trim()
                 if (command.isBlank()) command = text
 
-                // Always process the command
+                // PAUSE listening while processing — ViewModel will resume after speaking
+                isPaused = true
                 onFinalResult?.invoke(command)
+                // Do NOT auto-restart here — ViewModel handles resume
+                return
             }
-            if (isContinuousMode) {
+            // No speech detected — restart if continuous
+            if (isContinuousMode && !isPaused) {
                 handler.postDelayed({ restartListening() }, 500)
-            } else {
+            } else if (!isContinuousMode) {
                 onListeningStopped?.invoke()
             }
         }
@@ -166,7 +184,7 @@ class RuhanSpeechManager @Inject constructor(
     }
 
     private fun restartListening() {
-        if (!isContinuousMode) return
+        if (!isContinuousMode || isPaused) return
         initAndStart()
     }
 
