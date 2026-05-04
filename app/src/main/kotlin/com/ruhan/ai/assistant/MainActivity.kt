@@ -1,7 +1,13 @@
 package com.ruhan.ai.assistant
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import com.ruhan.ai.assistant.phone.ClapDetectionService
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -79,12 +85,38 @@ class MainActivity : FragmentActivity() {
     private var isAuthenticated by mutableStateOf(false)
     private var showSplash by mutableStateOf(true)
 
+    private var crashError by mutableStateOf<String?>(null)
+    private var clapActivated by mutableStateOf(false)
+
+    private val clapReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ClapDetectionService.ACTION_CLAP_DETECTED) {
+                clapActivated = true
+                try { soundManager.playWakeup() } catch (_: Throwable) {}
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        try { enableEdgeToEdge() } catch (_: Exception) {}
-        try { soundManager.initialize() } catch (_: Exception) {}
+        try { enableEdgeToEdge() } catch (_: Throwable) {}
+        try { soundManager.initialize() } catch (_: Throwable) {}
+
+        try {
+            val filter = IntentFilter(ClapDetectionService.ACTION_CLAP_DETECTED)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(clapReceiver, filter, RECEIVER_NOT_EXPORTED)
+            } else {
+                registerReceiver(clapReceiver, filter)
+            }
+        } catch (_: Throwable) {}
 
         setContent {
+            if (crashError != null) {
+                CrashFallbackScreen(crashError!!)
+                return@setContent
+            }
+
             val settingsVm: SettingsViewModel = hiltViewModel()
             val settingsState by settingsVm.uiState.collectAsState()
 
@@ -98,99 +130,167 @@ class MainActivity : FragmentActivity() {
                         SplashScreen(
                             onSplashComplete = {
                                 showSplash = false
-                                try { soundManager.playStartup() } catch (_: Exception) {}
+                                try { soundManager.playStartup() } catch (_: Throwable) {}
                             }
                         )
                     } else if (!isAuthenticated) {
                         LockScreen()
                     } else {
-                        val navController = rememberNavController()
-                        var currentTab by remember { mutableStateOf("main") }
+                        MainContent(settingsVm)
+                    }
+                }
+            }
+        }
+    }
 
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            NavHost(
-                                navController = navController,
-                                startDestination = "main",
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                composable("dashboard") {
-                                    currentTab = "dashboard"
-                                    DashboardScreen(
-                                        onNavigateToSettings = {
-                                            navController.navigate("settings")
-                                        }
-                                    )
-                                }
-                                composable("main") {
-                                    currentTab = "main"
-                                    val viewModel: RuhanViewModel = hiltViewModel()
-                                    RuhanScreen(
-                                        viewModel = viewModel,
-                                        onNavigateToSettings = {
-                                            navController.navigate("settings")
-                                        }
-                                    )
-                                }
-                                composable("settings") {
-                                    currentTab = "settings"
-                                    SettingsScreen(
-                                        viewModel = settingsVm,
-                                        onNavigateBack = {
-                                            navController.popBackStack()
-                                        }
-                                    )
-                                }
-                            }
+    override fun onDestroy() {
+        try { unregisterReceiver(clapReceiver) } catch (_: Throwable) {}
+        super.onDestroy()
+    }
 
-                            if (currentTab != "settings") {
-                                Row(
-                                    modifier = Modifier
-                                        .align(Alignment.BottomCenter)
-                                        .fillMaxWidth()
-                                        .background(Color(0xE6050805))
-                                        .padding(vertical = 8.dp, horizontal = 32.dp),
-                                    horizontalArrangement = Arrangement.SpaceEvenly,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    BottomNavItem(
-                                        icon = Icons.Default.Dashboard,
-                                        label = "DASHBOARD",
-                                        isSelected = currentTab == "dashboard",
-                                        onClick = {
-                                            if (currentTab != "dashboard") {
-                                                navController.navigate("dashboard") {
-                                                    popUpTo("dashboard") { inclusive = true }
-                                                }
-                                            }
-                                        }
-                                    )
-                                    BottomNavItem(
-                                        icon = Icons.AutoMirrored.Filled.Chat,
-                                        label = "RUHAN",
-                                        isSelected = currentTab == "main",
-                                        onClick = {
-                                            if (currentTab != "main") {
-                                                navController.navigate("main") {
-                                                    popUpTo("dashboard")
-                                                }
-                                            }
-                                        }
-                                    )
-                                    BottomNavItem(
-                                        icon = Icons.Default.Settings,
-                                        label = "SETTINGS",
-                                        isSelected = currentTab == "settings",
-                                        onClick = {
-                                            navController.navigate("settings") {
-                                                popUpTo("dashboard")
-                                            }
-                                        }
-                                    )
+    @Composable
+    private fun MainContent(settingsVm: SettingsViewModel) {
+        val navController = rememberNavController()
+        var currentTab by remember { mutableStateOf("main") }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            NavHost(
+                navController = navController,
+                startDestination = "main",
+                modifier = Modifier.fillMaxSize()
+            ) {
+                composable("dashboard") {
+                    currentTab = "dashboard"
+                    DashboardScreen(
+                        onNavigateToSettings = {
+                            navController.navigate("settings")
+                        }
+                    )
+                }
+                composable("main") {
+                    currentTab = "main"
+                    val viewModel: RuhanViewModel = hiltViewModel()
+                    RuhanScreen(
+                        viewModel = viewModel,
+                        onNavigateToSettings = {
+                            navController.navigate("settings")
+                        }
+                    )
+                }
+                composable("settings") {
+                    currentTab = "settings"
+                    SettingsScreen(
+                        viewModel = settingsVm,
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+            }
+
+            if (currentTab != "settings") {
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .background(Color(0xE6050805))
+                        .padding(vertical = 8.dp, horizontal = 32.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BottomNavItem(
+                        icon = Icons.Default.Dashboard,
+                        label = "DASHBOARD",
+                        isSelected = currentTab == "dashboard",
+                        onClick = {
+                            if (currentTab != "dashboard") {
+                                navController.navigate("dashboard") {
+                                    popUpTo("dashboard") { inclusive = true }
                                 }
                             }
                         }
-                    }
+                    )
+                    BottomNavItem(
+                        icon = Icons.AutoMirrored.Filled.Chat,
+                        label = "RUHAN",
+                        isSelected = currentTab == "main",
+                        onClick = {
+                            if (currentTab != "main") {
+                                navController.navigate("main") {
+                                    popUpTo("dashboard")
+                                }
+                            }
+                        }
+                    )
+                    BottomNavItem(
+                        icon = Icons.Default.Settings,
+                        label = "SETTINGS",
+                        isSelected = currentTab == "settings",
+                        onClick = {
+                            navController.navigate("settings") {
+                                popUpTo("dashboard")
+                            }
+                        }
+                    )
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun CrashFallbackScreen(error: String) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(32.dp)
+            ) {
+                Text(
+                    "RUHAN AI",
+                    color = Color(0xFF00FF41),
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "System Recovery Mode",
+                    color = Color(0xFF00FF41).copy(alpha = 0.7f),
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily.Monospace
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    "Error: $error",
+                    color = Color.Red.copy(alpha = 0.8f),
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = {
+                        crashError = null
+                        showSplash = false
+                        isAuthenticated = true
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF00FF41)
+                    )
+                ) {
+                    Text("SKIP TO MAIN", color = Color.Black, fontWeight = FontWeight.Bold)
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    "Screenshot this error and send to developer",
+                    color = Color.Gray,
+                    fontSize = 10.sp,
+                    fontFamily = FontFamily.Monospace
+                )
             }
         }
     }

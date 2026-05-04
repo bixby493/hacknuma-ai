@@ -13,14 +13,20 @@ class RuhanApp : Application() {
         super.onCreate()
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            Log.e("RuhanAI", "Uncaught: ${throwable.message}", throwable)
+            Log.e("RuhanAI", "CRASH: ${throwable.message}", throwable)
+            try {
+                val crashFile = java.io.File(getExternalFilesDir(null), "ruhan_crash.txt")
+                crashFile.writeText(
+                    "Time: ${java.util.Date()}\n" +
+                    "Error: ${throwable.message}\n" +
+                    "Stack: ${throwable.stackTraceToString()}\n"
+                )
+            } catch (_: Throwable) {}
             defaultHandler?.uncaughtException(thread, throwable)
         }
         try {
             createNotificationChannels()
-        } catch (e: Exception) {
-            Log.e("RuhanAI", "Failed to create notification channels", e)
-        }
+        } catch (_: Throwable) {}
     }
 
     private fun createNotificationChannels() {

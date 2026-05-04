@@ -55,6 +55,9 @@ sealed class ParsedCommand {
     data object ClipboardHistory : ParsedCommand()
     data class ClipboardSearch(val query: String) : ParsedCommand()
     data object EmergencyStatus : ParsedCommand()
+    data object ClapDetectionOn : ParsedCommand()
+    data object ClapDetectionOff : ParsedCommand()
+    data object ClapDetectionStatus : ParsedCommand()
     data class AiChat(val message: String) : ParsedCommand()
 }
 
@@ -96,6 +99,7 @@ class CommandParser @Inject constructor() {
             ?: parseClearNotifications(text)
             ?: parseFileCommands(text)
             ?: parseAdvancedCommands(text)
+            ?: parseClapDetection(text)
             ?: ParsedCommand.AiChat(input)
     }
 
@@ -475,6 +479,15 @@ class CommandParser @Inject constructor() {
                 }
             }
         }
+        return null
+    }
+
+    private fun parseClapDetection(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(clap|tali).*(on|chalu|start|enable|shuru).*"))) return ParsedCommand.ClapDetectionOn
+        if (text.matches(Regex(".*(clap|tali).*(off|band|stop|disable|roko).*"))) return ParsedCommand.ClapDetectionOff
+        if (text.matches(Regex(".*(clap|tali).*(status|kaisa|active|chal).*"))) return ParsedCommand.ClapDetectionStatus
+        if (text.matches(Regex(".*(enable|start|chalu).*(clap|tali).*"))) return ParsedCommand.ClapDetectionOn
+        if (text.matches(Regex(".*(disable|stop|band).*(clap|tali).*"))) return ParsedCommand.ClapDetectionOff
         return null
     }
 

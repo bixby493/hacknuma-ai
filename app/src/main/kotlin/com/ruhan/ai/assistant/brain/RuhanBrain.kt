@@ -165,6 +165,9 @@ class RuhanBrain @Inject constructor(
             is ParsedCommand.ClipboardHistory -> handleClipboardHistory()
             is ParsedCommand.ClipboardSearch -> handleClipboardSearch(cmd.query)
             is ParsedCommand.EmergencyStatus -> handleEmergencyStatus()
+            is ParsedCommand.ClapDetectionOn -> handleClapDetection("on")
+            is ParsedCommand.ClapDetectionOff -> handleClapDetection("off")
+            is ParsedCommand.ClapDetectionStatus -> handleClapDetection("status")
             is ParsedCommand.AiChat -> handleAiChat(cmd.message)
         }
     }
@@ -452,6 +455,41 @@ class RuhanBrain @Inject constructor(
     private fun handleEmergencyStatus(): BrainResponse {
         val status = emergencyShakeDetector.getStatus()
         return BrainResponse.Speak("$boss, $status")
+    }
+
+    private fun handleClapDetection(action: String): BrainResponse {
+        val ctx = context
+        return when (action) {
+            "on" -> {
+                try {
+                    val intent = android.content.Intent(ctx, com.ruhan.ai.assistant.phone.ClapDetectionService::class.java)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        ctx.startForegroundService(intent)
+                    } else {
+                        ctx.startService(intent)
+                    }
+                    BrainResponse.Speak("$boss, clap detection ON hai ab! Do baar tali bajao aur main active ho jaunga.")
+                } catch (e: Throwable) {
+                    BrainResponse.Speak("$boss, clap detection start nahi ho paya: ${e.message}")
+                }
+            }
+            "off" -> {
+                try {
+                    ctx.stopService(android.content.Intent(ctx, com.ruhan.ai.assistant.phone.ClapDetectionService::class.java))
+                    BrainResponse.Speak("$boss, clap detection band kar diya.")
+                } catch (_: Throwable) {
+                    BrainResponse.Speak("$boss, clap detection pehle se band hai.")
+                }
+            }
+            else -> {
+                val isActive = com.ruhan.ai.assistant.phone.ClapDetectionService.isActive
+                if (isActive) {
+                    BrainResponse.Speak("$boss, clap detection active hai. Do baar tali bajao toh main sun lunga!")
+                } else {
+                    BrainResponse.Speak("$boss, clap detection band hai. Bolo 'clap detection on karo' toh chalu kar dunga.")
+                }
+            }
+        }
     }
 
     private val context get() = phoneRepository.getContext()

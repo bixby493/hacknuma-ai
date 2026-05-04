@@ -145,6 +145,13 @@
             android:exported="false"
             android:foregroundServiceType="mediaProjection" />
 
+        <!-- Clap Detection Service -->
+        <service
+            android:name=".phone.ClapDetectionService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
+
         <!-- Boot Receiver -->
         <receiver
             android:name=".service.BootReceiver"

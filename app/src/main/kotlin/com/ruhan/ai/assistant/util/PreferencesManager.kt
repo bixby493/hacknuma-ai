@@ -17,7 +17,7 @@ class PreferencesManager(context: Context) {
             androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         Log.w("PreferencesManager", "EncryptedSharedPreferences failed, using fallback", e)
         context.getSharedPreferences("ruhan_prefs_fallback", Context.MODE_PRIVATE)
     }
