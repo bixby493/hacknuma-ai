@@ -3,6 +3,7 @@ package com.ruhan.ai.assistant
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -12,30 +13,34 @@ class RuhanApp : Application() {
         super.onCreate()
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            android.util.Log.e("RuhanAI", "Uncaught: ${throwable.message}", throwable)
+            Log.e("RuhanAI", "Uncaught: ${throwable.message}", throwable)
             defaultHandler?.uncaughtException(thread, throwable)
         }
-        createNotificationChannels()
+        try {
+            createNotificationChannels()
+        } catch (e: Exception) {
+            Log.e("RuhanAI", "Failed to create notification channels", e)
+        }
     }
 
     private fun createNotificationChannels() {
-        val manager = getSystemService(NotificationManager::class.java)
+        val manager = getSystemService(NotificationManager::class.java) ?: return
 
         val serviceChannel = NotificationChannel(
             CHANNEL_SERVICE,
-            getString(R.string.notification_channel_name),
+            "Ruhan AI Service",
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = getString(R.string.notification_channel_description)
+            description = "Keeps Ruhan AI running in the background"
             setShowBadge(false)
         }
 
         val reminderChannel = NotificationChannel(
             CHANNEL_REMINDER,
-            getString(R.string.reminder_channel_name),
+            "Ruhan Reminders",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = getString(R.string.reminder_channel_description)
+            description = "Reminders set by Ruhan AI"
             enableVibration(true)
         }
 

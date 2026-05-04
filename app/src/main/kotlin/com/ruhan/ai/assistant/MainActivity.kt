@@ -81,9 +81,9 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        try { enableEdgeToEdge() } catch (_: Exception) {}
 
-        soundManager.initialize()
+        try { soundManager.initialize() } catch (_: Exception) {}
 
         setContent {
             val settingsVm: SettingsViewModel = hiltViewModel()

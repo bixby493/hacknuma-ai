@@ -3,6 +3,7 @@ package com.ruhan.ai.assistant.phone
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.SoundPool
+import android.util.Log
 import com.ruhan.ai.assistant.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -17,35 +18,53 @@ class SoundManager @Inject constructor(
     private var isLoaded = false
 
     fun initialize() {
-        if (soundPool != null) return
-        val attrs = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .build()
+        try {
+            if (soundPool != null) return
+            val attrs = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
 
-        soundPool = SoundPool.Builder()
-            .setMaxStreams(4)
-            .setAudioAttributes(attrs)
-            .build()
+            soundPool = SoundPool.Builder()
+                .setMaxStreams(4)
+                .setAudioAttributes(attrs)
+                .build()
 
-        soundPool?.setOnLoadCompleteListener { _, _, _ ->
-            isLoaded = true
+            soundPool?.setOnLoadCompleteListener { _, _, status ->
+                if (status == 0) isLoaded = true
+            }
+
+            loadSound("startup", R.raw.sound_startup)
+            loadSound("listening", R.raw.sound_listening)
+            loadSound("success", R.raw.sound_success)
+            loadSound("error", R.raw.sound_error)
+            loadSound("notification", R.raw.sound_notification)
+            loadSound("thinking", R.raw.sound_thinking)
+            loadSound("command", R.raw.sound_command_accepted)
+            loadSound("wakeup", R.raw.sound_wakeup)
+        } catch (e: Exception) {
+            Log.e("SoundManager", "Failed to initialize sounds", e)
+            isLoaded = false
         }
+    }
 
-        soundIds["startup"] = soundPool!!.load(context, R.raw.sound_startup, 1)
-        soundIds["listening"] = soundPool!!.load(context, R.raw.sound_listening, 1)
-        soundIds["success"] = soundPool!!.load(context, R.raw.sound_success, 1)
-        soundIds["error"] = soundPool!!.load(context, R.raw.sound_error, 1)
-        soundIds["notification"] = soundPool!!.load(context, R.raw.sound_notification, 1)
-        soundIds["thinking"] = soundPool!!.load(context, R.raw.sound_thinking, 1)
-        soundIds["command"] = soundPool!!.load(context, R.raw.sound_command_accepted, 1)
-        soundIds["wakeup"] = soundPool!!.load(context, R.raw.sound_wakeup, 1)
+    private fun loadSound(name: String, resId: Int) {
+        try {
+            val id = soundPool?.load(context, resId, 1) ?: return
+            soundIds[name] = id
+        } catch (e: Exception) {
+            Log.w("SoundManager", "Failed to load sound: $name", e)
+        }
     }
 
     fun play(sound: String, volume: Float = 0.7f) {
         if (!isLoaded) return
-        soundIds[sound]?.let { id ->
-            soundPool?.play(id, volume, volume, 1, 0, 1f)
+        try {
+            soundIds[sound]?.let { id ->
+                soundPool?.play(id, volume, volume, 1, 0, 1f)
+            }
+        } catch (e: Exception) {
+            Log.w("SoundManager", "Failed to play sound: $sound", e)
         }
     }
 
@@ -59,7 +78,9 @@ class SoundManager @Inject constructor(
     fun playWakeup() = play("wakeup", 0.7f)
 
     fun release() {
-        soundPool?.release()
+        try {
+            soundPool?.release()
+        } catch (_: Exception) {}
         soundPool = null
         isLoaded = false
         soundIds.clear()
