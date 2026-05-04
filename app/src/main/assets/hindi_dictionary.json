@@ -1,42 +1,1863 @@
 {
-  "namaste": {"english": "Hello/Greetings", "meaning": "Abhivadan ka shabd, haath jodkar kaha jaata hai", "synonyms": ["pranam", "namaskar"], "examples": ["Namaste, aap kaise hain?"], "category": "greeting", "difficulty": "basic"},
-  "dhanyavaad": {"english": "Thank you", "meaning": "Aabhar vyakt karne ke liye", "synonyms": ["shukriya", "meherbani"], "examples": ["Aapki madad ke liye dhanyavaad"], "category": "greeting", "difficulty": "basic"},
-  "pyaar": {"english": "Love", "meaning": "Gehri bhavna jo kisi ke prati hoti hai", "synonyms": ["prem", "mohabbat", "ishq"], "examples": ["Pyaar mein sab kuch fair hai"], "category": "emotion", "difficulty": "basic"},
-  "dost": {"english": "Friend", "meaning": "Jisse aap kareebi rishta rakhte hain", "synonyms": ["mitra", "yaar", "saheli"], "examples": ["Sachcha dost mushkil mein kaam aata hai"], "category": "relationship", "difficulty": "basic"},
-  "sapna": {"english": "Dream", "meaning": "Neend mein dikhne wali cheezon ka anubhav ya ummeed", "synonyms": ["khwaab", "swapna"], "examples": ["Mere sapne bahut bade hain"], "category": "abstract", "difficulty": "basic"},
-  "himmat": {"english": "Courage", "meaning": "Kathin paristhiti mein dridh rehna", "synonyms": ["sahas", "hausla", "jurrat"], "examples": ["Himmat mat haaro, sab theek hoga"], "category": "emotion", "difficulty": "intermediate"},
-  "mehnat": {"english": "Hard work", "meaning": "Parishram aur lagan se kaam karna", "synonyms": ["parishram", "shram"], "examples": ["Mehnat ka phal meetha hota hai"], "category": "abstract", "difficulty": "basic"},
-  "zindagi": {"english": "Life", "meaning": "Jeene ki prakriya, existence", "synonyms": ["jeevan", "hayaat"], "examples": ["Zindagi mein utar-chadhav aate rehte hain"], "category": "abstract", "difficulty": "basic"},
-  "khushi": {"english": "Happiness", "meaning": "Prasannata ki bhavna", "synonyms": ["anand", "harshit"], "examples": ["Khushi baantne se badhti hai"], "category": "emotion", "difficulty": "basic"},
-  "duniya": {"english": "World", "meaning": "Yeh sansaar jismein hum rehte hain", "synonyms": ["sansar", "jagat", "alam"], "examples": ["Duniya bahut badi hai"], "category": "geography", "difficulty": "basic"},
-  "samay": {"english": "Time", "meaning": "Waqt, jo beet raha hai", "synonyms": ["waqt", "kaal", "vela"], "examples": ["Samay bahut keemti hai"], "category": "abstract", "difficulty": "basic"},
-  "paani": {"english": "Water", "meaning": "Jal, peene aur upyog ka taral padaarth", "synonyms": ["jal", "neer"], "examples": ["Paani jeevan ka aadhar hai"], "category": "nature", "difficulty": "basic"},
-  "aasmaan": {"english": "Sky", "meaning": "Dharti ke upar ka neela vistaar", "synonyms": ["aakash", "gagan", "falak"], "examples": ["Aasmaan mein taare chamak rahe hain"], "category": "nature", "difficulty": "basic"},
-  "suraj": {"english": "Sun", "meaning": "Hamare solar system ka taara", "synonyms": ["surya", "aaftaab", "ravi"], "examples": ["Suraj subah nikalta hai"], "category": "nature", "difficulty": "basic"},
-  "ghar": {"english": "Home/House", "meaning": "Rehne ki jagah, apna aashiyana", "synonyms": ["makaan", "niwas"], "examples": ["Ghar jaisa koi jagah nahi"], "category": "place", "difficulty": "basic"},
-  "kitaab": {"english": "Book", "meaning": "Padhne ki cheez, gyaan ka srot", "synonyms": ["pustak", "granth"], "examples": ["Yeh kitaab bahut acchi hai"], "category": "education", "difficulty": "basic"},
-  "vidyalaya": {"english": "School", "meaning": "Padhne ki jagah", "synonyms": ["school", "pathshala"], "examples": ["Bacche vidyalaya jaate hain"], "category": "education", "difficulty": "intermediate"},
-  "computer": {"english": "Computer", "meaning": "Electronic yantra jo ganana aur kaam karta hai", "synonyms": ["sanganak"], "examples": ["Computer se bahut kaam aasan ho gaya"], "category": "technology", "difficulty": "basic"},
-  "phone": {"english": "Phone/Telephone", "meaning": "Baat karne ka electronic yantra", "synonyms": ["durbhash", "mobile"], "examples": ["Phone pe baat karo"], "category": "technology", "difficulty": "basic"},
-  "internet": {"english": "Internet", "meaning": "Vishv vyaapi jaalseva jo computers ko jodti hai", "synonyms": ["antarjaal"], "examples": ["Internet se duniya judi hai"], "category": "technology", "difficulty": "basic"},
-  "artificial": {"english": "Artificial", "meaning": "Banawati, insaan dwara banaya gaya", "synonyms": ["krutrim", "banawati"], "examples": ["Artificial intelligence badh rahi hai"], "category": "technology", "difficulty": "intermediate"},
-  "robot": {"english": "Robot", "meaning": "Machine jo insaan jaisa kaam kare", "synonyms": ["yantra manav"], "examples": ["Robot factory mein kaam karte hain"], "category": "technology", "difficulty": "basic"},
-  "coding": {"english": "Coding/Programming", "meaning": "Computer ko instructions dena ek bhasha mein", "synonyms": ["programming", "code likhna"], "examples": ["Coding seekhna bahut zaroori hai"], "category": "technology", "difficulty": "intermediate"},
-  "hacker": {"english": "Hacker", "meaning": "Jo computer systems mein expert ho", "synonyms": ["programmer"], "examples": ["Ethical hacker security check karta hai"], "category": "technology", "difficulty": "intermediate"},
-  "desh": {"english": "Country/Nation", "meaning": "Ek bhoomi kshetra jahan log rehte hain", "synonyms": ["rashtra", "mulk", "watan"], "examples": ["Hamara desh bharat hai"], "category": "geography", "difficulty": "basic"},
-  "bhasha": {"english": "Language", "meaning": "Bolne aur likhne ka madhyam", "synonyms": ["zubaan", "vani"], "examples": ["Hindi hamari rashtra bhasha hai"], "category": "education", "difficulty": "basic"},
-  "sanskriti": {"english": "Culture", "meaning": "Samaj ki parampara aur riti-rivaaz", "synonyms": ["sabhyata", "tahzeeb"], "examples": ["Bharat ki sanskriti bahut purani hai"], "category": "culture", "difficulty": "intermediate"},
-  "khaana": {"english": "Food", "meaning": "Jo hum khate hain, aahar", "synonyms": ["bhojan", "aahar"], "examples": ["Maa ka khaana sabse accha hota hai"], "category": "food", "difficulty": "basic"},
-  "sehat": {"english": "Health", "meaning": "Sharir ki acchi sthiti", "synonyms": ["swasthya", "tandrusti"], "examples": ["Sehat sabse badi daulat hai"], "category": "health", "difficulty": "basic"},
-  "davai": {"english": "Medicine", "meaning": "Bimari theek karne wali cheez", "synonyms": ["aushadhi", "goli"], "examples": ["Doctor ne davai di"], "category": "health", "difficulty": "basic"},
-  "paisa": {"english": "Money", "meaning": "Kharidne bechne ka madhyam", "synonyms": ["dhan", "rupaya", "mudra"], "examples": ["Paisa kamaana zaroori hai"], "category": "finance", "difficulty": "basic"},
-  "kaam": {"english": "Work/Job", "meaning": "Jo karna hota hai, rozgar", "synonyms": ["naukri", "vyavsay"], "examples": ["Kaam pe jaana padta hai"], "category": "work", "difficulty": "basic"},
-  "pariwaar": {"english": "Family", "meaning": "Apne ghar ke log", "synonyms": ["kutumb", "gharaana"], "examples": ["Pariwaar sabse zaroori hai"], "category": "relationship", "difficulty": "basic"},
-  "mausam": {"english": "Weather/Season", "meaning": "Vatavaran ki sthiti", "synonyms": ["ritu", "ab-o-hawa"], "examples": ["Aaj mausam bahut accha hai"], "category": "nature", "difficulty": "basic"},
-  "barish": {"english": "Rain", "meaning": "Aasmaan se paani girna", "synonyms": ["varsha", "baarish"], "examples": ["Barish mein bheegna accha lagta hai"], "category": "nature", "difficulty": "basic"},
-  "taara": {"english": "Star", "meaning": "Raat ko chamakne wali roshni aasmaan mein", "synonyms": ["sitara", "nakshatra"], "examples": ["Aasmaan mein hazaron taare hain"], "category": "nature", "difficulty": "basic"},
-  "chand": {"english": "Moon", "meaning": "Dharti ka prakritik upgraha", "synonyms": ["chandrama", "mahtaab"], "examples": ["Poornima ko chand gol hota hai"], "category": "nature", "difficulty": "basic"},
-  "safar": {"english": "Journey/Travel", "meaning": "Ek jagah se doosri jagah jaana", "synonyms": ["yatra", "travel"], "examples": ["Safar mein naye tajurbe milte hain"], "category": "travel", "difficulty": "basic"},
-  "gaadi": {"english": "Vehicle/Car", "meaning": "Sawari ya vaahan", "synonyms": ["vaahan", "car"], "examples": ["Gaadi se office jaata hoon"], "category": "travel", "difficulty": "basic"},
-  "sangeet": {"english": "Music", "meaning": "Sur, taal aur lay ka samyojan", "synonyms": ["music", "geet"], "examples": ["Sangeet aatma ko sukun deta hai"], "category": "art", "difficulty": "basic"}
+  "namaste": {
+    "english": "Hello/Greetings",
+    "meaning": "Pranaam, abhivadan ka shabd",
+    "synonyms": [
+      "pranam",
+      "namaskar",
+      "sat sri akal"
+    ],
+    "example": "Namaste uncle, kaise hain aap?",
+    "category": "greetings",
+    "difficulty": "basic"
+  },
+  "dhanyavaad": {
+    "english": "Thank you",
+    "meaning": "Shukriya, aabhar",
+    "synonyms": [
+      "shukriya",
+      "meharbani",
+      "kripya"
+    ],
+    "example": "Aapki madad ke liye dhanyavaad",
+    "category": "greetings",
+    "difficulty": "basic"
+  },
+  "pyaar": {
+    "english": "Love",
+    "meaning": "Prem, mohabbat, dil ka lagaav",
+    "synonyms": [
+      "prem",
+      "mohabbat",
+      "ishq",
+      "sneh"
+    ],
+    "example": "Pyaar mein sab kuch fair hai",
+    "category": "emotions",
+    "difficulty": "basic"
+  },
+  "dost": {
+    "english": "Friend",
+    "meaning": "Mitra, saathi, yaar",
+    "synonyms": [
+      "mitra",
+      "saathi",
+      "yaar",
+      "bandhu"
+    ],
+    "example": "Saccha dost mushkil mein kaam aata hai",
+    "category": "relationships",
+    "difficulty": "basic"
+  },
+  "sapna": {
+    "english": "Dream",
+    "meaning": "Khwab, swapna, ummeed",
+    "synonyms": [
+      "khwab",
+      "swapna",
+      "arzoo"
+    ],
+    "example": "Sapne dekhna band mat karo",
+    "category": "abstract",
+    "difficulty": "basic"
+  },
+  "himmat": {
+    "english": "Courage",
+    "meaning": "Sahas, hausla, dilerI",
+    "synonyms": [
+      "sahas",
+      "hausla",
+      "bahaduri"
+    ],
+    "example": "Himmat rakhne wale haar nahi maante",
+    "category": "qualities",
+    "difficulty": "intermediate"
+  },
+  "mehnat": {
+    "english": "Hard work",
+    "meaning": "Parishram, kadi mehnat",
+    "synonyms": [
+      "parishram",
+      "shram",
+      "koshish"
+    ],
+    "example": "Mehnat ka fal meetha hota hai",
+    "category": "qualities",
+    "difficulty": "basic"
+  },
+  "zindagi": {
+    "english": "Life",
+    "meaning": "Jeevan, hayaat",
+    "synonyms": [
+      "jeevan",
+      "hayaat",
+      "umr"
+    ],
+    "example": "Zindagi bahut khoobsurat hai",
+    "category": "abstract",
+    "difficulty": "basic"
+  },
+  "khushi": {
+    "english": "Happiness",
+    "meaning": "Aanand, harshh, prasannata",
+    "synonyms": [
+      "aanand",
+      "harshh",
+      "sukh"
+    ],
+    "example": "Khushi baatne se badhti hai",
+    "category": "emotions",
+    "difficulty": "basic"
+  },
+  "duniya": {
+    "english": "World",
+    "meaning": "Sansar, jagat, vishwa",
+    "synonyms": [
+      "sansar",
+      "jagat",
+      "vishwa"
+    ],
+    "example": "Duniya bahut badi hai",
+    "category": "general",
+    "difficulty": "basic"
+  },
+  "samay": {
+    "english": "Time",
+    "meaning": "Waqt, kaal",
+    "synonyms": [
+      "waqt",
+      "kaal",
+      "vela"
+    ],
+    "example": "Samay bahut keemti hai",
+    "category": "abstract",
+    "difficulty": "basic"
+  },
+  "paani": {
+    "english": "Water",
+    "meaning": "Jal, neer",
+    "synonyms": [
+      "jal",
+      "neer",
+      "aab"
+    ],
+    "example": "Paani hi jeevan hai",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "aag": {
+    "english": "Fire",
+    "meaning": "Agni, jwala",
+    "synonyms": [
+      "agni",
+      "jwala",
+      "aatish"
+    ],
+    "example": "Aag se khelo mat",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "hawa": {
+    "english": "Air/Wind",
+    "meaning": "Vayu, pavan",
+    "synonyms": [
+      "vayu",
+      "pavan",
+      "sameer"
+    ],
+    "example": "Thandi hawa bah rahi hai",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "dharti": {
+    "english": "Earth",
+    "meaning": "Prithvi, zameen, bhumi",
+    "synonyms": [
+      "prithvi",
+      "zameen",
+      "bhumi"
+    ],
+    "example": "Dharti maa ki jai",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "aasman": {
+    "english": "Sky",
+    "meaning": "Akash, gagan, nabh",
+    "synonyms": [
+      "akash",
+      "gagan",
+      "nabh"
+    ],
+    "example": "Aasman nila hai",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "suraj": {
+    "english": "Sun",
+    "meaning": "Surya, ravi, bhaanu",
+    "synonyms": [
+      "surya",
+      "ravi",
+      "dinkar"
+    ],
+    "example": "Suraj poorbh mein ugta hai",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "chaand": {
+    "english": "Moon",
+    "meaning": "Chandra, mahtab",
+    "synonyms": [
+      "chandra",
+      "mahtab",
+      "soma"
+    ],
+    "example": "Aaj chaand bahut sundar hai",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "sitara": {
+    "english": "Star",
+    "meaning": "Tara, nakshatra",
+    "synonyms": [
+      "tara",
+      "nakshatra",
+      "sitara"
+    ],
+    "example": "Aasman mein hazaron sitare hain",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "phool": {
+    "english": "Flower",
+    "meaning": "Pushp, kusam",
+    "synonyms": [
+      "pushp",
+      "kusam",
+      "suman"
+    ],
+    "example": "Gulab ka phool bahut sundar hota hai",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "ped": {
+    "english": "Tree",
+    "meaning": "Vriksh, darakht",
+    "synonyms": [
+      "vriksh",
+      "darakht",
+      "taru"
+    ],
+    "example": "Ped lagao, paryavaran bachao",
+    "category": "nature",
+    "difficulty": "basic"
+  },
+  "parvat": {
+    "english": "Mountain",
+    "meaning": "Pahad, shail, giri",
+    "synonyms": [
+      "pahad",
+      "shail",
+      "giri"
+    ],
+    "example": "Himalaya sabse ooncha parvat hai",
+    "category": "geography",
+    "difficulty": "intermediate"
+  },
+  "nadi": {
+    "english": "River",
+    "meaning": "Dariya, sarita",
+    "synonyms": [
+      "dariya",
+      "sarita",
+      "pravah"
+    ],
+    "example": "Ganga nadi pavitra mani jaati hai",
+    "category": "geography",
+    "difficulty": "basic"
+  },
+  "samundar": {
+    "english": "Ocean/Sea",
+    "meaning": "Sagar, mahasagar",
+    "synonyms": [
+      "sagar",
+      "mahasagar",
+      "sindhu"
+    ],
+    "example": "Samundar bahut gehra hai",
+    "category": "geography",
+    "difficulty": "basic"
+  },
+  "kitab": {
+    "english": "Book",
+    "meaning": "Pustak, grantha",
+    "synonyms": [
+      "pustak",
+      "grantha",
+      "pothi"
+    ],
+    "example": "Kitab padhna acchi aadat hai",
+    "category": "education",
+    "difficulty": "basic"
+  },
+  "vidyalaya": {
+    "english": "School",
+    "meaning": "Pathshala, school",
+    "synonyms": [
+      "pathshala",
+      "school",
+      "gurukul"
+    ],
+    "example": "Main vidyalaya jaata hoon",
+    "category": "education",
+    "difficulty": "basic"
+  },
+  "shikshak": {
+    "english": "Teacher",
+    "meaning": "Guru, adhyapak",
+    "synonyms": [
+      "guru",
+      "adhyapak",
+      "ustad"
+    ],
+    "example": "Shikshak samaj ke nirmata hain",
+    "category": "education",
+    "difficulty": "intermediate"
+  },
+  "vidyarthi": {
+    "english": "Student",
+    "meaning": "Chhatra, shishya",
+    "synonyms": [
+      "chhatra",
+      "shishya",
+      "talib-ilm"
+    ],
+    "example": "Vidyarthi ko mehnat karni chahiye",
+    "category": "education",
+    "difficulty": "intermediate"
+  },
+  "ghar": {
+    "english": "Home/House",
+    "meaning": "Aashray, makan, niwas",
+    "synonyms": [
+      "makan",
+      "niwas",
+      "aashray"
+    ],
+    "example": "Ghar jaisa koi jagah nahi",
+    "category": "places",
+    "difficulty": "basic"
+  },
+  "raasta": {
+    "english": "Path/Road",
+    "meaning": "Marg, sadak, rasta",
+    "synonyms": [
+      "marg",
+      "sadak",
+      "path"
+    ],
+    "example": "Yeh raasta kahin nahi jaata",
+    "category": "places",
+    "difficulty": "basic"
+  },
+  "bazaar": {
+    "english": "Market",
+    "meaning": "Haat, mandi",
+    "synonyms": [
+      "haat",
+      "mandi",
+      "market"
+    ],
+    "example": "Bazaar mein bahut bheed thi",
+    "category": "places",
+    "difficulty": "basic"
+  },
+  "mandir": {
+    "english": "Temple",
+    "meaning": "Devasthan, pooja sthal",
+    "synonyms": [
+      "devasthan",
+      "devalaya",
+      "muth"
+    ],
+    "example": "Mandir mein shanti milti hai",
+    "category": "places",
+    "difficulty": "basic"
+  },
+  "desh": {
+    "english": "Country",
+    "meaning": "Rashtra, mulk, watan",
+    "synonyms": [
+      "rashtra",
+      "mulk",
+      "watan"
+    ],
+    "example": "Mera desh mahan hai",
+    "category": "geography",
+    "difficulty": "basic"
+  },
+  "shahar": {
+    "english": "City",
+    "meaning": "Nagar, nagari",
+    "synonyms": [
+      "nagar",
+      "nagari",
+      "shahr"
+    ],
+    "example": "Mumbai ek bada shahar hai",
+    "category": "geography",
+    "difficulty": "basic"
+  },
+  "gaon": {
+    "english": "Village",
+    "meaning": "Gram, dehaat",
+    "synonyms": [
+      "gram",
+      "dehaat",
+      "pind"
+    ],
+    "example": "Gaon ki hawa shuddh hoti hai",
+    "category": "geography",
+    "difficulty": "basic"
+  },
+  "kaam": {
+    "english": "Work",
+    "meaning": "Karya, vyavsay, naukri",
+    "synonyms": [
+      "karya",
+      "vyavsay",
+      "udyam"
+    ],
+    "example": "Kaam karo, fal ki chinta mat karo",
+    "category": "work",
+    "difficulty": "basic"
+  },
+  "paisa": {
+    "english": "Money",
+    "meaning": "Dhan, sampatti, mudra",
+    "synonyms": [
+      "dhan",
+      "sampatti",
+      "mudra"
+    ],
+    "example": "Paisa sab kuch nahi hota",
+    "category": "general",
+    "difficulty": "basic"
+  },
+  "sehat": {
+    "english": "Health",
+    "meaning": "Swasthya, tandursti",
+    "synonyms": [
+      "swasthya",
+      "tandursti",
+      "arogya"
+    ],
+    "example": "Sehat sabse badi daulat hai",
+    "category": "health",
+    "difficulty": "basic"
+  },
+  "dawai": {
+    "english": "Medicine",
+    "meaning": "Aushadhi, ilaj",
+    "synonyms": [
+      "aushadhi",
+      "ilaj",
+      "upchar"
+    ],
+    "example": "Dawai samay pe leni chahiye",
+    "category": "health",
+    "difficulty": "basic"
+  },
+  "doctor": {
+    "english": "Doctor",
+    "meaning": "Chikitsak, vaidya, hakim",
+    "synonyms": [
+      "chikitsak",
+      "vaidya",
+      "hakim"
+    ],
+    "example": "Doctor se milna zaroori hai",
+    "category": "health",
+    "difficulty": "basic"
+  },
+  "khana": {
+    "english": "Food",
+    "meaning": "Bhojan, aahar, rasoi",
+    "synonyms": [
+      "bhojan",
+      "aahar",
+      "khurak"
+    ],
+    "example": "Khana samay pe khana chahiye",
+    "category": "food",
+    "difficulty": "basic"
+  },
+  "roti": {
+    "english": "Bread/Chapati",
+    "meaning": "Chapati, naan, paratha",
+    "synonyms": [
+      "chapati",
+      "naan",
+      "phulka"
+    ],
+    "example": "Garam roti acchi lagti hai",
+    "category": "food",
+    "difficulty": "basic"
+  },
+  "doodh": {
+    "english": "Milk",
+    "meaning": "Ksheer, dugdh",
+    "synonyms": [
+      "ksheer",
+      "dugdh"
+    ],
+    "example": "Doodh peena sehat ke liye accha hai",
+    "category": "food",
+    "difficulty": "basic"
+  },
+  "chai": {
+    "english": "Tea",
+    "meaning": "Chay, chai patti",
+    "synonyms": [
+      "chay"
+    ],
+    "example": "Subah ki chai bahut acchi lagti hai",
+    "category": "food",
+    "difficulty": "basic"
+  },
+  "maa": {
+    "english": "Mother",
+    "meaning": "Maata, janani, amma",
+    "synonyms": [
+      "maata",
+      "janani",
+      "amma",
+      "ammi"
+    ],
+    "example": "Maa ka pyaar sabse bada hota hai",
+    "category": "family",
+    "difficulty": "basic"
+  },
+  "pita": {
+    "english": "Father",
+    "meaning": "Baap, papa, abba",
+    "synonyms": [
+      "baap",
+      "papa",
+      "abba",
+      "pitaji"
+    ],
+    "example": "Pita parivaar ka sahara hote hain",
+    "category": "family",
+    "difficulty": "basic"
+  },
+  "bhai": {
+    "english": "Brother",
+    "meaning": "Bhrata, bhaiya",
+    "synonyms": [
+      "bhrata",
+      "bhaiya",
+      "bro"
+    ],
+    "example": "Bhai behen ka rishta anokha hota hai",
+    "category": "family",
+    "difficulty": "basic"
+  },
+  "behen": {
+    "english": "Sister",
+    "meaning": "Bhagini, didi",
+    "synonyms": [
+      "bhagini",
+      "didi",
+      "behenji"
+    ],
+    "example": "Meri behen bahut hoshiyar hai",
+    "category": "family",
+    "difficulty": "basic"
+  },
+  "bachcha": {
+    "english": "Child",
+    "meaning": "Balak, shishu, nanhe",
+    "synonyms": [
+      "balak",
+      "shishu",
+      "chhota"
+    ],
+    "example": "Bacche bhagwan ka roop hote hain",
+    "category": "family",
+    "difficulty": "basic"
+  },
+  "dil": {
+    "english": "Heart",
+    "meaning": "Hridaya, kaleja",
+    "synonyms": [
+      "hridaya",
+      "kaleja",
+      "mann"
+    ],
+    "example": "Dil se bolo toh sab samajhte hain",
+    "category": "body",
+    "difficulty": "basic"
+  },
+  "aankh": {
+    "english": "Eye",
+    "meaning": "Netra, chakshu, nazar",
+    "synonyms": [
+      "netra",
+      "chakshu",
+      "nazar"
+    ],
+    "example": "Aankhein sab kuch bol deti hain",
+    "category": "body",
+    "difficulty": "basic"
+  },
+  "haath": {
+    "english": "Hand",
+    "meaning": "Hast, kar, palm",
+    "synonyms": [
+      "hast",
+      "kar",
+      "panja"
+    ],
+    "example": "Haath milao, dosti karo",
+    "category": "body",
+    "difficulty": "basic"
+  },
+  "pair": {
+    "english": "Foot/Leg",
+    "meaning": "Pad, paaon, tang",
+    "synonyms": [
+      "pad",
+      "paaon",
+      "tang"
+    ],
+    "example": "Pair jameen pe rakho",
+    "category": "body",
+    "difficulty": "basic"
+  },
+  "sar": {
+    "english": "Head",
+    "meaning": "Mastisk, sir, maatha",
+    "synonyms": [
+      "mastisk",
+      "sir",
+      "maatha"
+    ],
+    "example": "Sar pe haath rakhiye",
+    "category": "body",
+    "difficulty": "basic"
+  },
+  "rang": {
+    "english": "Color",
+    "meaning": "Varna, ranga",
+    "synonyms": [
+      "varna",
+      "ranga",
+      "colour"
+    ],
+    "example": "Indradhanush mein saat rang hote hain",
+    "category": "general",
+    "difficulty": "basic"
+  },
+  "safed": {
+    "english": "White",
+    "meaning": "Shwet, ujla",
+    "synonyms": [
+      "shwet",
+      "ujla",
+      "dhavl"
+    ],
+    "example": "Safed rang shanti ka pratik hai",
+    "category": "colors",
+    "difficulty": "basic"
+  },
+  "kala": {
+    "english": "Black",
+    "meaning": "Krishna, shyam",
+    "synonyms": [
+      "krishna",
+      "shyam",
+      "andher"
+    ],
+    "example": "Kala rang powerful lagta hai",
+    "category": "colors",
+    "difficulty": "basic"
+  },
+  "lal": {
+    "english": "Red",
+    "meaning": "Raktim, surkh",
+    "synonyms": [
+      "raktim",
+      "surkh",
+      "aruna"
+    ],
+    "example": "Lal rang pyaar ka pratik hai",
+    "category": "colors",
+    "difficulty": "basic"
+  },
+  "neela": {
+    "english": "Blue",
+    "meaning": "Neel, aasmani",
+    "synonyms": [
+      "neel",
+      "aasmani",
+      "indraneel"
+    ],
+    "example": "Aasman neela dikhta hai",
+    "category": "colors",
+    "difficulty": "basic"
+  },
+  "hara": {
+    "english": "Green",
+    "meaning": "Harit, sabz",
+    "synonyms": [
+      "harit",
+      "sabz",
+      "shyamal"
+    ],
+    "example": "Hara rang prakriti ka rang hai",
+    "category": "colors",
+    "difficulty": "basic"
+  },
+  "peela": {
+    "english": "Yellow",
+    "meaning": "Peet, zard",
+    "synonyms": [
+      "peet",
+      "zard",
+      "basanti"
+    ],
+    "example": "Peela rang khushi ka pratik hai",
+    "category": "colors",
+    "difficulty": "basic"
+  },
+  "sher": {
+    "english": "Lion/Tiger",
+    "meaning": "Simha, baagh",
+    "synonyms": [
+      "simha",
+      "baagh",
+      "vanraj"
+    ],
+    "example": "Sher jungle ka raja hai",
+    "category": "animals",
+    "difficulty": "basic"
+  },
+  "hathi": {
+    "english": "Elephant",
+    "meaning": "Gajaraj, fil",
+    "synonyms": [
+      "gajaraj",
+      "fil",
+      "kunjar"
+    ],
+    "example": "Hathi bahut buddhiman jaanvar hai",
+    "category": "animals",
+    "difficulty": "basic"
+  },
+  "kutte": {
+    "english": "Dog",
+    "meaning": "Shwan, kutta",
+    "synonyms": [
+      "shwan",
+      "kutta",
+      "kukur"
+    ],
+    "example": "Kutte wafadar hote hain",
+    "category": "animals",
+    "difficulty": "basic"
+  },
+  "billi": {
+    "english": "Cat",
+    "meaning": "Marjaar, billi",
+    "synonyms": [
+      "marjaar",
+      "bilaadi"
+    ],
+    "example": "Billi bahut chalak hoti hai",
+    "category": "animals",
+    "difficulty": "basic"
+  },
+  "ghoda": {
+    "english": "Horse",
+    "meaning": "Ashwa, haya",
+    "synonyms": [
+      "ashwa",
+      "haya",
+      "turang"
+    ],
+    "example": "Ghoda tez daudta hai",
+    "category": "animals",
+    "difficulty": "basic"
+  },
+  "chidiya": {
+    "english": "Bird",
+    "meaning": "Pakshi, panchhi",
+    "synonyms": [
+      "pakshi",
+      "panchhi",
+      "vihamg"
+    ],
+    "example": "Chidiya subah gaati hai",
+    "category": "animals",
+    "difficulty": "basic"
+  },
+  "machli": {
+    "english": "Fish",
+    "meaning": "Matsya, meen",
+    "synonyms": [
+      "matsya",
+      "meen"
+    ],
+    "example": "Machli paani ki rani hai",
+    "category": "animals",
+    "difficulty": "basic"
+  },
+  "barish": {
+    "english": "Rain",
+    "meaning": "Varsha, barsaat, megh",
+    "synonyms": [
+      "varsha",
+      "barsaat",
+      "jal varsha"
+    ],
+    "example": "Barish mein bheegna accha lagta hai",
+    "category": "weather",
+    "difficulty": "basic"
+  },
+  "dhoop": {
+    "english": "Sunshine",
+    "meaning": "Savera ki dhoop, suraj ki roshni",
+    "synonyms": [
+      "tapa",
+      "roshni",
+      "prakash"
+    ],
+    "example": "Dhoop mein vitamin D milta hai",
+    "category": "weather",
+    "difficulty": "basic"
+  },
+  "thand": {
+    "english": "Cold",
+    "meaning": "Sheetalta, sardi",
+    "synonyms": [
+      "sheetalta",
+      "sardi",
+      "jaada"
+    ],
+    "example": "Bahut thand lag rahi hai",
+    "category": "weather",
+    "difficulty": "basic"
+  },
+  "garmi": {
+    "english": "Heat/Summer",
+    "meaning": "Ushna, grishm, taap",
+    "synonyms": [
+      "ushna",
+      "grishm",
+      "taap"
+    ],
+    "example": "Garmi mein paani zyada peena chahiye",
+    "category": "weather",
+    "difficulty": "basic"
+  },
+  "sach": {
+    "english": "Truth",
+    "meaning": "Satya, haqeeqat",
+    "synonyms": [
+      "satya",
+      "haqeeqat",
+      "yatharth"
+    ],
+    "example": "Sach hamesha jeetta hai",
+    "category": "values",
+    "difficulty": "basic"
+  },
+  "jhooth": {
+    "english": "Lie",
+    "meaning": "Asatya, galat baat",
+    "synonyms": [
+      "asatya",
+      "farb",
+      "kapat"
+    ],
+    "example": "Jhooth bolna paap hai",
+    "category": "values",
+    "difficulty": "basic"
+  },
+  "insaaf": {
+    "english": "Justice",
+    "meaning": "Nyay, adalat",
+    "synonyms": [
+      "nyay",
+      "adalat",
+      "udaar"
+    ],
+    "example": "Insaaf sabko milna chahiye",
+    "category": "values",
+    "difficulty": "intermediate"
+  },
+  "azadi": {
+    "english": "Freedom",
+    "meaning": "Swatantrata, mukti",
+    "synonyms": [
+      "swatantrata",
+      "mukti",
+      "chhutkara"
+    ],
+    "example": "Azadi ki keemat soldiers jaante hain",
+    "category": "values",
+    "difficulty": "intermediate"
+  },
+  "shanti": {
+    "english": "Peace",
+    "meaning": "Aman, sukoon, chain",
+    "synonyms": [
+      "aman",
+      "sukoon",
+      "chain"
+    ],
+    "example": "Shanti sabse badi zaroorat hai",
+    "category": "values",
+    "difficulty": "basic"
+  },
+  "vidya": {
+    "english": "Knowledge/Education",
+    "meaning": "Gyaan, ilm, taleem",
+    "synonyms": [
+      "gyaan",
+      "ilm",
+      "taleem"
+    ],
+    "example": "Vidya sabse bada dhan hai",
+    "category": "education",
+    "difficulty": "intermediate"
+  },
+  "buddhi": {
+    "english": "Intelligence",
+    "meaning": "Akal, gyaan, samajh",
+    "synonyms": [
+      "akal",
+      "gyaan",
+      "samajh",
+      "vivek"
+    ],
+    "example": "Buddhi se kaam karo",
+    "category": "qualities",
+    "difficulty": "intermediate"
+  },
+  "shakti": {
+    "english": "Power/Strength",
+    "meaning": "Taakat, bal, oorja",
+    "synonyms": [
+      "taakat",
+      "bal",
+      "oorja"
+    ],
+    "example": "Ekta mein shakti hai",
+    "category": "qualities",
+    "difficulty": "intermediate"
+  },
+  "daya": {
+    "english": "Mercy/Compassion",
+    "meaning": "Karuna, rehem, tars",
+    "synonyms": [
+      "karuna",
+      "rehem",
+      "kripa"
+    ],
+    "example": "Daya dharm ka mool hai",
+    "category": "values",
+    "difficulty": "intermediate"
+  },
+  "krodh": {
+    "english": "Anger",
+    "meaning": "Gussa, amarsh",
+    "synonyms": [
+      "gussa",
+      "amarsh",
+      "rosh"
+    ],
+    "example": "Krodh insaan ka sabse bada dushman hai",
+    "category": "emotions",
+    "difficulty": "intermediate"
+  },
+  "dar": {
+    "english": "Fear",
+    "meaning": "Bhay, khauf",
+    "synonyms": [
+      "bhay",
+      "khauf",
+      "aatank"
+    ],
+    "example": "Dar ke aage jeet hai",
+    "category": "emotions",
+    "difficulty": "basic"
+  },
+  "asha": {
+    "english": "Hope",
+    "meaning": "Ummeed, aas, bharosa",
+    "synonyms": [
+      "ummeed",
+      "aas",
+      "bharosa"
+    ],
+    "example": "Asha mat chhodna kabhi",
+    "category": "emotions",
+    "difficulty": "intermediate"
+  },
+  "viswas": {
+    "english": "Trust/Faith",
+    "meaning": "Bharosa, yakeen, aitbaar",
+    "synonyms": [
+      "bharosa",
+      "yakeen",
+      "aitbaar"
+    ],
+    "example": "Viswas rishton ki neev hai",
+    "category": "values",
+    "difficulty": "intermediate"
+  },
+  "sanskriti": {
+    "english": "Culture",
+    "meaning": "Sabhyata, tehzeeb",
+    "synonyms": [
+      "sabhyata",
+      "tehzeeb",
+      "tamaddun"
+    ],
+    "example": "Bharatiya sanskriti bahut purani hai",
+    "category": "culture",
+    "difficulty": "advanced"
+  },
+  "parampara": {
+    "english": "Tradition",
+    "meaning": "Riti rivaj, rasm",
+    "synonyms": [
+      "riti",
+      "rivaj",
+      "rasm"
+    ],
+    "example": "Parampara nibhana zaroori hai",
+    "category": "culture",
+    "difficulty": "advanced"
+  },
+  "yudh": {
+    "english": "War/Battle",
+    "meaning": "Ladai, jung, sangram",
+    "synonyms": [
+      "ladai",
+      "jung",
+      "sangram"
+    ],
+    "example": "Yudh mein sab haarte hain",
+    "category": "history",
+    "difficulty": "intermediate"
+  },
+  "vijay": {
+    "english": "Victory",
+    "meaning": "Jeet, fatah, kamyabi",
+    "synonyms": [
+      "jeet",
+      "fatah",
+      "kamyabi"
+    ],
+    "example": "Vijay dino door nahi hai",
+    "category": "abstract",
+    "difficulty": "intermediate"
+  },
+  "haar": {
+    "english": "Defeat/Loss",
+    "meaning": "Haarna, nakamyabi",
+    "synonyms": [
+      "haarna",
+      "nakamyabi",
+      "asafalta"
+    ],
+    "example": "Haar se seekho aur aage badho",
+    "category": "abstract",
+    "difficulty": "intermediate"
+  },
+  "safar": {
+    "english": "Journey/Travel",
+    "meaning": "Yatra, sair",
+    "synonyms": [
+      "yatra",
+      "sair",
+      "musafiri"
+    ],
+    "example": "Safar suhaana hota hai doston ke saath",
+    "category": "travel",
+    "difficulty": "basic"
+  },
+  "manzil": {
+    "english": "Destination",
+    "meaning": "Lakshya, goal, disha",
+    "synonyms": [
+      "lakshya",
+      "goal",
+      "mukam"
+    ],
+    "example": "Manzil unhi ko milti jo thak kar baith nahi jaate",
+    "category": "abstract",
+    "difficulty": "intermediate"
+  },
+  "raat": {
+    "english": "Night",
+    "meaning": "Ratri, nisha, shab",
+    "synonyms": [
+      "ratri",
+      "nisha",
+      "shab"
+    ],
+    "example": "Raat ko sitare chamakte hain",
+    "category": "time",
+    "difficulty": "basic"
+  },
+  "din": {
+    "english": "Day",
+    "meaning": "Divas, roz",
+    "synonyms": [
+      "divas",
+      "roz",
+      "ahad"
+    ],
+    "example": "Har din nayi shuruvat hoti hai",
+    "category": "time",
+    "difficulty": "basic"
+  },
+  "subah": {
+    "english": "Morning",
+    "meaning": "Pratahkal, savera, bhor",
+    "synonyms": [
+      "pratahkal",
+      "savera",
+      "bhor"
+    ],
+    "example": "Subah jaldi utho",
+    "category": "time",
+    "difficulty": "basic"
+  },
+  "shaam": {
+    "english": "Evening",
+    "meaning": "Sandhya, godhuli",
+    "synonyms": [
+      "sandhya",
+      "godhuli",
+      "sanjh"
+    ],
+    "example": "Shaam ko park mein ghoomne jao",
+    "category": "time",
+    "difficulty": "basic"
+  },
+  "kal": {
+    "english": "Yesterday/Tomorrow",
+    "meaning": "Beeta hua ya aane wala din",
+    "synonyms": [
+      "parson",
+      "aane wala"
+    ],
+    "example": "Kal bahut accha din tha",
+    "category": "time",
+    "difficulty": "basic"
+  },
+  "aaj": {
+    "english": "Today",
+    "meaning": "Is din, vartman din",
+    "synonyms": [
+      "is waqt",
+      "abhi"
+    ],
+    "example": "Aaj ka din bahut khaas hai",
+    "category": "time",
+    "difficulty": "basic"
+  },
+  "computer": {
+    "english": "Computer",
+    "meaning": "Sanganak, electronic yantra",
+    "synonyms": [
+      "sanganak",
+      "PC",
+      "laptop"
+    ],
+    "example": "Computer se kaam aasan ho gaya",
+    "category": "technology",
+    "difficulty": "basic"
+  },
+  "phone": {
+    "english": "Phone/Mobile",
+    "meaning": "Doordarshan yantra, mobile",
+    "synonyms": [
+      "mobile",
+      "smartphone",
+      "cellphone"
+    ],
+    "example": "Phone bahut zaroori ho gaya hai",
+    "category": "technology",
+    "difficulty": "basic"
+  },
+  "internet": {
+    "english": "Internet",
+    "meaning": "Antarjaal, online network",
+    "synonyms": [
+      "antarjaal",
+      "web",
+      "net"
+    ],
+    "example": "Internet ne duniya badal di",
+    "category": "technology",
+    "difficulty": "basic"
+  },
+  "gaana": {
+    "english": "Song",
+    "meaning": "Geet, sangeet, naghma",
+    "synonyms": [
+      "geet",
+      "sangeet",
+      "naghma"
+    ],
+    "example": "Yeh gaana bahut sundar hai",
+    "category": "entertainment",
+    "difficulty": "basic"
+  },
+  "film": {
+    "english": "Movie/Film",
+    "meaning": "Cinema, picture, chalchitra",
+    "synonyms": [
+      "cinema",
+      "picture",
+      "movie"
+    ],
+    "example": "Aaj raat film dekhte hain",
+    "category": "entertainment",
+    "difficulty": "basic"
+  },
+  "khel": {
+    "english": "Game/Sport",
+    "meaning": "Kriida, match",
+    "synonyms": [
+      "kriida",
+      "match",
+      "competition"
+    ],
+    "example": "Cricket India ka sabse popular khel hai",
+    "category": "sports",
+    "difficulty": "basic"
+  },
+  "jeena": {
+    "english": "To live",
+    "meaning": "Jeevan bitana, rehna",
+    "synonyms": [
+      "rehna",
+      "jeevan bitana"
+    ],
+    "example": "Jeena isi ka naam hai",
+    "category": "verbs",
+    "difficulty": "basic"
+  },
+  "marna": {
+    "english": "To die",
+    "meaning": "Mrityu, swarg sidharna",
+    "synonyms": [
+      "mrityu",
+      "deh tyagna"
+    ],
+    "example": "Marna padhna sab insaan ko hai",
+    "category": "verbs",
+    "difficulty": "basic"
+  },
+  "hasna": {
+    "english": "To laugh",
+    "meaning": "Hansi, muskurana",
+    "synonyms": [
+      "hansi",
+      "thitholi",
+      "kheelna"
+    ],
+    "example": "Hasna sehat ke liye accha hai",
+    "category": "verbs",
+    "difficulty": "basic"
+  },
+  "rona": {
+    "english": "To cry",
+    "meaning": "Aansoo bahana, vilaap karna",
+    "synonyms": [
+      "vilaap",
+      "rudaan"
+    ],
+    "example": "Rona bhi kabhi kabhi zaroori hota hai",
+    "category": "verbs",
+    "difficulty": "basic"
+  },
+  "sochna": {
+    "english": "To think",
+    "meaning": "Vichaar karna, dimag lagana",
+    "synonyms": [
+      "vichaar",
+      "chintan",
+      "manan"
+    ],
+    "example": "Pehle socho phir bolo",
+    "category": "verbs",
+    "difficulty": "basic"
+  },
+  "samajhna": {
+    "english": "To understand",
+    "meaning": "Gyaan prapt karna, boojhna",
+    "synonyms": [
+      "boojhna",
+      "pahchanna"
+    ],
+    "example": "Samajhna zaroori hai",
+    "category": "verbs",
+    "difficulty": "basic"
+  },
+  "bhoolna": {
+    "english": "To forget",
+    "meaning": "Yaad na rehna, smriti lop",
+    "synonyms": [
+      "bisarna",
+      "yaad bhoolna"
+    ],
+    "example": "Bura bhoolna accha hai",
+    "category": "verbs",
+    "difficulty": "basic"
+  },
+  "yaad": {
+    "english": "Memory/Remember",
+    "meaning": "Smriti, yaadein",
+    "synonyms": [
+      "smriti",
+      "yaadein",
+      "samsmaran"
+    ],
+    "example": "Purani yaadein dil ko chu leti hain",
+    "category": "abstract",
+    "difficulty": "basic"
+  },
+  "saphal": {
+    "english": "Successful",
+    "meaning": "Kamyab, siddh",
+    "synonyms": [
+      "kamyab",
+      "siddh",
+      "vijeta"
+    ],
+    "example": "Mehnat karne wala saphal hota hai",
+    "category": "qualities",
+    "difficulty": "intermediate"
+  },
+  "asaphal": {
+    "english": "Unsuccessful/Failed",
+    "meaning": "Nakamyab, vifal",
+    "synonyms": [
+      "nakamyab",
+      "vifal",
+      "niraash"
+    ],
+    "example": "Asaphal hona galat nahi",
+    "category": "qualities",
+    "difficulty": "intermediate"
+  },
+  "sundar": {
+    "english": "Beautiful",
+    "meaning": "Khoobsurat, haseen, manmohak",
+    "synonyms": [
+      "khoobsurat",
+      "haseen",
+      "manmohak"
+    ],
+    "example": "Kashmir bahut sundar jagah hai",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "bada": {
+    "english": "Big/Large",
+    "meaning": "Vishaal, bada, mahaan",
+    "synonyms": [
+      "vishaal",
+      "mahaan",
+      "brihad"
+    ],
+    "example": "Yeh bahut bada ghar hai",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "chhota": {
+    "english": "Small/Little",
+    "meaning": "Laghu, nanha",
+    "synonyms": [
+      "laghu",
+      "nanha",
+      "sukshm"
+    ],
+    "example": "Chhota baccha so raha hai",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "purana": {
+    "english": "Old/Ancient",
+    "meaning": "Prachin, antique",
+    "synonyms": [
+      "prachin",
+      "puraatan",
+      "antique"
+    ],
+    "example": "Yeh purani haveli hai",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "naya": {
+    "english": "New",
+    "meaning": "Naveen, taza",
+    "synonyms": [
+      "naveen",
+      "taza",
+      "aadhunik"
+    ],
+    "example": "Naya phone kharida hai",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "tez": {
+    "english": "Fast/Sharp",
+    "meaning": "Tej, tivra, teekha",
+    "synonyms": [
+      "tej",
+      "tivra",
+      "dhrut"
+    ],
+    "example": "Yeh gaadi bahut tez hai",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "dheema": {
+    "english": "Slow",
+    "meaning": "Manda, ahista",
+    "synonyms": [
+      "manda",
+      "ahista",
+      "komal"
+    ],
+    "example": "Dheeme chalo, mushkil raasta hai",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "accha": {
+    "english": "Good",
+    "meaning": "Uttam, bhalaa, sundar",
+    "synonyms": [
+      "uttam",
+      "bhalaa",
+      "shresth"
+    ],
+    "example": "Aaj accha din hai",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "bura": {
+    "english": "Bad",
+    "meaning": "Kharab, galat, ashubh",
+    "synonyms": [
+      "kharab",
+      "galat",
+      "ashubh"
+    ],
+    "example": "Bura mat socho kisi ka",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "mushkil": {
+    "english": "Difficult",
+    "meaning": "Kathin, chunauti bhara",
+    "synonyms": [
+      "kathin",
+      "asaan nahi",
+      "dushkar"
+    ],
+    "example": "Mushkil waqt mein himmat rakho",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "aasan": {
+    "english": "Easy",
+    "meaning": "Saral, sulabh, sahaj",
+    "synonyms": [
+      "saral",
+      "sulabh",
+      "sahaj"
+    ],
+    "example": "Yeh kaam bahut aasan hai",
+    "category": "adjectives",
+    "difficulty": "basic"
+  },
+  "algorithm": {
+    "english": "Algorithm",
+    "meaning": "Ganit mein samadhan ka niyam",
+    "synonyms": [
+      "niyam",
+      "prakriya",
+      "vidhi"
+    ],
+    "example": "AI algorithm se kaam karta hai",
+    "category": "technology",
+    "difficulty": "advanced"
+  },
+  "software": {
+    "english": "Software",
+    "meaning": "Computer program, app",
+    "synonyms": [
+      "program",
+      "app",
+      "application"
+    ],
+    "example": "Software update karna zaroori hai",
+    "category": "technology",
+    "difficulty": "intermediate"
+  },
+  "hardware": {
+    "english": "Hardware",
+    "meaning": "Computer ke physical parts",
+    "synonyms": [
+      "device",
+      "component",
+      "equipment"
+    ],
+    "example": "Hardware kharab ho gaya hai",
+    "category": "technology",
+    "difficulty": "intermediate"
+  },
+  "database": {
+    "english": "Database",
+    "meaning": "Data ka sangrah, tathya kosh",
+    "synonyms": [
+      "data store",
+      "information bank"
+    ],
+    "example": "Database mein sab record hota hai",
+    "category": "technology",
+    "difficulty": "advanced"
+  },
+  "network": {
+    "english": "Network",
+    "meaning": "Jaal, tantrika",
+    "synonyms": [
+      "jaal",
+      "tantrika",
+      "sampark"
+    ],
+    "example": "Network down hai aaj",
+    "category": "technology",
+    "difficulty": "intermediate"
+  },
+  "artificial": {
+    "english": "Artificial",
+    "meaning": "Krittrim, banawati",
+    "synonyms": [
+      "krittrim",
+      "banawati",
+      "nakli"
+    ],
+    "example": "Artificial intelligence bahut powerful hai",
+    "category": "technology",
+    "difficulty": "intermediate"
+  },
+  "robot": {
+    "english": "Robot",
+    "meaning": "Yantra manav, automatic machine",
+    "synonyms": [
+      "yantra manav",
+      "automaton"
+    ],
+    "example": "Robot factories mein kaam karte hain",
+    "category": "technology",
+    "difficulty": "intermediate"
+  },
+  "satellite": {
+    "english": "Satellite",
+    "meaning": "Upagrah, krittrim chandrama",
+    "synonyms": [
+      "upagrah",
+      "krittrim chandrama"
+    ],
+    "example": "India ne bahut saare satellites bheje hain",
+    "category": "space",
+    "difficulty": "intermediate"
+  },
+  "rocket": {
+    "english": "Rocket",
+    "meaning": "Agni baan, praakshepak yantra",
+    "synonyms": [
+      "agni baan",
+      "missile"
+    ],
+    "example": "ISRO ka rocket launch successful raha",
+    "category": "space",
+    "difficulty": "intermediate"
+  },
+  "atom": {
+    "english": "Atom",
+    "meaning": "Parmanu, sabse chhota kan",
+    "synonyms": [
+      "parmanu",
+      "anu"
+    ],
+    "example": "Atom se nuclear energy banti hai",
+    "category": "science",
+    "difficulty": "intermediate"
+  },
+  "molecule": {
+    "english": "Molecule",
+    "meaning": "Anu, parmanu ka samooh",
+    "synonyms": [
+      "anu",
+      "anu samooh"
+    ],
+    "example": "Paani ka molecule H2O hai",
+    "category": "science",
+    "difficulty": "intermediate"
+  },
+  "gravity": {
+    "english": "Gravity",
+    "meaning": "Gurutvakarshan, kashish-e-saql",
+    "synonyms": [
+      "gurutvakarshan",
+      "aakarshan bal"
+    ],
+    "example": "Gravity ki wajah se cheezein neeche girti hain",
+    "category": "science",
+    "difficulty": "intermediate"
+  },
+  "energy": {
+    "english": "Energy",
+    "meaning": "Oorja, shakti, taakat",
+    "synonyms": [
+      "oorja",
+      "shakti",
+      "bal"
+    ],
+    "example": "Solar energy se bijli banti hai",
+    "category": "science",
+    "difficulty": "intermediate"
+  },
+  "vitamin": {
+    "english": "Vitamin",
+    "meaning": "Jeevansatv, poshak tatva",
+    "synonyms": [
+      "jeevansatv",
+      "poshak tatva"
+    ],
+    "example": "Vitamin C immunity badhata hai",
+    "category": "health",
+    "difficulty": "intermediate"
+  },
+  "protein": {
+    "english": "Protein",
+    "meaning": "Prateen, shareer nirman tatva",
+    "synonyms": [
+      "prateen"
+    ],
+    "example": "Protein muscles ke liye zaroori hai",
+    "category": "health",
+    "difficulty": "intermediate"
+  },
+  "yoga": {
+    "english": "Yoga",
+    "meaning": "Mann aur shareer ka abhyas",
+    "synonyms": [
+      "dhyan",
+      "aasan",
+      "pranayam"
+    ],
+    "example": "Yoga se mann shant hota hai",
+    "category": "health",
+    "difficulty": "basic"
+  },
+  "pranayam": {
+    "english": "Breathing Exercise",
+    "meaning": "Saans ka abhyas",
+    "synonyms": [
+      "saans abhyas",
+      "breathing"
+    ],
+    "example": "Pranayam subah karo",
+    "category": "health",
+    "difficulty": "intermediate"
+  },
+  "meditation": {
+    "english": "Meditation",
+    "meaning": "Dhyan, manan",
+    "synonyms": [
+      "dhyan",
+      "manan",
+      "chintan"
+    ],
+    "example": "Meditation se stress kam hota hai",
+    "category": "health",
+    "difficulty": "intermediate"
+  },
+  "democracy": {
+    "english": "Democracy",
+    "meaning": "Loktantra, prajatantra",
+    "synonyms": [
+      "loktantra",
+      "prajatantra",
+      "janwad"
+    ],
+    "example": "India duniya ka sabse bada democracy hai",
+    "category": "politics",
+    "difficulty": "intermediate"
+  },
+  "constitution": {
+    "english": "Constitution",
+    "meaning": "Samvidhan, niyam pustak",
+    "synonyms": [
+      "samvidhan",
+      "dastoor"
+    ],
+    "example": "Bharat ka samvidhan duniya ka sabse bada hai",
+    "category": "politics",
+    "difficulty": "advanced"
+  },
+  "economy": {
+    "english": "Economy",
+    "meaning": "Arthvyavastha, maaliyat",
+    "synonyms": [
+      "arthvyavastha",
+      "maaliyat"
+    ],
+    "example": "India ki economy tezi se badh rahi hai",
+    "category": "economics",
+    "difficulty": "intermediate"
+  },
+  "pollution": {
+    "english": "Pollution",
+    "meaning": "Pradushan, gandgi",
+    "synonyms": [
+      "pradushan",
+      "gandgi",
+      "contamination"
+    ],
+    "example": "Vayu pradushan bahut badhta ja raha hai",
+    "category": "environment",
+    "difficulty": "intermediate"
+  },
+  "climate": {
+    "english": "Climate",
+    "meaning": "Jalvayu, mausam",
+    "synonyms": [
+      "jalvayu",
+      "mausam",
+      "weather pattern"
+    ],
+    "example": "Climate change ek badi samasya hai",
+    "category": "environment",
+    "difficulty": "intermediate"
+  },
+  "forest": {
+    "english": "Forest",
+    "meaning": "Van, jungle, aranya",
+    "synonyms": [
+      "van",
+      "jungle",
+      "aranya"
+    ],
+    "example": "Forest conservation zaroori hai",
+    "category": "environment",
+    "difficulty": "basic"
+  },
+  "wildlife": {
+    "english": "Wildlife",
+    "meaning": "Vanya jeev, jangli jaanvar",
+    "synonyms": [
+      "vanya jeev",
+      "jangli praani"
+    ],
+    "example": "Wildlife sanctuary mein jaanvar surakshit rehte hain",
+    "category": "environment",
+    "difficulty": "intermediate"
+  },
+  "festival": {
+    "english": "Festival",
+    "meaning": "Tyohaar, utsav, parv",
+    "synonyms": [
+      "tyohaar",
+      "utsav",
+      "parv"
+    ],
+    "example": "Diwali India ka sabse bada festival hai",
+    "category": "culture",
+    "difficulty": "basic"
+  },
+  "tradition": {
+    "english": "Tradition",
+    "meaning": "Parampara, riti rivaj",
+    "synonyms": [
+      "parampara",
+      "riti",
+      "dastur"
+    ],
+    "example": "Bharatiya tradition bahut ameer hai",
+    "category": "culture",
+    "difficulty": "intermediate"
+  },
+  "philosophy": {
+    "english": "Philosophy",
+    "meaning": "Darshan shastra, tatva gyaan",
+    "synonyms": [
+      "darshan",
+      "tatva gyaan",
+      "falsafa"
+    ],
+    "example": "Indian philosophy duniya bhar mein mashi hai",
+    "category": "education",
+    "difficulty": "advanced"
+  },
+  "mathematics": {
+    "english": "Mathematics",
+    "meaning": "Ganit shastra",
+    "synonyms": [
+      "ganit",
+      "hisab",
+      "math"
+    ],
+    "example": "Mathematics sabhi science ki maa hai",
+    "category": "education",
+    "difficulty": "intermediate"
+  },
+  "history": {
+    "english": "History",
+    "meaning": "Itihas, tareekh",
+    "synonyms": [
+      "itihas",
+      "tareekh",
+      "purvkatha"
+    ],
+    "example": "History se hum bahut kuch seekh sakte hain",
+    "category": "education",
+    "difficulty": "basic"
+  },
+  "geography": {
+    "english": "Geography",
+    "meaning": "Bhugol, zameen ka adhyayan",
+    "synonyms": [
+      "bhugol",
+      "sthan vigyan"
+    ],
+    "example": "India ki geography bahut diverse hai",
+    "category": "education",
+    "difficulty": "intermediate"
+  },
+  "science": {
+    "english": "Science",
+    "meaning": "Vigyan, science",
+    "synonyms": [
+      "vigyan",
+      "praudyogiki"
+    ],
+    "example": "Science ne duniya badal di",
+    "category": "education",
+    "difficulty": "basic"
+  }
 }

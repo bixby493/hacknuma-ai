@@ -82,7 +82,6 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try { enableEdgeToEdge() } catch (_: Exception) {}
-
         try { soundManager.initialize() } catch (_: Exception) {}
 
         setContent {
@@ -99,7 +98,7 @@ class MainActivity : FragmentActivity() {
                         SplashScreen(
                             onSplashComplete = {
                                 showSplash = false
-                                soundManager.playStartup()
+                                try { soundManager.playStartup() } catch (_: Exception) {}
                             }
                         )
                     } else if (!isAuthenticated) {

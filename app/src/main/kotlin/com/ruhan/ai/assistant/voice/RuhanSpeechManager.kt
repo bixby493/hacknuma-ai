@@ -171,14 +171,17 @@ class RuhanSpeechManager @Inject constructor(
 
     private fun initAndStart() {
         handler.post {
-            destroyRecognizer()
-            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context).apply {
-                setRecognitionListener(recognitionListener)
-            }
             try {
+                destroyRecognizer()
+                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)?.apply {
+                    setRecognitionListener(recognitionListener)
+                }
                 speechRecognizer?.startListening(createRecognizerIntent())
             } catch (e: SecurityException) {
                 onError?.invoke(SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS)
+            } catch (e: Exception) {
+                android.util.Log.e("RuhanSpeech", "SpeechRecognizer init failed", e)
+                onListeningStopped?.invoke()
             }
         }
     }
