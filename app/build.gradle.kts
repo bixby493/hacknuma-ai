@@ -102,8 +102,7 @@ dependencies {
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 
-    // Security (EncryptedSharedPreferences)
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    // Security-crypto removed: alpha lib causes crashes on Samsung/Xiaomi/custom ROMs
 
     // Biometric
     implementation("androidx.biometric:biometric:1.1.0")

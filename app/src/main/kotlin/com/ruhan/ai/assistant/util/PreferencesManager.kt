@@ -2,25 +2,11 @@ package com.ruhan.ai.assistant.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 
 class PreferencesManager(context: Context) {
 
-    private val prefs: SharedPreferences = try {
-        val masterKey = androidx.security.crypto.MasterKey.Builder(context)
-            .setKeyScheme(androidx.security.crypto.MasterKey.KeyScheme.AES256_GCM)
-            .build()
-        androidx.security.crypto.EncryptedSharedPreferences.create(
-            context,
-            "ruhan_secure_prefs",
-            masterKey,
-            androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-    } catch (e: Throwable) {
-        Log.w("PreferencesManager", "EncryptedSharedPreferences failed, using fallback", e)
-        context.getSharedPreferences("ruhan_prefs_fallback", Context.MODE_PRIVATE)
-    }
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("ruhan_prefs", Context.MODE_PRIVATE)
 
     var groqApiKey: String
         get() = prefs.getString(KEY_GROQ_API, "") ?: ""

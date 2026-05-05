@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import com.ruhan.ai.assistant.phone.ClapDetectionService
 import androidx.activity.enableEdgeToEdge
@@ -99,8 +100,14 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        try { enableEdgeToEdge() } catch (_: Throwable) {}
-        try { soundManager.initialize() } catch (_: Throwable) {}
+        Log.d(TAG, "MainActivity.onCreate START")
+
+        try { enableEdgeToEdge() } catch (t: Throwable) {
+            Log.e(TAG, "enableEdgeToEdge failed", t)
+        }
+        try { soundManager.initialize() } catch (t: Throwable) {
+            Log.e(TAG, "SoundManager init failed", t)
+        }
 
         try {
             val filter = IntentFilter(ClapDetectionService.ACTION_CLAP_DETECTED)
@@ -109,8 +116,11 @@ class MainActivity : FragmentActivity() {
             } else {
                 registerReceiver(clapReceiver, filter)
             }
-        } catch (_: Throwable) {}
+        } catch (t: Throwable) {
+            Log.e(TAG, "ClapReceiver registration failed", t)
+        }
 
+        Log.d(TAG, "MainActivity setContent START")
         setContent {
             if (crashError != null) {
                 CrashFallbackScreen(crashError!!)
@@ -141,6 +151,7 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
+        Log.d(TAG, "MainActivity.onCreate DONE")
     }
 
     override fun onDestroy() {
@@ -713,6 +724,10 @@ class MainActivity : FragmentActivity() {
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
             )
         }
+    }
+
+    companion object {
+        private const val TAG = "RuhanMainActivity"
     }
 
     private fun showFakeCrash() {

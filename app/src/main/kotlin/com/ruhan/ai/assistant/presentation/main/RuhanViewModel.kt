@@ -57,13 +57,12 @@ class RuhanViewModel @Inject constructor(
     private var pendingOnConfirm: (suspend () -> String)? = null
 
     init {
-        try { setupSpeechCallbacks() } catch (_: Exception) {}
-        try { loadConversations() } catch (_: Exception) {}
-        try { updateApiStatus() } catch (_: Exception) {}
-        try { observeLiveVoice() } catch (_: Exception) {}
-        try { initializeVoice() } catch (_: Exception) {}
-        // Auto-start listening on app open (Jarvis style)
-        try { startListening() } catch (_: Exception) {}
+        try { setupSpeechCallbacks() } catch (_: Throwable) {}
+        try { loadConversations() } catch (_: Throwable) {}
+        try { updateApiStatus() } catch (_: Throwable) {}
+        try { observeLiveVoice() } catch (_: Throwable) {}
+        try { initializeVoice() } catch (_: Throwable) {}
+        try { startListening() } catch (_: Throwable) {}
     }
 
     private fun setupSpeechCallbacks() {

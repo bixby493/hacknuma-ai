@@ -3,6 +3,7 @@ package com.ruhan.ai.assistant
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.os.Build
 import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
 
@@ -11,22 +12,35 @@ class RuhanApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(TAG, "RuhanApp.onCreate START")
+        installCrashHandler()
+        try { createNotificationChannels() } catch (t: Throwable) {
+            Log.e(TAG, "Notification channels failed", t)
+        }
+        Log.d(TAG, "RuhanApp.onCreate DONE")
+    }
+
+    private fun installCrashHandler() {
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            Log.e("RuhanAI", "CRASH: ${throwable.message}", throwable)
+            Log.e(TAG, "UNCAUGHT CRASH on ${thread.name}: ${throwable.message}", throwable)
             try {
-                val crashFile = java.io.File(getExternalFilesDir(null), "ruhan_crash.txt")
+                val crashDir = getExternalFilesDir(null) ?: filesDir
+                val crashFile = java.io.File(crashDir, "ruhan_crash.txt")
+                val ts = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.US)
+                    .format(java.util.Date())
                 crashFile.writeText(
-                    "Time: ${java.util.Date()}\n" +
-                    "Error: ${throwable.message}\n" +
-                    "Stack: ${throwable.stackTraceToString()}\n"
+                    "RUHAN AI Crash Report\n" +
+                    "Time: $ts\n" +
+                    "Thread: ${thread.name}\n" +
+                    "Device: ${Build.MANUFACTURER} ${Build.MODEL} (API ${Build.VERSION.SDK_INT})\n" +
+                    "Error: ${throwable.javaClass.name}: ${throwable.message}\n\n" +
+                    "Stack Trace:\n${throwable.stackTraceToString()}\n\n" +
+                    "Caused by:\n${throwable.cause?.stackTraceToString() ?: "none"}\n"
                 )
             } catch (_: Throwable) {}
             defaultHandler?.uncaughtException(thread, throwable)
         }
-        try {
-            createNotificationChannels()
-        } catch (_: Throwable) {}
     }
 
     private fun createNotificationChannels() {
@@ -55,6 +69,7 @@ class RuhanApp : Application() {
     }
 
     companion object {
+        private const val TAG = "RuhanApp"
         const val CHANNEL_SERVICE = "ruhan_service_channel"
         const val CHANNEL_REMINDER = "ruhan_reminder_channel"
     }
