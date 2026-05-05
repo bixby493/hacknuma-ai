@@ -64,32 +64,37 @@ class SettingsViewModel @Inject constructor(
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
     private fun loadSettings(): SettingsUiState {
-        return SettingsUiState(
-            bossName = preferencesManager.bossName,
-            wakeWord = preferencesManager.wakeWord,
-            alwaysListening = preferencesManager.alwaysListening,
-            floatingButton = preferencesManager.floatingButtonEnabled,
-            voiceSpeed = preferencesManager.voiceSpeed,
-            voicePitch = preferencesManager.voicePitch,
-            voiceGender = preferencesManager.voiceGender,
-            dailyBriefingEnabled = preferencesManager.dailyBriefingEnabled,
-            dailyBriefingHour = preferencesManager.dailyBriefingHour,
-            dailyBriefingMinute = preferencesManager.dailyBriefingMinute,
-            emergencyContact = preferencesManager.emergencyContact,
-            groqApiKey = preferencesManager.groqApiKey,
-            geminiApiKey = preferencesManager.geminiApiKey,
-            huggingFaceApiKey = preferencesManager.huggingFaceApiKey,
-            tavilyApiKey = preferencesManager.tavilyApiKey,
-            notionApiKey = preferencesManager.notionApiKey,
-            notionDatabaseId = preferencesManager.notionDatabaseId,
-            language = preferencesManager.language,
-            theme = preferencesManager.theme,
-            biometricLockEnabled = preferencesManager.biometricLockEnabled,
-            fakeCrashEnabled = preferencesManager.fakeCrashEnabled,
-            breakInPhotoEnabled = preferencesManager.breakInPhotoEnabled,
-            memoryEncryption = preferencesManager.memoryEncryption,
-            wakeSensitivity = preferencesManager.wakeSensitivity
-        )
+        return try {
+            SettingsUiState(
+                bossName = preferencesManager.bossName,
+                wakeWord = preferencesManager.wakeWord,
+                alwaysListening = preferencesManager.alwaysListening,
+                floatingButton = preferencesManager.floatingButtonEnabled,
+                voiceSpeed = preferencesManager.voiceSpeed,
+                voicePitch = preferencesManager.voicePitch,
+                voiceGender = preferencesManager.voiceGender,
+                dailyBriefingEnabled = preferencesManager.dailyBriefingEnabled,
+                dailyBriefingHour = preferencesManager.dailyBriefingHour,
+                dailyBriefingMinute = preferencesManager.dailyBriefingMinute,
+                emergencyContact = preferencesManager.emergencyContact,
+                groqApiKey = preferencesManager.groqApiKey,
+                geminiApiKey = preferencesManager.geminiApiKey,
+                huggingFaceApiKey = preferencesManager.huggingFaceApiKey,
+                tavilyApiKey = preferencesManager.tavilyApiKey,
+                notionApiKey = preferencesManager.notionApiKey,
+                notionDatabaseId = preferencesManager.notionDatabaseId,
+                language = preferencesManager.language,
+                theme = preferencesManager.theme,
+                biometricLockEnabled = preferencesManager.biometricLockEnabled,
+                fakeCrashEnabled = preferencesManager.fakeCrashEnabled,
+                breakInPhotoEnabled = preferencesManager.breakInPhotoEnabled,
+                memoryEncryption = preferencesManager.memoryEncryption,
+                wakeSensitivity = preferencesManager.wakeSensitivity
+            )
+        } catch (e: Throwable) {
+            android.util.Log.e("SettingsVM", "loadSettings failed", e)
+            SettingsUiState()
+        }
     }
 
     fun updateBossName(name: String) {

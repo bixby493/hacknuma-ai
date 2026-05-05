@@ -1,0 +1,480 @@
+{
+  "greetings": [
+    {
+      "hindi": "Namaste",
+      "english": "Hello / Greetings",
+      "urdu": "Assalam-u-Alaikum",
+      "pronunciation": "Na-mas-tey",
+      "context": "Formal greeting, can be used anytime"
+    },
+    {
+      "hindi": "Kya haal hai?",
+      "english": "How are you?",
+      "urdu": "Kya haal hai?",
+      "pronunciation": "Kya haal hai",
+      "context": "Casual greeting to friends/family"
+    },
+    {
+      "hindi": "Aap kaise hain?",
+      "english": "How are you? (formal)",
+      "urdu": "Aap kaise hain?",
+      "pronunciation": "Aap kai-sey hain",
+      "context": "Formal/respectful greeting"
+    },
+    {
+      "hindi": "Sab badhiya?",
+      "english": "Everything good?",
+      "urdu": "Sab theek?",
+      "pronunciation": "Sub bud-hiya",
+      "context": "Very casual, among friends"
+    },
+    {
+      "hindi": "Good morning",
+      "english": "Good morning",
+      "urdu": "Subah bakhair",
+      "pronunciation": "Good mor-ning",
+      "context": "Morning greeting"
+    },
+    {
+      "hindi": "Shubh ratri",
+      "english": "Good night",
+      "urdu": "Shab bakhair",
+      "pronunciation": "Shubh raa-tree",
+      "context": "Night farewell"
+    },
+    {
+      "hindi": "Alvida",
+      "english": "Goodbye",
+      "urdu": "Khuda hafiz",
+      "pronunciation": "Al-vi-daa",
+      "context": "Farewell"
+    },
+    {
+      "hindi": "Phir milenge",
+      "english": "See you again",
+      "urdu": "Phir milenge",
+      "pronunciation": "Phir mil-en-gey",
+      "context": "Casual farewell"
+    },
+    {
+      "hindi": "Swagat hai",
+      "english": "Welcome",
+      "urdu": "Khush aamdeed",
+      "pronunciation": "Swa-gat hai",
+      "context": "Welcoming someone"
+    },
+    {
+      "hindi": "Bahut khushi hui",
+      "english": "Nice to meet you",
+      "urdu": "Mil kar khushi hui",
+      "pronunciation": "Ba-hut khu-shi hui",
+      "context": "First meeting"
+    }
+  ],
+  "daily_life": [
+    {
+      "hindi": "Subah ho gayi, utho!",
+      "english": "It's morning, wake up!",
+      "urdu": "Subah ho gayi, utho!",
+      "pronunciation": "Su-bah ho ga-yi, ut-ho",
+      "context": "Waking someone up"
+    },
+    {
+      "hindi": "Khana tayyar hai",
+      "english": "Food is ready",
+      "urdu": "Khana tayyar hai",
+      "pronunciation": "Kha-na tai-yar hai",
+      "context": "Mealtime announcement"
+    },
+    {
+      "hindi": "Mujhe bhookh lagi hai",
+      "english": "I am hungry",
+      "urdu": "Mujhe bhookh lagi hai",
+      "pronunciation": "Muj-hey bhookh la-gi hai",
+      "context": "Expressing hunger"
+    },
+    {
+      "hindi": "Paani chahiye",
+      "english": "I need water",
+      "urdu": "Paani chahiye",
+      "pronunciation": "Paa-ni cha-hi-ye",
+      "context": "Asking for water"
+    },
+    {
+      "hindi": "Main so raha hoon",
+      "english": "I am sleeping",
+      "urdu": "Main so raha hoon",
+      "pronunciation": "Main so ra-ha hoon",
+      "context": "Going to sleep"
+    },
+    {
+      "hindi": "Kya time hua?",
+      "english": "What time is it?",
+      "urdu": "Kya waqt hua?",
+      "pronunciation": "Kya time hu-a",
+      "context": "Asking time"
+    },
+    {
+      "hindi": "Aaj kya plan hai?",
+      "english": "What's the plan today?",
+      "urdu": "Aaj kya plan hai?",
+      "pronunciation": "Aaj kya plan hai",
+      "context": "Morning planning"
+    },
+    {
+      "hindi": "Main office ja raha hoon",
+      "english": "I am going to office",
+      "urdu": "Main office ja raha hoon",
+      "pronunciation": "Main office ja ra-ha hoon",
+      "context": "Leaving for work"
+    },
+    {
+      "hindi": "Ghar kab aaoge?",
+      "english": "When will you come home?",
+      "urdu": "Ghar kab aaoge?",
+      "pronunciation": "Ghar kab aa-o-gey",
+      "context": "Asking about return time"
+    },
+    {
+      "hindi": "Bahut thak gaya",
+      "english": "Very tired",
+      "urdu": "Bahut thak gaya",
+      "pronunciation": "Ba-hut thak ga-ya",
+      "context": "Expressing tiredness"
+    }
+  ],
+  "shopping": [
+    {
+      "hindi": "Ye kitne ka hai?",
+      "english": "How much is this?",
+      "urdu": "Ye kitne ka hai?",
+      "pronunciation": "Ye kit-ney ka hai",
+      "context": "Asking price"
+    },
+    {
+      "hindi": "Bahut mehenga hai",
+      "english": "Very expensive",
+      "urdu": "Bahut mehenga hai",
+      "pronunciation": "Ba-hut me-hen-ga hai",
+      "context": "Negotiating"
+    },
+    {
+      "hindi": "Kuch kam karo",
+      "english": "Give some discount",
+      "urdu": "Kuch kam karo",
+      "pronunciation": "Kuch kam ka-ro",
+      "context": "Bargaining"
+    },
+    {
+      "hindi": "Bill de do",
+      "english": "Give the bill",
+      "urdu": "Bill de do",
+      "pronunciation": "Bill dey do",
+      "context": "After purchase"
+    },
+    {
+      "hindi": "Online order karta hoon",
+      "english": "I'll order online",
+      "urdu": "Online order karta hoon",
+      "pronunciation": "Online or-der kar-ta hoon",
+      "context": "E-commerce"
+    },
+    {
+      "hindi": "Return karna hai",
+      "english": "I want to return",
+      "urdu": "Wapas karna hai",
+      "pronunciation": "Re-turn kar-na hai",
+      "context": "Returns"
+    },
+    {
+      "hindi": "Yeh colour mein aur options hain?",
+      "english": "Any other color options?",
+      "urdu": "Aur colour mein milega?",
+      "pronunciation": "Yeh co-lour mein aur op-tions hain",
+      "context": "Shopping"
+    },
+    {
+      "hindi": "Cash ya card?",
+      "english": "Cash or card?",
+      "urdu": "Cash ya card?",
+      "pronunciation": "Cash ya card",
+      "context": "Payment method"
+    }
+  ],
+  "technology": [
+    {
+      "hindi": "WiFi ka password kya hai?",
+      "english": "What's the WiFi password?",
+      "urdu": "WiFi ka password kya hai?",
+      "pronunciation": "WiFi ka pass-word kya hai",
+      "context": "Connecting to internet"
+    },
+    {
+      "hindi": "Phone charge pe laga do",
+      "english": "Put the phone on charge",
+      "urdu": "Phone charge pe laga do",
+      "pronunciation": "Phone charge pe la-ga do",
+      "context": "Low battery"
+    },
+    {
+      "hindi": "App update karo",
+      "english": "Update the app",
+      "urdu": "App update karo",
+      "pronunciation": "App up-date ka-ro",
+      "context": "Software update"
+    },
+    {
+      "hindi": "Net slow chal raha hai",
+      "english": "Internet is slow",
+      "urdu": "Net slow chal raha hai",
+      "pronunciation": "Net slow chal ra-ha hai",
+      "context": "Internet issues"
+    },
+    {
+      "hindi": "Screenshot le lo",
+      "english": "Take a screenshot",
+      "urdu": "Screenshot le lo",
+      "pronunciation": "Screen-shot le lo",
+      "context": "Capturing screen"
+    },
+    {
+      "hindi": "UPI se payment karo",
+      "english": "Pay via UPI",
+      "urdu": "UPI se payment karo",
+      "pronunciation": "UPI se pay-ment ka-ro",
+      "context": "Digital payment"
+    },
+    {
+      "hindi": "OTP aaya kya?",
+      "english": "Did you get the OTP?",
+      "urdu": "OTP aaya kya?",
+      "pronunciation": "OTP aa-ya kya",
+      "context": "Verification"
+    },
+    {
+      "hindi": "Bluetooth on karo",
+      "english": "Turn on Bluetooth",
+      "urdu": "Bluetooth on karo",
+      "pronunciation": "Blue-tooth on ka-ro",
+      "context": "Connecting devices"
+    }
+  ],
+  "emotions": [
+    {
+      "hindi": "Main bahut khush hoon",
+      "english": "I am very happy",
+      "urdu": "Main bahut khush hoon",
+      "pronunciation": "Main ba-hut khush hoon",
+      "context": "Expressing joy"
+    },
+    {
+      "hindi": "Mujhe gussa aa raha hai",
+      "english": "I am getting angry",
+      "urdu": "Mujhe gussa aa raha hai",
+      "pronunciation": "Muj-hey gus-sa aa ra-ha hai",
+      "context": "Expressing anger"
+    },
+    {
+      "hindi": "Dil udas hai",
+      "english": "I feel sad",
+      "urdu": "Dil udas hai",
+      "pronunciation": "Dil u-das hai",
+      "context": "Expressing sadness"
+    },
+    {
+      "hindi": "Bahut maza aaya",
+      "english": "Had a lot of fun",
+      "urdu": "Bahut maza aaya",
+      "pronunciation": "Ba-hut ma-za aa-ya",
+      "context": "After fun activity"
+    },
+    {
+      "hindi": "Dar lag raha hai",
+      "english": "I'm scared",
+      "urdu": "Dar lag raha hai",
+      "pronunciation": "Dar lag ra-ha hai",
+      "context": "Expressing fear"
+    },
+    {
+      "hindi": "Ye toh kamaal hai!",
+      "english": "This is amazing!",
+      "urdu": "Ye toh kamaal hai!",
+      "pronunciation": "Ye toh ka-maal hai",
+      "context": "Expressing wonder"
+    },
+    {
+      "hindi": "Bore ho raha hoon",
+      "english": "I'm bored",
+      "urdu": "Bore ho raha hoon",
+      "pronunciation": "Bore ho ra-ha hoon",
+      "context": "Expressing boredom"
+    },
+    {
+      "hindi": "Miss kar raha hoon",
+      "english": "I miss you",
+      "urdu": "Yaad aa rahi hai",
+      "pronunciation": "Miss kar ra-ha hoon",
+      "context": "Missing someone"
+    }
+  ],
+  "travel": [
+    {
+      "hindi": "Station kahan hai?",
+      "english": "Where is the station?",
+      "urdu": "Station kahan hai?",
+      "pronunciation": "Sta-tion ka-han hai",
+      "context": "Asking directions"
+    },
+    {
+      "hindi": "Taxi bula do",
+      "english": "Call a taxi",
+      "urdu": "Taxi bula do",
+      "pronunciation": "Taxi bu-la do",
+      "context": "Transportation"
+    },
+    {
+      "hindi": "Kitni door hai?",
+      "english": "How far is it?",
+      "urdu": "Kitni door hai?",
+      "pronunciation": "Kit-ni door hai",
+      "context": "Asking distance"
+    },
+    {
+      "hindi": "Left mein mudo",
+      "english": "Turn left",
+      "urdu": "Baayin mudo",
+      "pronunciation": "Left mein mu-do",
+      "context": "Directions"
+    },
+    {
+      "hindi": "Right mein mudo",
+      "english": "Turn right",
+      "urdu": "Daayin mudo",
+      "pronunciation": "Right mein mu-do",
+      "context": "Directions"
+    },
+    {
+      "hindi": "Seedha jaao",
+      "english": "Go straight",
+      "urdu": "Seedha jaao",
+      "pronunciation": "See-dha jaa-o",
+      "context": "Directions"
+    },
+    {
+      "hindi": "Hotel book karna hai",
+      "english": "Need to book a hotel",
+      "urdu": "Hotel book karna hai",
+      "pronunciation": "Ho-tel book kar-na hai",
+      "context": "Accommodation"
+    },
+    {
+      "hindi": "Train kitni der se hai?",
+      "english": "How late is the train?",
+      "urdu": "Train kitni der se hai?",
+      "pronunciation": "Train kit-ni der se hai",
+      "context": "Travel delay"
+    }
+  ],
+  "emergency": [
+    {
+      "hindi": "Madad karo!",
+      "english": "Help!",
+      "urdu": "Madad karo!",
+      "pronunciation": "Ma-dad ka-ro",
+      "context": "Emergency"
+    },
+    {
+      "hindi": "Ambulance bula do",
+      "english": "Call an ambulance",
+      "urdu": "Ambulance bula do",
+      "pronunciation": "Am-bu-lance bu-la do",
+      "context": "Medical emergency"
+    },
+    {
+      "hindi": "Police bula do",
+      "english": "Call the police",
+      "urdu": "Police bula do",
+      "pronunciation": "Po-lice bu-la do",
+      "context": "Safety emergency"
+    },
+    {
+      "hindi": "Hospital le chalo",
+      "english": "Take me to hospital",
+      "urdu": "Hospital le chalo",
+      "pronunciation": "Hos-pi-tal le cha-lo",
+      "context": "Medical need"
+    },
+    {
+      "hindi": "Aag lag gayi!",
+      "english": "Fire!",
+      "urdu": "Aag lag gayi!",
+      "pronunciation": "Aag lag ga-yi",
+      "context": "Fire emergency"
+    },
+    {
+      "hindi": "Doctor ko bula do",
+      "english": "Call the doctor",
+      "urdu": "Doctor ko bula do",
+      "pronunciation": "Doc-tor ko bu-la do",
+      "context": "Medical need"
+    }
+  ],
+  "work_office": [
+    {
+      "hindi": "Meeting kab hai?",
+      "english": "When is the meeting?",
+      "urdu": "Meeting kab hai?",
+      "pronunciation": "Mee-ting kab hai",
+      "context": "Office schedule"
+    },
+    {
+      "hindi": "Deadline kya hai?",
+      "english": "What's the deadline?",
+      "urdu": "Deadline kya hai?",
+      "pronunciation": "Dead-line kya hai",
+      "context": "Project timeline"
+    },
+    {
+      "hindi": "Email bhej do",
+      "english": "Send an email",
+      "urdu": "Email bhej do",
+      "pronunciation": "E-mail bhej do",
+      "context": "Communication"
+    },
+    {
+      "hindi": "Chutti chahiye",
+      "english": "I need a day off",
+      "urdu": "Chutti chahiye",
+      "pronunciation": "Chut-ti cha-hi-ye",
+      "context": "Leave request"
+    },
+    {
+      "hindi": "Salary kab aayegi?",
+      "english": "When will salary come?",
+      "urdu": "Salary kab aayegi?",
+      "pronunciation": "Sa-la-ry kab aa-ye-gi",
+      "context": "Payroll"
+    },
+    {
+      "hindi": "Report ready hai",
+      "english": "Report is ready",
+      "urdu": "Report ready hai",
+      "pronunciation": "Re-port rea-dy hai",
+      "context": "Task completion"
+    },
+    {
+      "hindi": "Presentation acchi thi",
+      "english": "Presentation was good",
+      "urdu": "Presentation acchi thi",
+      "pronunciation": "Pre-sen-ta-tion ac-chi thi",
+      "context": "Appreciation"
+    },
+    {
+      "hindi": "Promotion milegi kya?",
+      "english": "Will I get a promotion?",
+      "urdu": "Promotion milegi kya?",
+      "pronunciation": "Pro-mo-tion mi-le-gi kya",
+      "context": "Career growth"
+    }
+  ]
+}

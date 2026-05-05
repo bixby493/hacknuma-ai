@@ -1,0 +1,603 @@
+{
+ "indian_states": [
+  {
+   "name": "Maharashtra",
+   "capital": "Mumbai",
+   "language": "Marathi",
+   "area_sq_km": 307713,
+   "population_cr": 12.24,
+   "literacy": 82.91,
+   "famous_for": "Bollywood, Ajanta-Ellora Caves, Gateway of India, Vada Pav",
+   "gdp_rank": 1
+  },
+  {
+   "name": "Uttar Pradesh",
+   "capital": "Lucknow",
+   "language": "Hindi",
+   "area_sq_km": 240928,
+   "population_cr": 23.15,
+   "literacy": 67.68,
+   "famous_for": "Taj Mahal, Varanasi Ghats, Lucknowi Biryani, Chikankari",
+   "gdp_rank": 2
+  },
+  {
+   "name": "Karnataka",
+   "capital": "Bengaluru",
+   "language": "Kannada",
+   "area_sq_km": 191791,
+   "population_cr": 6.41,
+   "literacy": 75.36,
+   "famous_for": "IT Hub, Mysore Palace, Hampi, Filter Coffee",
+   "gdp_rank": 3
+  },
+  {
+   "name": "Tamil Nadu",
+   "capital": "Chennai",
+   "language": "Tamil",
+   "area_sq_km": 130058,
+   "population_cr": 7.21,
+   "literacy": 80.09,
+   "famous_for": "Temples, Marina Beach, Chettinad Cuisine, Bharatanatyam",
+   "gdp_rank": 4
+  },
+  {
+   "name": "Gujarat",
+   "capital": "Gandhinagar",
+   "language": "Gujarati",
+   "area_sq_km": 196024,
+   "population_cr": 6.04,
+   "literacy": 78.03,
+   "famous_for": "Statue of Unity, Rann of Kutch, Dhokla, Diamond Industry",
+   "gdp_rank": 5
+  },
+  {
+   "name": "Rajasthan",
+   "capital": "Jaipur",
+   "language": "Rajasthani",
+   "area_sq_km": 342239,
+   "population_cr": 6.85,
+   "literacy": 66.11,
+   "famous_for": "Forts and Palaces, Desert Safari, Dal Baati Churma",
+   "gdp_rank": 7
+  },
+  {
+   "name": "West Bengal",
+   "capital": "Kolkata",
+   "language": "Bengali",
+   "area_sq_km": 88752,
+   "population_cr": 9.13,
+   "literacy": 76.26,
+   "famous_for": "Durga Puja, Howrah Bridge, Rosogolla, Tagore",
+   "gdp_rank": 6
+  },
+  {
+   "name": "Madhya Pradesh",
+   "capital": "Bhopal",
+   "language": "Hindi",
+   "area_sq_km": 308252,
+   "population_cr": 7.26,
+   "literacy": 69.32,
+   "famous_for": "Khajuraho, Sanchi Stupa, Bhimbetka, Poha-Jalebi",
+   "gdp_rank": 9
+  },
+  {
+   "name": "Kerala",
+   "capital": "Thiruvananthapuram",
+   "language": "Malayalam",
+   "area_sq_km": 38863,
+   "population_cr": 3.34,
+   "literacy": 93.91,
+   "famous_for": "Backwaters, Ayurveda, Kathakali, Appam-Stew",
+   "gdp_rank": 11
+  },
+  {
+   "name": "Punjab",
+   "capital": "Chandigarh",
+   "language": "Punjabi",
+   "area_sq_km": 50362,
+   "population_cr": 2.77,
+   "literacy": 75.84,
+   "famous_for": "Golden Temple, Bhangra, Makki Roti-Sarson Saag",
+   "gdp_rank": 15
+  },
+  {
+   "name": "Telangana",
+   "capital": "Hyderabad",
+   "language": "Telugu",
+   "area_sq_km": 112077,
+   "population_cr": 3.51,
+   "literacy": 66.46,
+   "famous_for": "Charminar, Hyderabadi Biryani, HITEC City",
+   "gdp_rank": 10
+  },
+  {
+   "name": "Bihar",
+   "capital": "Patna",
+   "language": "Hindi",
+   "area_sq_km": 94163,
+   "population_cr": 10.41,
+   "literacy": 61.8,
+   "famous_for": "Nalanda, Bodh Gaya, Litti Chokha, Chhath Puja",
+   "gdp_rank": 14
+  },
+  {
+   "name": "Odisha",
+   "capital": "Bhubaneswar",
+   "language": "Odia",
+   "area_sq_km": 155707,
+   "population_cr": 4.19,
+   "literacy": 72.87,
+   "famous_for": "Konark Sun Temple, Puri Jagannath, Odissi Dance",
+   "gdp_rank": 16
+  },
+  {
+   "name": "Assam",
+   "capital": "Dispur",
+   "language": "Assamese",
+   "area_sq_km": 78438,
+   "population_cr": 3.12,
+   "literacy": 72.19,
+   "famous_for": "Tea Gardens, Kaziranga, Bihu Dance, Assam Silk",
+   "gdp_rank": 18
+  },
+  {
+   "name": "Jharkhand",
+   "capital": "Ranchi",
+   "language": "Hindi",
+   "area_sq_km": 79716,
+   "population_cr": 3.3,
+   "literacy": 66.41,
+   "famous_for": "Waterfalls, Coal Mines, Tribal Culture, MS Dhoni",
+   "gdp_rank": 17
+  }
+ ],
+ "festivals": [
+  {
+   "name": "Diwali",
+   "month": "Oct/Nov",
+   "days": 5,
+   "significance": "Festival of Lights, Ram's return to Ayodhya",
+   "food": "Mithai, Dry Fruits"
+  },
+  {
+   "name": "Holi",
+   "month": "March",
+   "days": 2,
+   "significance": "Festival of Colors, good over evil",
+   "food": "Gujiya, Thandai"
+  },
+  {
+   "name": "Eid ul-Fitr",
+   "month": "Varies",
+   "days": 3,
+   "significance": "End of Ramadan",
+   "food": "Seviyan, Biryani"
+  },
+  {
+   "name": "Christmas",
+   "month": "December",
+   "days": 2,
+   "significance": "Birth of Jesus",
+   "food": "Plum Cake, Roast"
+  },
+  {
+   "name": "Navratri",
+   "month": "Sept/Oct",
+   "days": 9,
+   "significance": "Nine nights of Goddess Durga",
+   "food": "Sabudana Khichdi"
+  },
+  {
+   "name": "Ganesh Chaturthi",
+   "month": "Aug/Sep",
+   "days": 10,
+   "significance": "Birth of Lord Ganesha",
+   "food": "Modak, Puran Poli"
+  },
+  {
+   "name": "Pongal",
+   "month": "January",
+   "days": 4,
+   "significance": "Harvest festival, Sun God",
+   "food": "Pongal, Sugarcane"
+  },
+  {
+   "name": "Onam",
+   "month": "Aug/Sep",
+   "days": 10,
+   "significance": "King Mahabali",
+   "food": "Onasadya, Payasam"
+  },
+  {
+   "name": "Baisakhi",
+   "month": "April",
+   "days": 1,
+   "significance": "Sikh New Year, Harvest",
+   "food": "Sarson Saag, Lassi"
+  },
+  {
+   "name": "Makar Sankranti",
+   "month": "January",
+   "days": 1,
+   "significance": "Harvest, Sun enters Capricorn",
+   "food": "Til Gur Ladoo"
+  },
+  {
+   "name": "Raksha Bandhan",
+   "month": "August",
+   "days": 1,
+   "significance": "Brother-sister bond",
+   "food": "Mithai"
+  },
+  {
+   "name": "Gurpurab",
+   "month": "November",
+   "days": 3,
+   "significance": "Guru Nanak birthday",
+   "food": "Langar, Karah Prasad"
+  }
+ ],
+ "isro_missions": [
+  {
+   "name": "Aryabhata",
+   "year": 1975,
+   "type": "Satellite",
+   "desc": "India ka pehla satellite"
+  },
+  {
+   "name": "SLV-3",
+   "year": 1980,
+   "type": "Launch Vehicle",
+   "desc": "Pehla indigenous launch vehicle, APJ Kalam ne lead kiya"
+  },
+  {
+   "name": "Chandrayaan-1",
+   "year": 2008,
+   "type": "Moon Orbiter",
+   "desc": "Moon pe paani ka evidence dhundha"
+  },
+  {
+   "name": "Mangalyaan",
+   "year": 2013,
+   "type": "Mars Orbiter",
+   "desc": "Pehli attempt mein Mars orbit! $74M budget. Asia ka pehla."
+  },
+  {
+   "name": "PSLV-C37",
+   "year": 2017,
+   "type": "Record Launch",
+   "desc": "Ek rocket se 104 satellites - WORLD RECORD!"
+  },
+  {
+   "name": "Chandrayaan-2",
+   "year": 2019,
+   "type": "Moon Mission",
+   "desc": "Orbiter + Lander. Landing issue but orbiter works."
+  },
+  {
+   "name": "Chandrayaan-3",
+   "year": 2023,
+   "type": "Moon Lander",
+   "desc": "South Pole pe SUCCESSFUL landing! Pehla country."
+  },
+  {
+   "name": "Aditya-L1",
+   "year": 2023,
+   "type": "Sun Mission",
+   "desc": "India ki pehli Sun mission, L1 point pe."
+  },
+  {
+   "name": "Gaganyaan",
+   "year": 2025,
+   "type": "Human Flight",
+   "desc": "India ki pehli manned space mission (planned)"
+  }
+ ],
+ "programming_languages": [
+  {
+   "name": "Python",
+   "year": 1991,
+   "creator": "Guido van Rossum",
+   "use": "AI/ML, Web, Data Science",
+   "rank": 1
+  },
+  {
+   "name": "JavaScript",
+   "year": 1995,
+   "creator": "Brendan Eich",
+   "use": "Web Frontend/Backend",
+   "rank": 2
+  },
+  {
+   "name": "Java",
+   "year": 1995,
+   "creator": "James Gosling",
+   "use": "Enterprise, Android",
+   "rank": 3
+  },
+  {
+   "name": "Kotlin",
+   "year": 2011,
+   "creator": "JetBrains",
+   "use": "Android, Multiplatform",
+   "rank": 12
+  },
+  {
+   "name": "TypeScript",
+   "year": 2012,
+   "creator": "Microsoft",
+   "use": "Web, Node.js",
+   "rank": 4
+  },
+  {
+   "name": "Rust",
+   "year": 2010,
+   "creator": "Mozilla",
+   "use": "Systems, WebAssembly",
+   "rank": 14
+  },
+  {
+   "name": "Go",
+   "year": 2009,
+   "creator": "Google",
+   "use": "Cloud, DevOps",
+   "rank": 8
+  },
+  {
+   "name": "Swift",
+   "year": 2014,
+   "creator": "Apple",
+   "use": "iOS, macOS",
+   "rank": 15
+  },
+  {
+   "name": "C++",
+   "year": 1985,
+   "creator": "Bjarne Stroustrup",
+   "use": "Games, Systems, HPC",
+   "rank": 5
+  },
+  {
+   "name": "C#",
+   "year": 2000,
+   "creator": "Microsoft",
+   "use": "Windows, Unity Games",
+   "rank": 6
+  }
+ ],
+ "ai_models": [
+  {
+   "name": "GPT-4",
+   "company": "OpenAI",
+   "year": 2023,
+   "type": "LLM",
+   "use": "Text, reasoning, code"
+  },
+  {
+   "name": "Claude",
+   "company": "Anthropic",
+   "year": 2023,
+   "type": "LLM",
+   "use": "Conversation, analysis"
+  },
+  {
+   "name": "Gemini",
+   "company": "Google",
+   "year": 2023,
+   "type": "Multimodal",
+   "use": "Text, image, video"
+  },
+  {
+   "name": "LLaMA 3",
+   "company": "Meta",
+   "year": 2024,
+   "type": "Open LLM",
+   "use": "Open-source AI"
+  },
+  {
+   "name": "Mistral",
+   "company": "Mistral AI",
+   "year": 2023,
+   "type": "Open LLM",
+   "use": "Efficient AI"
+  },
+  {
+   "name": "Stable Diffusion",
+   "company": "Stability AI",
+   "year": 2022,
+   "type": "Image Gen",
+   "use": "Text-to-image"
+  },
+  {
+   "name": "Whisper",
+   "company": "OpenAI",
+   "year": 2022,
+   "type": "Speech",
+   "use": "Speech-to-text 100+ langs"
+  },
+  {
+   "name": "AlphaFold",
+   "company": "DeepMind",
+   "year": 2020,
+   "type": "Protein",
+   "use": "3D protein prediction"
+  },
+  {
+   "name": "SORA",
+   "company": "OpenAI",
+   "year": 2024,
+   "type": "Video Gen",
+   "use": "Text-to-video"
+  }
+ ],
+ "unit_conversions": [
+  {
+   "from": "km",
+   "to": "mile",
+   "factor": 0.621371
+  },
+  {
+   "from": "meter",
+   "to": "feet",
+   "factor": 3.28084
+  },
+  {
+   "from": "cm",
+   "to": "inch",
+   "factor": 0.393701
+  },
+  {
+   "from": "kg",
+   "to": "pound",
+   "factor": 2.20462
+  },
+  {
+   "from": "gram",
+   "to": "ounce",
+   "factor": 0.035274
+  },
+  {
+   "from": "liter",
+   "to": "gallon",
+   "factor": 0.264172
+  },
+  {
+   "from": "celsius",
+   "to": "fahrenheit",
+   "formula": "(C * 1.8) + 32"
+  },
+  {
+   "from": "sq_meter",
+   "to": "sq_feet",
+   "factor": 10.7639
+  },
+  {
+   "from": "acre",
+   "to": "hectare",
+   "factor": 0.404686
+  },
+  {
+   "from": "kmph",
+   "to": "mph",
+   "factor": 0.621371
+  }
+ ],
+ "currencies": [
+  {
+   "name": "Indian Rupee",
+   "code": "INR",
+   "symbol": "₹",
+   "country": "India"
+  },
+  {
+   "name": "US Dollar",
+   "code": "USD",
+   "symbol": "$",
+   "country": "United States"
+  },
+  {
+   "name": "Euro",
+   "code": "EUR",
+   "symbol": "€",
+   "country": "European Union"
+  },
+  {
+   "name": "British Pound",
+   "code": "GBP",
+   "symbol": "£",
+   "country": "UK"
+  },
+  {
+   "name": "Japanese Yen",
+   "code": "JPY",
+   "symbol": "¥",
+   "country": "Japan"
+  },
+  {
+   "name": "Chinese Yuan",
+   "code": "CNY",
+   "symbol": "¥",
+   "country": "China"
+  },
+  {
+   "name": "UAE Dirham",
+   "code": "AED",
+   "symbol": "د.إ",
+   "country": "UAE"
+  },
+  {
+   "name": "Saudi Riyal",
+   "code": "SAR",
+   "symbol": "﷼",
+   "country": "Saudi Arabia"
+  },
+  {
+   "name": "Singapore Dollar",
+   "code": "SGD",
+   "symbol": "S$",
+   "country": "Singapore"
+  }
+ ],
+ "shortcuts": [
+  {
+   "key": "Ctrl+C",
+   "action": "Copy"
+  },
+  {
+   "key": "Ctrl+V",
+   "action": "Paste"
+  },
+  {
+   "key": "Ctrl+X",
+   "action": "Cut"
+  },
+  {
+   "key": "Ctrl+Z",
+   "action": "Undo"
+  },
+  {
+   "key": "Ctrl+Y",
+   "action": "Redo"
+  },
+  {
+   "key": "Ctrl+A",
+   "action": "Select All"
+  },
+  {
+   "key": "Ctrl+S",
+   "action": "Save"
+  },
+  {
+   "key": "Ctrl+F",
+   "action": "Find"
+  },
+  {
+   "key": "Ctrl+P",
+   "action": "Print"
+  },
+  {
+   "key": "Alt+Tab",
+   "action": "Switch Window"
+  },
+  {
+   "key": "Ctrl+T",
+   "action": "New Tab"
+  },
+  {
+   "key": "Ctrl+W",
+   "action": "Close Tab"
+  },
+  {
+   "key": "F5",
+   "action": "Refresh"
+  },
+  {
+   "key": "F11",
+   "action": "Fullscreen"
+  },
+  {
+   "key": "Ctrl+Shift+Esc",
+   "action": "Task Manager"
+  }
+ ]
+}

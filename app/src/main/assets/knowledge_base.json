@@ -1,0 +1,354 @@
+{
+  "science": [
+    {
+      "fact": "Paani (H2O) duniya ka sabse important molecule hai. Ye liquid, solid aur gas teeno forms mein milta hai. 71% Earth ki surface paani se dhaki hai.",
+      "topic": "Chemistry",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "DNA (Deoxyribonucleic Acid) har living organism ka genetic blueprint hai. Agar ek insaan ke saare DNA ko unfold karein toh ye Sun tak aur waapas aa sakta hai — 600 baar!",
+      "topic": "Biology",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Light ki speed 299,792,458 meters per second hai. Ye universe ki sabse tez cheez hai. Koi bhi physical object is speed se tez nahi ja sakta — ye Einstein ki Theory of Relativity ka foundation hai.",
+      "topic": "Physics",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Human brain mein 86 billion neurons hain. Ye universe mein sabse complex structure hai. Ek neuron 10,000 tak connections bana sakta hai doosre neurons ke saath.",
+      "topic": "Biology",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Periodic table mein 118 confirmed elements hain. Pehle 94 naturally occur karte hain aur baaki 24 synthetically banaye gaye hain laboratories mein.",
+      "topic": "Chemistry",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Photosynthesis mein plants CO2 aur water use karke oxygen aur glucose banate hain. Ye process solar energy ko chemical energy mein convert karta hai.",
+      "topic": "Biology",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Newton ke 3 Laws of Motion: 1) Objects rest mein rehte hain jab tak force na lage 2) F=ma 3) Har action ka equal aur opposite reaction hota hai.",
+      "topic": "Physics",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Black holes itne dense hote hain ki inki gravitational pull se light bhi escape nahi kar sakti. Sabse pehla black hole ki photo 2019 mein li gayi thi Event Horizon Telescope se.",
+      "topic": "Astrophysics",
+      "difficulty": "advanced"
+    },
+    {
+      "fact": "Human body mein 206 bones hain adults mein, lekin babies mein 270 bones hoti hain. Kuch bones age ke saath fuse ho jaati hain.",
+      "topic": "Biology",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Sound waves ko travel karne ke liye medium chahiye (air, water, solid). Vacuum mein sound travel nahi kar sakti. Space mein complete silence hai.",
+      "topic": "Physics",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Mitochondria cell ka powerhouse hai. Ye cellular respiration se ATP (energy) produce karte hain. Interesting fact: mitochondria ka apna DNA hota hai, jo sirf maa se milta hai.",
+      "topic": "Biology",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Earth ka magnetic field hume Solar wind aur harmful cosmic radiation se protect karta hai. Bina magnetic field ke, atmosphere strip ho jayega — Mars ke saath yahi hua.",
+      "topic": "Earth Science",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Quantum mechanics ke anusaar, particles ek saath do jagah ho sakte hain (superposition). Ye classical physics ke rules tod deta hai aur quantum computing ka base hai.",
+      "topic": "Physics",
+      "difficulty": "advanced"
+    },
+    {
+      "fact": "Antibiotics sirf bacteria ko kill karte hain, viruses ko nahi. Isliye flu ya cold ke liye antibiotics lena galat hai. Antibiotic resistance aaj ek badi health crisis ban rahi hai.",
+      "topic": "Medicine",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Hubble Space Telescope ne bataya ki universe 13.8 billion years purana hai. Universe expand ho raha hai, aur expansion ki speed badh rahi hai — ye dark energy ki wajah se hai.",
+      "topic": "Cosmology",
+      "difficulty": "advanced"
+    }
+  ],
+  "technology": [
+    {
+      "fact": "Artificial Intelligence (AI) machine learning, deep learning, aur neural networks use karta hai insaano jaisa sochne ke liye. GPT-4 jaisi models 1 trillion+ parameters pe trained hain.",
+      "topic": "AI",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Blockchain ek decentralized digital ledger hai. Bitcoin pehli cryptocurrency thi, jo 2009 mein Satoshi Nakamoto ne create ki. Aaj 10,000+ cryptocurrencies exist karti hain.",
+      "topic": "Blockchain",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Internet ki shuruvat 1969 mein ARPANET se hui thi. Pehla message 'LO' tha (LOGIN type karte waqt system crash ho gaya). Aaj 5+ billion log internet use karte hain.",
+      "topic": "Internet",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "5G technology 4G se 100x faster hai — 20 Gbps tak speed. Ye IoT, autonomous vehicles, aur remote surgery jaisi technologies ko possible banata hai.",
+      "topic": "Networking",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Quantum Computer normal bits ki jagah qubits use karte hain. Ek qubit 0 aur 1 dono simultaneously ho sakta hai. Google ka quantum computer 200 seconds mein woh task solve kar sakta hai jo supercomputer ko 10,000 saal lagein.",
+      "topic": "Quantum Computing",
+      "difficulty": "advanced"
+    },
+    {
+      "fact": "Cloud computing mein aap apna data aur applications remote servers pe store karte ho. AWS, Azure, aur Google Cloud market ke top 3 providers hain. 94% businesses cloud use karti hain.",
+      "topic": "Cloud",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Moore's Law kehta hai ki har 2 saal mein chip pe transistor count double hota hai. 1971 mein Intel 4004 mein 2,300 transistors the. Aaj Apple M3 chip mein 25 billion+ hain.",
+      "topic": "Hardware",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Cybersecurity threats: 2023 mein har 39 seconds mein ek cyber attack hota hai. Ransomware, phishing, aur zero-day exploits sabse common attack types hain.",
+      "topic": "Security",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Git version control system Linus Torvalds ne 2005 mein Linux kernel development ke liye banaya tha. Aaj 100 million+ repositories GitHub pe hain.",
+      "topic": "Development",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Android operating system duniya ka sabse popular mobile OS hai — 72%+ market share. Google ne 2005 mein Android Inc. acquire kiya tha aur pehla Android phone 2008 mein aaya.",
+      "topic": "Mobile",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "NVIDIA ke GPUs ne AI revolution ko power diya hai. CUDA platform se GPUs parallel computing ke liye use hone lage. NVIDIA ab world's most valuable companies mein se ek hai.",
+      "topic": "AI Hardware",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "WebAssembly (Wasm) ek naya binary format hai jo browsers mein near-native speed se code run karta hai. Ye C++, Rust, aur Go jaise languages ko web pe laata hai.",
+      "topic": "Web",
+      "difficulty": "advanced"
+    },
+    {
+      "fact": "TypeScript, JavaScript ka superset hai jo static types add karta hai. Microsoft ne 2012 mein release kiya. Aaj 78% JS developers TypeScript prefer karte hain.",
+      "topic": "Programming",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Docker containers ne software deployment revolutionize kar diya. Containers lightweight hain VMs se — seconds mein start hote hain aur kam resources use karte hain.",
+      "topic": "DevOps",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Large Language Models (LLMs) Transformer architecture pe based hain. 2017 ka 'Attention Is All You Need' paper ne NLP mein revolution la diya — GPT, BERT, LLaMA sab isi se bane.",
+      "topic": "AI",
+      "difficulty": "advanced"
+    }
+  ],
+  "history": [
+    {
+      "fact": "Indus Valley Civilization (3300-1300 BCE) duniya ki sabse purani civilizations mein se ek hai. Mohenjo-Daro aur Harappa ke cities mein drainage system tha jo us waqt ke kisi bhi civilization se advanced tha.",
+      "topic": "Ancient India",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Chanakya (375-283 BCE) ne Arthashastra likhi thi — ye duniya ki pehli books on political science, economics, aur statecraft mein se ek hai. Unhone Chandragupta Maurya ko Mauryan Empire banane mein madad ki.",
+      "topic": "Ancient India",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Zero (shunya) ka concept India mein develop hua. Aryabhata (476 CE) ne place value system mein zero use kiya. Brahmagupta (628 CE) ne zero ke rules define kiye. Ye duniya ko India ki sabse badi mathematical gift hai.",
+      "topic": "Indian Mathematics",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Mughal Empire (1526-1857) ne India ko architectural masterpieces diye — Taj Mahal, Red Fort, Humayun's Tomb. Akbar ne Din-i-Ilahi religion banaya aur religious tolerance promote kiya.",
+      "topic": "Medieval India",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Indian independence movement 1857 ke First War of Independence se shuru hua. Mahatma Gandhi ne non-violent civil disobedience movement chalaya. 15 August 1947 ko India azad hua.",
+      "topic": "Modern India",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "World War II (1939-1945) human history ka sabse devastating conflict tha. 70-85 million log mare. Is war ne United Nations ki foundation daali aur nuclear weapons ka era shuru kiya.",
+      "topic": "World History",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "French Revolution (1789) ne monarchy end ki aur democracy, liberty, equality ke ideals duniya mein spread kiye. 'Liberty, Equality, Fraternity' motto aaj bhi France ka national motto hai.",
+      "topic": "World History",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Renaissance period (14th-17th century) mein Europe mein art, science, aur culture ka explosion hua. Leonardo da Vinci, Michelangelo, Galileo, aur Shakespeare is period ki defining figures hain.",
+      "topic": "World History",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Industrial Revolution (1760-1840) Britain mein shuru hua. Steam engine, textile mills, aur railways ne society transform kar di. Ye human history ka sabse bada economic transformation tha.",
+      "topic": "World History",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "ISRO ne 2014 mein pehli attempt mein Mars Orbiter Mission (Mangalyaan) successful kiya — duniya mein kisi bhi space agency ne aisa nahi kiya tha. Iska budget $74 million tha — Hollywood movie 'Gravity' ke budget se bhi kam.",
+      "topic": "Indian Space",
+      "difficulty": "basic"
+    }
+  ],
+  "space": [
+    {
+      "fact": "Sun (Surya) ek medium-sized star hai. Iska temperature core mein 15 million degrees Celsius hai. Sun mein 99.86% solar system ka mass hai. Ye mainly hydrogen aur helium se bana hai.",
+      "topic": "Solar System",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Mars pe ek din (sol) 24 hours 37 minutes ka hota hai — Earth jaisa. Lekin ek saal 687 Earth days ka hota hai. Mars pe sabse bada volcano hai — Olympus Mons, jo Mount Everest se 3 guna ooncha hai.",
+      "topic": "Planets",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Milky Way galaxy mein 100-400 billion stars hain. Humara solar system Milky Way ke edge pe hai. Light ko galaxy ke ek end se doosre end tak jaane mein 100,000 saal lagte hain.",
+      "topic": "Galaxy",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "International Space Station (ISS) Earth ke around 90 minutes mein ek orbit complete karta hai — matlab astronauts 24 ghanton mein 16 sunrise aur 16 sunset dekhte hain!",
+      "topic": "Space Station",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "James Webb Space Telescope (JWST) 2021 mein launch hua. Ye Hubble se 100x powerful hai aur 13.5 billion years purani light capture kar sakta hai — universe ki pehli galaxies dekh sakta hai.",
+      "topic": "Telescopes",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Voyager 1 insaniyat ka sabse door ka spacecraft hai. 1977 mein launch hua, 2012 mein interstellar space mein enter kiya. Ye ab Earth se 24 billion+ km door hai aur abhi bhi signals bhejta hai.",
+      "topic": "Space Exploration",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Moon (Chandrama) Earth se har saal 3.8 cm door ho raha hai. Billions of years pehle ye bahut nazdeek tha aur tides massive hoti thi. India ka Chandrayaan-3 ne 2023 mein Moon ke South Pole pe successful landing ki — pehla country jo aisa kar paaya.",
+      "topic": "Moon",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Neutron stars itne dense hote hain ki ek teaspoon ka weight 6 billion tonnes hoga. Ye 716 times per second rotate kar sakte hain (pulsars).",
+      "topic": "Stellar Physics",
+      "difficulty": "advanced"
+    }
+  ],
+  "india": [
+    {
+      "fact": "India duniya ka largest democracy hai — 1.4 billion+ population. Constitution 26 January 1950 ko effective hua. Ye duniya ka longest written constitution hai — 448 articles, 25 parts, 12 schedules.",
+      "topic": "Politics",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "India ka IT industry $245 billion+ ka hai. Bangalore, Hyderabad, Pune, Chennai — ye global IT hubs hain. India duniya ko sabse zyada software engineers provide karta hai.",
+      "topic": "Economy",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Yoga ka origin India mein 5000+ saal pehle hua. 21 June International Yoga Day hai — UN ne 2015 mein declare kiya PM Modi ki proposal pe. 177 countries ne support kiya tha.",
+      "topic": "Culture",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "India mein 22 officially recognized languages hain aur 19,500+ dialects boli jaati hain. Hindi sabse zyada boli jaane wali language hai (57 crore+). English business aur education ki language hai.",
+      "topic": "Languages",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "India ne chess (Chaturanga), snakes and ladders (Moksha Patam), aur Ludo (Pachisi) duniya ko diye. Chaturanga 6th century mein India mein invent hua tha.",
+      "topic": "Inventions",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Indian Railway duniya ka 4th largest rail network hai — 68,000+ km track, 13,000+ passenger trains daily, 23 million+ passengers daily. Ye India ka lifeline hai.",
+      "topic": "Infrastructure",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "India ke kuch UNESCO World Heritage Sites: Taj Mahal, Qutub Minar, Hampi, Khajuraho, Ajanta-Ellora Caves, Red Fort, Konark Sun Temple. Total 42 sites hain — 34 cultural, 7 natural, 1 mixed.",
+      "topic": "Heritage",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "IIT (Indian Institute of Technology) duniya ke top engineering colleges mein aate hain. Sundar Pichai (Google CEO), Satya Nadella (Microsoft CEO), aur Arvind Krishna (IBM CEO) — sab IIT graduates hain.",
+      "topic": "Education",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Kumbh Mela duniya ka sabse bada religious gathering hai — 2019 mein 240 million+ log aaye. Ye UNESCO Intangible Cultural Heritage mein listed hai.",
+      "topic": "Culture",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "India ka space program ISRO ne 100+ satellites launch kiye hain. 2017 mein ek rocket se 104 satellites launch karke world record banaya. Chandrayaan, Mangalyaan, Gaganyaan — India space mein bada naam hai.",
+      "topic": "Space",
+      "difficulty": "basic"
+    }
+  ],
+  "health": [
+    {
+      "fact": "Regular exercise se heart disease, diabetes, cancer ka risk 50% tak kam hota hai. WHO recommend karta hai haftey mein 150 minutes moderate exercise ya 75 minutes vigorous exercise.",
+      "topic": "Exercise",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Insaan ko roz 7-9 ghante ki neend chahiye. Sleep deprivation se memory loss, weak immunity, obesity, aur depression hota hai. Blue light (phones/screens) neend ki quality kharab karta hai.",
+      "topic": "Sleep",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Human body 60% water hai. Dehydration se headache, fatigue, kidney problems hoti hain. Roz 8-10 glasses paani peena chahiye. Thirst feel hone se pehle hi paani peena start karo.",
+      "topic": "Hydration",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Gut microbiome — humari intestines mein 100 trillion bacteria rehte hain. Ye immunity, mood, digestion, aur weight sab affect karte hain. Probiotics (yogurt, fermented foods) gut health ke liye acche hain.",
+      "topic": "Nutrition",
+      "difficulty": "intermediate"
+    },
+    {
+      "fact": "Mental health utni hi important hai jitni physical health. India mein 150 million+ log mental health issues face karte hain. Anxiety aur depression sabse common conditions hain. Professional help lena shame nahi hai.",
+      "topic": "Mental Health",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Meditation se cortisol (stress hormone) kam hota hai, blood pressure control hota hai, aur grey matter brain mein badhta hai. Sirf 10 minutes daily meditation se significant benefits milte hain.",
+      "topic": "Wellness",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Sugar ko 'white poison' kehte hain. Zyada sugar se obesity, diabetes, heart disease, aur cancer ka risk badhta hai. WHO recommend karta hai daily 25 grams (6 teaspoons) se zyada sugar mat khao.",
+      "topic": "Nutrition",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Vitamin D sunlight se milta hai. India mein 70-80% logon mein Vitamin D deficiency hai — kyunki screen time zyada aur outdoor activity kam. Subah 15-20 min dhoop mein baitho.",
+      "topic": "Vitamins",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Stress chronic hone pe immune system weak hota hai, inflammation badhta hai, aur serious diseases ka risk multiply hota hai. Deep breathing, exercise, aur social connections stress manage karne mein help karte hain.",
+      "topic": "Stress",
+      "difficulty": "basic"
+    },
+    {
+      "fact": "Turmeric (haldi) mein curcumin hota hai — ye powerful anti-inflammatory aur antioxidant hai. Indian traditional medicine mein hazaron saalon se use ho raha hai. Modern science bhi iske benefits confirm karti hai.",
+      "topic": "Traditional Medicine",
+      "difficulty": "basic"
+    }
+  ]
+}
