@@ -138,6 +138,7 @@ fun SplashScreen(
                 val baseRadius = size.minDimension / 3
 
                 // Outer glow
+                val outerR = (baseRadius * 2.5f * coreScale).coerceAtLeast(0.01f)
                 drawCircle(
                     brush = Brush.radialGradient(
                         colors = listOf(
@@ -145,9 +146,9 @@ fun SplashScreen(
                             Color.Transparent
                         ),
                         center = center,
-                        radius = baseRadius * 2.5f * coreScale
+                        radius = outerR
                     ),
-                    radius = baseRadius * 2.5f * coreScale,
+                    radius = outerR,
                     center = center
                 )
 
@@ -178,6 +179,7 @@ fun SplashScreen(
                 }
 
                 // Core orb
+                val coreR = (baseRadius * 0.8f * coreScale).coerceAtLeast(0.01f)
                 drawCircle(
                     brush = Brush.radialGradient(
                         colors = listOf(
@@ -186,13 +188,14 @@ fun SplashScreen(
                             hackerGreen.copy(alpha = 0.2f)
                         ),
                         center = center,
-                        radius = baseRadius * 0.8f * coreScale
+                        radius = coreR
                     ),
-                    radius = baseRadius * 0.8f * coreScale,
+                    radius = coreR,
                     center = center
                 )
 
                 // White core
+                val innerR = (baseRadius * 0.3f * coreScale).coerceAtLeast(0.01f)
                 drawCircle(
                     brush = Brush.radialGradient(
                         colors = listOf(
@@ -201,9 +204,9 @@ fun SplashScreen(
                             Color.Transparent
                         ),
                         center = center,
-                        radius = baseRadius * 0.3f * coreScale
+                        radius = innerR
                     ),
-                    radius = baseRadius * 0.3f * coreScale,
+                    radius = innerR,
                     center = center
                 )
 
