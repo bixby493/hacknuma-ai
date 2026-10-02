@@ -1,7 +1,14 @@
 package com.ruhan.ai.assistant
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
+import com.ruhan.ai.assistant.phone.ClapDetectionService
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,8 +54,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Settings
+import com.ruhan.ai.assistant.phone.SoundManager
+import com.ruhan.ai.assistant.presentation.dashboard.DashboardScreen
 import com.ruhan.ai.assistant.presentation.main.RuhanScreen
 import com.ruhan.ai.assistant.presentation.main.RuhanViewModel
+import com.ruhan.ai.assistant.presentation.splash.SplashScreen
 import com.ruhan.ai.assistant.presentation.settings.SettingsScreen
 import com.ruhan.ai.assistant.presentation.settings.SettingsViewModel
 import com.ruhan.ai.assistant.presentation.theme.RuhanTheme
@@ -67,13 +80,53 @@ class MainActivity : FragmentActivity() {
     @Inject
     lateinit var biometricManager: BiometricManager
 
+    @Inject
+    lateinit var soundManager: SoundManager
+
     private var isAuthenticated by mutableStateOf(false)
+    private var showSplash by mutableStateOf(true)
+
+    private var crashError by mutableStateOf<String?>(null)
+    private var clapActivated by mutableStateOf(false)
+
+    private val clapReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ClapDetectionService.ACTION_CLAP_DETECTED) {
+                clapActivated = true
+                try { soundManager.playWakeup() } catch (_: Throwable) {}
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        Log.d(TAG, "MainActivity.onCreate START")
 
+        try { enableEdgeToEdge() } catch (t: Throwable) {
+            Log.e(TAG, "enableEdgeToEdge failed", t)
+        }
+        try { soundManager.initialize() } catch (t: Throwable) {
+            Log.e(TAG, "SoundManager init failed", t)
+        }
+
+        try {
+            val filter = IntentFilter(ClapDetectionService.ACTION_CLAP_DETECTED)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(clapReceiver, filter, RECEIVER_NOT_EXPORTED)
+            } else {
+                registerReceiver(clapReceiver, filter)
+            }
+        } catch (t: Throwable) {
+            Log.e(TAG, "ClapReceiver registration failed", t)
+        }
+
+        Log.d(TAG, "MainActivity setContent START")
         setContent {
+            if (crashError != null) {
+                CrashFallbackScreen(crashError!!)
+                return@setContent
+            }
+
             val settingsVm: SettingsViewModel = hiltViewModel()
             val settingsState by settingsVm.uiState.collectAsState()
 
@@ -83,34 +136,172 @@ class MainActivity : FragmentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colors.background
                 ) {
-                    if (!isAuthenticated) {
+                    if (showSplash) {
+                        SplashScreen(
+                            onSplashComplete = {
+                                showSplash = false
+                                try { soundManager.playStartup() } catch (_: Throwable) {}
+                            }
+                        )
+                    } else if (!isAuthenticated) {
                         LockScreen()
                     } else {
-                        val navController = rememberNavController()
-                        NavHost(
-                            navController = navController,
-                            startDestination = "main"
-                        ) {
-                            composable("main") {
-                                val viewModel: RuhanViewModel = hiltViewModel()
-                                RuhanScreen(
-                                    viewModel = viewModel,
-                                    onNavigateToSettings = {
-                                        navController.navigate("settings")
-                                    }
-                                )
-                            }
-                            composable("settings") {
-                                SettingsScreen(
-                                    viewModel = settingsVm,
-                                    onNavigateBack = {
-                                        navController.popBackStack()
-                                    }
-                                )
-                            }
-                        }
+                        MainContent(settingsVm)
                     }
                 }
+            }
+        }
+        Log.d(TAG, "MainActivity.onCreate DONE")
+    }
+
+    override fun onDestroy() {
+        try { unregisterReceiver(clapReceiver) } catch (_: Throwable) {}
+        super.onDestroy()
+    }
+
+    @Composable
+    private fun MainContent(settingsVm: SettingsViewModel) {
+        val navController = rememberNavController()
+        var currentTab by remember { mutableStateOf("main") }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            NavHost(
+                navController = navController,
+                startDestination = "main",
+                modifier = Modifier.fillMaxSize()
+            ) {
+                composable("dashboard") {
+                    currentTab = "dashboard"
+                    DashboardScreen(
+                        onNavigateToSettings = {
+                            navController.navigate("settings")
+                        }
+                    )
+                }
+                composable("main") {
+                    currentTab = "main"
+                    val viewModel: RuhanViewModel = hiltViewModel()
+                    RuhanScreen(
+                        viewModel = viewModel,
+                        onNavigateToSettings = {
+                            navController.navigate("settings")
+                        }
+                    )
+                }
+                composable("settings") {
+                    currentTab = "settings"
+                    SettingsScreen(
+                        viewModel = settingsVm,
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+            }
+
+            if (currentTab != "settings") {
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .background(Color(0xE6050805))
+                        .padding(vertical = 8.dp, horizontal = 32.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BottomNavItem(
+                        icon = Icons.Default.Dashboard,
+                        label = "DASHBOARD",
+                        isSelected = currentTab == "dashboard",
+                        onClick = {
+                            if (currentTab != "dashboard") {
+                                navController.navigate("dashboard") {
+                                    popUpTo("dashboard") { inclusive = true }
+                                }
+                            }
+                        }
+                    )
+                    BottomNavItem(
+                        icon = Icons.AutoMirrored.Filled.Chat,
+                        label = "RUHAN",
+                        isSelected = currentTab == "main",
+                        onClick = {
+                            if (currentTab != "main") {
+                                navController.navigate("main") {
+                                    popUpTo("dashboard")
+                                }
+                            }
+                        }
+                    )
+                    BottomNavItem(
+                        icon = Icons.Default.Settings,
+                        label = "SETTINGS",
+                        isSelected = currentTab == "settings",
+                        onClick = {
+                            navController.navigate("settings") {
+                                popUpTo("dashboard")
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun CrashFallbackScreen(error: String) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(32.dp)
+            ) {
+                Text(
+                    "RUHAN AI",
+                    color = Color(0xFF00FF41),
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "System Recovery Mode",
+                    color = Color(0xFF00FF41).copy(alpha = 0.7f),
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily.Monospace
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    "Error: $error",
+                    color = Color.Red.copy(alpha = 0.8f),
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = {
+                        crashError = null
+                        showSplash = false
+                        isAuthenticated = true
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF00FF41)
+                    )
+                ) {
+                    Text("SKIP TO MAIN", color = Color.Black, fontWeight = FontWeight.Bold)
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    "Screenshot this error and send to developer",
+                    color = Color.Gray,
+                    fontSize = 10.sp,
+                    fontFamily = FontFamily.Monospace
+                )
             }
         }
     }
@@ -501,6 +692,42 @@ class MainActivity : FragmentActivity() {
                 Text(subtitle, color = Color.Gray, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
             }
         }
+    }
+
+    @Composable
+    private fun BottomNavItem(
+        icon: ImageVector,
+        label: String,
+        isSelected: Boolean,
+        onClick: () -> Unit
+    ) {
+        val green = Color(0xFF00FF41)
+        Column(
+            modifier = Modifier
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                icon,
+                contentDescription = label,
+                tint = if (isSelected) green else Color.Gray,
+                modifier = Modifier.size(22.dp)
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                label,
+                color = if (isSelected) green else Color.Gray,
+                fontSize = 8.sp,
+                fontFamily = FontFamily.Monospace,
+                letterSpacing = 1.sp,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            )
+        }
+    }
+
+    companion object {
+        private const val TAG = "RuhanMainActivity"
     }
 
     private fun showFakeCrash() {

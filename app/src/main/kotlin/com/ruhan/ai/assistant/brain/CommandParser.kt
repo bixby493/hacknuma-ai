@@ -38,7 +38,26 @@ sealed class ParsedCommand {
     data object SystemDiagnostics : ParsedCommand()
     data object WifiScan : ParsedCommand()
     data object LiveVoice : ParsedCommand()
+    data object AnswerCall : ParsedCommand()
+    data object RejectCall : ParsedCommand()
+    data object RecentCallLog : ParsedCommand()
+    data object StorageInfo : ParsedCommand()
+    data object SecurityCheck : ParsedCommand()
+    data object ClearNotifications : ParsedCommand()
+    data object TakeScreenshot : ParsedCommand()
+    data class RecordAudio(val duration: Int = 30) : ParsedCommand()
     data class PhoneHealthReport(val detail: String = "") : ParsedCommand()
+    data object ScanFiles : ParsedCommand()
+    data object CleanJunk : ParsedCommand()
+    data object ClearCache : ParsedCommand()
+    data class FindFile(val query: String) : ParsedCommand()
+    data object ScreenTimeReport : ParsedCommand()
+    data object ClipboardHistory : ParsedCommand()
+    data class ClipboardSearch(val query: String) : ParsedCommand()
+    data object EmergencyStatus : ParsedCommand()
+    data object ClapDetectionOn : ParsedCommand()
+    data object ClapDetectionOff : ParsedCommand()
+    data object ClapDetectionStatus : ParsedCommand()
     data class AiChat(val message: String) : ParsedCommand()
 }
 
@@ -48,7 +67,8 @@ class CommandParser @Inject constructor() {
     fun parse(input: String): ParsedCommand {
         val text = input.lowercase().trim()
 
-        return parseCall(text)
+        return parseCallControl(text)
+            ?: parseCall(text)
             ?: parseSms(text)
             ?: parseWhatsApp(text)
             ?: parseCloseApp(text)
@@ -62,6 +82,8 @@ class CommandParser @Inject constructor() {
             ?: parseMusic(text)
             ?: parseScreenAnalysis(text)
             ?: parsePhoneInfo(text)
+            ?: parseStorageInfo(text)
+            ?: parseSecurityCheck(text)
             ?: parseEmergency(text)
             ?: parseMemory(text)
             ?: parseResearch(text)
@@ -73,7 +95,19 @@ class CommandParser @Inject constructor() {
             ?: parseTranslate(text)
             ?: parseCalculate(text)
             ?: parseLiveVoice(text)
+            ?: parseScreenshot(text)
+            ?: parseClearNotifications(text)
+            ?: parseFileCommands(text)
+            ?: parseAdvancedCommands(text)
+            ?: parseClapDetection(text)
             ?: ParsedCommand.AiChat(input)
+    }
+
+    private fun parseCallControl(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(uthao|answer|pick\\s*up|receive).*"))) return ParsedCommand.AnswerCall
+        if (text.matches(Regex(".*(kaat\\s*do|reject|decline|hang\\s*up|rakh\\s*do).*"))) return ParsedCommand.RejectCall
+        if (text.matches(Regex(".*(recent\\s*call|call\\s*log|call\\s*history|last\\s*call|kaun.*call).*"))) return ParsedCommand.RecentCallLog
+        return null
     }
 
     private fun parseCall(text: String): ParsedCommand? {
@@ -337,6 +371,34 @@ class CommandParser @Inject constructor() {
         return null
     }
 
+    private fun parseStorageInfo(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(storage|memory|space|jagah|kitni jagah|ram)\\s*(check|karo|dikha|batao|kitni|hai|status).*")))
+            return ParsedCommand.StorageInfo
+        if (text.matches(Regex(".*(storage|space|jagah).*")))
+            return ParsedCommand.StorageInfo
+        return null
+    }
+
+    private fun parseSecurityCheck(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(phone\\s*secure|security\\s*check|safe|surakshit|secure).*")))
+            return ParsedCommand.SecurityCheck
+        return null
+    }
+
+    private fun parseScreenshot(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(screenshot|screen\\s*capture|ss\\s*le).*")))
+            return ParsedCommand.TakeScreenshot
+        return null
+    }
+
+    private fun parseClearNotifications(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(notification|notif)\\s*(clear|saaf|hata|band|delete).*")))
+            return ParsedCommand.ClearNotifications
+        if (text.matches(Regex(".*(clear|saaf|hata)\\s*(notification|notif).*")))
+            return ParsedCommand.ClearNotifications
+        return null
+    }
+
     private fun extractTimeMinutes(text: String): Int {
         val hourMatch = Regex("(\\d+)\\s*(ghante|hour|hrs?)").find(text)
         val minMatch = Regex("(\\d+)\\s*(minute|min|mint)").find(text)
@@ -350,6 +412,83 @@ class CommandParser @Inject constructor() {
             return 60
         }
         return hours * 60 + mins
+    }
+
+    private fun parseAdvancedCommands(text: String): ParsedCommand? {
+        // Screen time / social media usage
+        if (text.matches(Regex(".*(screen\\s*time|social\\s*media|instagram|youtube|tiktok).*(report|kitna|usage|check|time|use).*")) ||
+            text.matches(Regex(".*(kitna|kitni|kab\\s*se).*(phone|screen|instagram|youtube|social).*")) ||
+            text.matches(Regex(".*(phone|screen).*(kitna|kitni|time|usage|report).*")) ||
+            text.matches(Regex(".*(overdose|addiction|zyada).*"))) {
+            return ParsedCommand.ScreenTimeReport
+        }
+
+        // Clipboard
+        if (text.matches(Regex(".*(clipboard|copy|paste).*(history|dikhao|show|list|kya).*")) ||
+            text.matches(Regex(".*(kya|last).*(copy|clipboard|paste).*"))) {
+            return ParsedCommand.ClipboardHistory
+        }
+        val clipSearch = Regex("(?:clipboard|copy).*(?:mein|me|search|dhundh)\\s+(.+)").find(text)
+        if (clipSearch != null) {
+            val q = clipSearch.groupValues[1].trim()
+            if (q.isNotBlank()) return ParsedCommand.ClipboardSearch(q)
+        }
+
+        // Emergency
+        if (text.matches(Regex(".*(emergency|sos|shake).*(status|kya|check|on|off|kaise).*"))) {
+            return ParsedCommand.EmergencyStatus
+        }
+
+        return null
+    }
+
+    private fun parseFileCommands(text: String): ParsedCommand? {
+        // Scan
+        if (text.matches(Regex(".*(scan|analyse|analyze|check).*(file|storage|phone|memory|disk).*")) ||
+            text.matches(Regex(".*(file|storage|phone).*(scan|analyse|analyze|check).*")) ||
+            text.matches(Regex(".*(hard\\s*scan|deep\\s*scan|full\\s*scan).*"))) {
+            return ParsedCommand.ScanFiles
+        }
+        // Clean junk
+        if (text.matches(Regex(".*(kachra|junk|garbage|saaf|clean).*(kar|karo|karde|do|hatao|delete).*")) ||
+            text.matches(Regex(".*(clean|clear).*(junk|temp|garbage|kachra).*")) ||
+            text.matches(Regex(".*(saaf|clean)\\s*(kar|karo|karde).*"))) {
+            return ParsedCommand.CleanJunk
+        }
+        // Clear cache
+        if (text.matches(Regex(".*(cache|cach).*(clear|saaf|delete|hatao|remove|kar).*")) ||
+            text.matches(Regex(".*(clear|saaf|delete).*(cache|cach).*"))) {
+            return ParsedCommand.ClearCache
+        }
+        // Duplicate photo
+        if (text.matches(Regex(".*(duplicate|copy).*(photo|image|pic|file).*(delete|hatao|remove|dhundh|find).*")) ||
+            text.matches(Regex(".*(delete|hatao|remove|dhundh|find).*(duplicate|copy).*(photo|image|pic|file).*"))) {
+            return ParsedCommand.ScanFiles
+        }
+        // Find file
+        val findPatterns = listOf(
+            Regex("(?:dhundh|find|search|locate|khoj).*?(?:file|naam|name)?\\s+(.+)"),
+            Regex("(.+?)\\s+(?:dhundh|find|search|khoj)")
+        )
+        for (p in findPatterns) {
+            val m = p.find(text)
+            if (m != null) {
+                val query = (m.groupValues.getOrNull(1) ?: "").trim()
+                if (query.isNotBlank() && query.length > 1) {
+                    return ParsedCommand.FindFile(query)
+                }
+            }
+        }
+        return null
+    }
+
+    private fun parseClapDetection(text: String): ParsedCommand? {
+        if (text.matches(Regex(".*(clap|tali).*(on|chalu|start|enable|shuru).*"))) return ParsedCommand.ClapDetectionOn
+        if (text.matches(Regex(".*(clap|tali).*(off|band|stop|disable|roko).*"))) return ParsedCommand.ClapDetectionOff
+        if (text.matches(Regex(".*(clap|tali).*(status|kaisa|active|chal).*"))) return ParsedCommand.ClapDetectionStatus
+        if (text.matches(Regex(".*(enable|start|chalu).*(clap|tali).*"))) return ParsedCommand.ClapDetectionOn
+        if (text.matches(Regex(".*(disable|stop|band).*(clap|tali).*"))) return ParsedCommand.ClapDetectionOff
+        return null
     }
 
     private fun calculateMinutesToMorning(): Int {

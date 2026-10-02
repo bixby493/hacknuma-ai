@@ -54,11 +54,15 @@ class RuhanForegroundService : Service() {
     }
 
     private fun startWakeWordListening() {
-        if (!SpeechRecognizer.isRecognitionAvailable(this)) return
+        try {
+            if (!SpeechRecognizer.isRecognitionAvailable(this)) return
+        } catch (_: Exception) { return }
         if (isListening) return
 
-        speechRecognizer?.destroy()
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+        try { speechRecognizer?.destroy() } catch (_: Exception) {}
+        speechRecognizer = try {
+            SpeechRecognizer.createSpeechRecognizer(this)
+        } catch (_: Exception) { return }
 
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)

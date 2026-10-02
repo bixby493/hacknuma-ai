@@ -102,8 +102,7 @@ dependencies {
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 
-    // Security (EncryptedSharedPreferences)
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    // Security-crypto removed: alpha lib causes crashes on Samsung/Xiaomi/custom ROMs
 
     // Biometric
     implementation("androidx.biometric:biometric:1.1.0")
@@ -113,6 +112,12 @@ dependencies {
 
     // Gson
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Lottie Animations
+    implementation("com.airbnb.android:lottie-compose:6.3.0")
+
+    // Splash Screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")

@@ -3,7 +3,12 @@ package com.ruhan.ai.assistant.brain
 import com.ruhan.ai.assistant.data.repository.AIRepository
 import com.ruhan.ai.assistant.data.repository.ConversationRepository
 import com.ruhan.ai.assistant.data.repository.PhoneRepository
+import com.ruhan.ai.assistant.phone.AppUsageTracker
+import com.ruhan.ai.assistant.phone.EmergencyShakeDetector
+import com.ruhan.ai.assistant.phone.FileScanner
 import com.ruhan.ai.assistant.phone.SettingsController
+import com.ruhan.ai.assistant.phone.SmartClipboard
+import com.ruhan.ai.assistant.security.AntiTamperGuard
 import com.ruhan.ai.assistant.premium.LocationManager
 import com.ruhan.ai.assistant.premium.NotesManager
 import com.ruhan.ai.assistant.research.DeepResearch
@@ -27,6 +32,11 @@ class RuhanBrain @Inject constructor(
     private val phoneRepository: PhoneRepository,
     private val memoryManager: MemoryManager,
     private val settingsController: SettingsController,
+    private val fileScanner: FileScanner,
+    private val antiTamperGuard: AntiTamperGuard,
+    private val appUsageTracker: AppUsageTracker,
+    private val smartClipboard: SmartClipboard,
+    private val emergencyShakeDetector: EmergencyShakeDetector,
     private val notesManager: NotesManager,
     private val locationManager: LocationManager,
     private val deepResearch: DeepResearch,
@@ -43,7 +53,45 @@ class RuhanBrain @Inject constructor(
         }
     }
 
+    private fun randomGreeting(): String {
+        val b = boss
+        return listOf(
+            "Haan $b, bolo! Kya karna hai aaj?",
+            "Ji $b, main hoon. Kaise madad karun?",
+            "Bolo $b, sab tayaar hai. Koi kaam ho toh batao.",
+            "Haan ji $b! Aaj kya plan hai?",
+            "Main yahaan hoon $b. Bas ek lafz kahiye.",
+            "$b, aapka Ruhan hazir hai. Farmaaiye!",
+            "Ji janab! Bataiye kya kar sakta hoon aapke liye?",
+            "Suno $b, aaj ka vichaar — Mehnat ka koi shortcut nahi hota. Ab bolo, kya karna hai?",
+            "$b, aapki ek awaaz pe hazir! Kya hukum hai?",
+            "Haan $b! Naya din, naye iraade. Shuru karein?",
+            "Ji $b, RUHAN ready hai. Koi bhi kaam bolo!",
+            "$b, aap bole aur main karu. Batao!",
+            "Assalamu Alaikum $b! Aaj kya karna hai humein?",
+            "Bolo $b, duniya hila dete hain aaj!",
+            "$b, main hamesha yahan hoon. Bolo kya chahiye?",
+            "Ji $b! Ek shayri sunein — Himmat waale ko haar nahi milti, dhoondhne waale ko darr nahi milti. Ab kaam batao!",
+            "$b, good vibes only! Aaj kya explore karna hai?",
+            "Haan $b, taiyaar hoon. Bas ishara karo!",
+            "Hello $b! Aaj ka mood kaisa hai? Koi kaam batao!",
+            "Ji $b! Ruhan hamesha aapke saath hai. Kya madad chahiye?"
+        ).random()
+    }
+
+    private fun isGreeting(text: String): Boolean {
+        val t = text.lowercase().trim()
+        return t.isEmpty() ||
+            t == "ruhan" || t == "ruha" || t == "rohan" ||
+            t == "hello" || t == "hi" || t == "hey" ||
+            t.matches(Regex("^(hello|hi|hey|namaste|salam|assalamu|haan|bolo)\\s*(ruhan|ruha|rohan)?\\s*$"))
+    }
+
     private suspend fun processInternal(input: String): BrainResponse {
+        if (isGreeting(input)) {
+            return BrainResponse.Speak(randomGreeting())
+        }
+
         if (memoryManager.parseAndStore(input)) {
             return BrainResponse.Speak("Yaad rakh liya, $boss!")
         }
@@ -94,6 +142,14 @@ class RuhanBrain @Inject constructor(
             is ParsedCommand.SystemDiagnostics -> handleDiagnostics()
             is ParsedCommand.WifiScan -> handleWifiScan()
             is ParsedCommand.LiveVoice -> BrainResponse.StartLiveVoice()
+            is ParsedCommand.AnswerCall -> BrainResponse.Speak("$boss, call answer karne ke liye phone ka button use karo.")
+            is ParsedCommand.RejectCall -> BrainResponse.Speak("$boss, call reject kar raha hoon.")
+            is ParsedCommand.RecentCallLog -> handleRecentCallLog()
+            is ParsedCommand.StorageInfo -> handleStorageInfo()
+            is ParsedCommand.SecurityCheck -> handleSecurityCheck()
+            is ParsedCommand.ClearNotifications -> BrainResponse.Speak("$boss, notifications clear karne ke liye notification panel se swipe karo.")
+            is ParsedCommand.TakeScreenshot -> BrainResponse.Speak("$boss, screenshot lene ke liye Power + Volume Down dabao.")
+            is ParsedCommand.RecordAudio -> BrainResponse.Speak("$boss, audio recording ${cmd.duration} seconds ke liye shuru.")
             is ParsedCommand.PhoneHealthReport -> handleDiagnostics()
             is ParsedCommand.Weather -> handleWeather(cmd.location)
             is ParsedCommand.PlayMusic -> handlePlayMusic(cmd.query)
@@ -101,6 +157,17 @@ class RuhanBrain @Inject constructor(
             is ParsedCommand.SetTimer -> handleSetTimer(cmd.seconds)
             is ParsedCommand.Translate -> handleTranslate(cmd.text, cmd.targetLang)
             is ParsedCommand.Calculate -> handleCalculate(cmd.expression)
+            is ParsedCommand.ScanFiles -> handleScanFiles()
+            is ParsedCommand.CleanJunk -> handleCleanJunk()
+            is ParsedCommand.ClearCache -> handleClearCache()
+            is ParsedCommand.FindFile -> handleFindFile(cmd.query)
+            is ParsedCommand.ScreenTimeReport -> handleScreenTime()
+            is ParsedCommand.ClipboardHistory -> handleClipboardHistory()
+            is ParsedCommand.ClipboardSearch -> handleClipboardSearch(cmd.query)
+            is ParsedCommand.EmergencyStatus -> handleEmergencyStatus()
+            is ParsedCommand.ClapDetectionOn -> handleClapDetection("on")
+            is ParsedCommand.ClapDetectionOff -> handleClapDetection("off")
+            is ParsedCommand.ClapDetectionStatus -> handleClapDetection("status")
             is ParsedCommand.AiChat -> handleAiChat(cmd.message)
         }
     }
@@ -232,6 +299,29 @@ class RuhanBrain @Inject constructor(
         return BrainResponse.Speak(result)
     }
 
+    private fun handleRecentCallLog(): BrainResponse {
+        return BrainResponse.Speak("$boss, recent call log check karne ke liye Phone app khol raha hoon.")
+    }
+
+    private fun handleStorageInfo(): BrainResponse {
+        val stat = android.os.StatFs(android.os.Environment.getDataDirectory().path)
+        val totalBytes = stat.blockSizeLong * stat.blockCountLong
+        val freeBytes = stat.blockSizeLong * stat.availableBlocksLong
+        val usedBytes = totalBytes - freeBytes
+        val totalGB = String.format("%.1f", totalBytes / (1024.0 * 1024 * 1024))
+        val usedGB = String.format("%.1f", usedBytes / (1024.0 * 1024 * 1024))
+        val freeGB = String.format("%.1f", freeBytes / (1024.0 * 1024 * 1024))
+        return BrainResponse.Speak("$boss, phone ki storage: Total $totalGB GB, Used $usedGB GB, Free $freeGB GB.")
+    }
+
+    private fun handleSecurityCheck(): BrainResponse {
+        val lockEnabled = preferencesManager.isLockSetup
+        val lockType = preferencesManager.lockType
+        val lockStatus = if (lockEnabled) "$lockType lock ON" else "Koi lock nahi"
+        val securityReport = antiTamperGuard.getSecuritySummary()
+        return BrainResponse.Speak("$boss, Lock: $lockStatus. $securityReport")
+    }
+
     private suspend fun handleWeather(location: String): BrainResponse {
         val query = if (location == "current") "current weather" else "weather in $location"
         val result = aiRepository.searchWeb(query)
@@ -309,6 +399,97 @@ class RuhanBrain @Inject constructor(
         val extraContext = if (memContext.isNotBlank()) "\n\nMemory context:\n$memContext" else ""
         val response = aiRepository.chat(message + extraContext, history)
         return BrainResponse.Speak(response)
+    }
+
+    private fun handleScanFiles(): BrainResponse {
+        return try {
+            val result = fileScanner.scanFiles()
+            BrainResponse.Speak("$boss, ${result.summary}")
+        } catch (_: Exception) {
+            BrainResponse.Speak("$boss, file scan mein storage permission chahiye. Settings se allow karo.")
+        }
+    }
+
+    private fun handleCleanJunk(): BrainResponse {
+        return BrainResponse.Confirm("$boss, kachra saaf karun? Cache, temp files, empty files sab delete honge.") {
+            fileScanner.cleanJunk()
+        }
+    }
+
+    private fun handleClearCache(): BrainResponse {
+        return BrainResponse.Confirm("$boss, cache clear karun?") {
+            fileScanner.clearCache()
+        }
+    }
+
+    private fun handleFindFile(query: String): BrainResponse {
+        return try {
+            val result = fileScanner.findFile(query)
+            BrainResponse.Speak(result)
+        } catch (_: Exception) {
+            BrainResponse.Speak("$boss, file dhundhne mein storage permission chahiye.")
+        }
+    }
+
+    private fun handleScreenTime(): BrainResponse {
+        return try {
+            val summary = appUsageTracker.getUsageSummary()
+            val warning = appUsageTracker.getOverdoseWarning()
+            val response = if (warning != null) "$summary\n\n$warning" else summary
+            BrainResponse.Speak("$boss, $response")
+        } catch (_: Exception) {
+            BrainResponse.Speak("$boss, screen time check karne ke liye Usage Access permission chahiye. Settings > Apps > Special Access > Usage Access.")
+        }
+    }
+
+    private fun handleClipboardHistory(): BrainResponse {
+        val summary = smartClipboard.getHistorySummary()
+        return BrainResponse.Speak("$boss, $summary")
+    }
+
+    private fun handleClipboardSearch(query: String): BrainResponse {
+        val result = smartClipboard.searchClipboard(query)
+        return BrainResponse.Speak("$boss, $result")
+    }
+
+    private fun handleEmergencyStatus(): BrainResponse {
+        val status = emergencyShakeDetector.getStatus()
+        return BrainResponse.Speak("$boss, $status")
+    }
+
+    private fun handleClapDetection(action: String): BrainResponse {
+        val ctx = context
+        return when (action) {
+            "on" -> {
+                try {
+                    val intent = android.content.Intent(ctx, com.ruhan.ai.assistant.phone.ClapDetectionService::class.java)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        ctx.startForegroundService(intent)
+                    } else {
+                        ctx.startService(intent)
+                    }
+                    BrainResponse.Speak("$boss, clap detection ON hai ab! Do baar tali bajao aur main active ho jaunga.")
+                } catch (e: Throwable) {
+                    BrainResponse.Speak("$boss, clap detection start nahi ho paya: ${e.message}")
+                }
+            }
+            "off" -> {
+                try {
+                    ctx.stopService(android.content.Intent(ctx, com.ruhan.ai.assistant.phone.ClapDetectionService::class.java))
+                    BrainResponse.Speak("$boss, clap detection band kar diya.")
+                } catch (_: Throwable) {
+                    BrainResponse.Speak("$boss, clap detection pehle se band hai.")
+                }
+            }
+            else -> {
+                val isActive = com.ruhan.ai.assistant.phone.ClapDetectionService.isActive
+                if (isActive) {
+                    BrainResponse.Speak("$boss, clap detection active hai. Do baar tali bajao toh main sun lunga!")
+                } else {
+                    BrainResponse.Speak("$boss, clap detection band hai. Bolo 'clap detection on karo' toh chalu kar dunga.")
+                }
+            }
+        }
     }
 
     private val context get() = phoneRepository.getContext()

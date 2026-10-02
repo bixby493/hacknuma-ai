@@ -71,19 +71,66 @@ val DarkColors = RuhanColors(
     isDark = true
 )
 
-val LightColors = RuhanColors(
-    background = Color(0xFF0D120D),
-    surface = Color(0xFF0F170F),
-    card = Color(0xFF142014),
-    textPrimary = HackerGreen,
-    textSecondary = Color(0xFF44BB44),
-    accent = HackerGreen,
-    userBubble = Color(0xFF0A1F0A),
-    ruhanBubble = Color(0xFF003300),
-    ruhanText = HackerGreen,
-    chipBg = Color(0xFF142014),
-    inputBorder = Color(0xFF224422),
+// --- New Themes: Pink, Blue, Gray, White ---
+
+val PinkColors = RuhanColors(
+    background = Color(0xFF1A0A14),
+    surface = Color(0xFF1F0E18),
+    card = Color(0xFF2A1220),
+    textPrimary = Color(0xFFFF69B4),
+    textSecondary = Color(0xFFCC5599),
+    accent = Color(0xFFFF1493),
+    userBubble = Color(0xFF2A0A1E),
+    ruhanBubble = Color(0xFF1F0020),
+    ruhanText = Color(0xFFFF69B4),
+    chipBg = Color(0xFF2A1220),
+    inputBorder = Color(0xFF3A1A2A),
     isDark = true
+)
+
+val BlueColors = RuhanColors(
+    background = Color(0xFF0A0F1A),
+    surface = Color(0xFF0E1420),
+    card = Color(0xFF12192A),
+    textPrimary = Color(0xFF00BFFF),
+    textSecondary = Color(0xFF3399CC),
+    accent = Color(0xFF1E90FF),
+    userBubble = Color(0xFF0A152A),
+    ruhanBubble = Color(0xFF001A33),
+    ruhanText = Color(0xFF00BFFF),
+    chipBg = Color(0xFF12192A),
+    inputBorder = Color(0xFF1A2A44),
+    isDark = true
+)
+
+val GrayColors = RuhanColors(
+    background = Color(0xFF1A1A1A),
+    surface = Color(0xFF222222),
+    card = Color(0xFF2C2C2C),
+    textPrimary = Color(0xFFCCCCCC),
+    textSecondary = Color(0xFF888888),
+    accent = Color(0xFF6C63FF),
+    userBubble = Color(0xFF2A2A2A),
+    ruhanBubble = Color(0xFF333333),
+    ruhanText = Color(0xFFDDDDDD),
+    chipBg = Color(0xFF2C2C2C),
+    inputBorder = Color(0xFF444444),
+    isDark = true
+)
+
+val WhiteColors = RuhanColors(
+    background = Color(0xFFF5F5F5),
+    surface = Color(0xFFFFFFFF),
+    card = Color(0xFFEEEEEE),
+    textPrimary = Color(0xFF1A1A1A),
+    textSecondary = Color(0xFF666666),
+    accent = Color(0xFF00C853),
+    userBubble = Color(0xFFE8F5E9),
+    ruhanBubble = Color(0xFFFFFFFF),
+    ruhanText = Color(0xFF1A1A1A),
+    chipBg = Color(0xFFE0E0E0),
+    inputBorder = Color(0xFFBDBDBD),
+    isDark = false
 )
 
 val LocalRuhanColors = staticCompositionLocalOf { HackerColors }
@@ -100,20 +147,34 @@ fun RuhanTheme(
     content: @Composable () -> Unit
 ) {
     val ruhanColors = when (themeMode) {
-        "light" -> LightColors
         "dark" -> DarkColors
         "amoled" -> AmoledColors
+        "pink" -> PinkColors
+        "blue" -> BlueColors
+        "gray" -> GrayColors
+        "white" -> WhiteColors
         else -> HackerColors
     }
 
-    val materialScheme = darkColorScheme(
-        background = ruhanColors.background,
-        surface = ruhanColors.surface,
-        primary = ruhanColors.accent,
-        onPrimary = Color.Black,
-        onBackground = ruhanColors.textPrimary,
-        onSurface = ruhanColors.textPrimary
-    )
+    val materialScheme = if (ruhanColors.isDark) {
+        darkColorScheme(
+            background = ruhanColors.background,
+            surface = ruhanColors.surface,
+            primary = ruhanColors.accent,
+            onPrimary = Color.Black,
+            onBackground = ruhanColors.textPrimary,
+            onSurface = ruhanColors.textPrimary
+        )
+    } else {
+        androidx.compose.material3.lightColorScheme(
+            background = ruhanColors.background,
+            surface = ruhanColors.surface,
+            primary = ruhanColors.accent,
+            onPrimary = Color.White,
+            onBackground = ruhanColors.textPrimary,
+            onSurface = ruhanColors.textPrimary
+        )
+    }
 
     CompositionLocalProvider(LocalRuhanColors provides ruhanColors) {
         MaterialTheme(

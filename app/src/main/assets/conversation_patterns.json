@@ -1,0 +1,241 @@
+{
+ "greetings": [
+  "hello ruhan",
+  "hi ruhan",
+  "hey ruhan",
+  "namaste ruhan",
+  "kya haal hai",
+  "good morning ruhan",
+  "good evening",
+  "good night ruhan",
+  "shubh ratri",
+  "kaise ho ruhan",
+  "sab badhiya",
+  "kya chal raha hai",
+  "hello ji",
+  "haan bolo",
+  "sun ruhan",
+  "arre ruhan",
+  "oye ruhan",
+  "bhai ruhan",
+  "ruhan sun",
+  "ruhan bata",
+  "ruhan help",
+  "ruhan madad karo"
+ ],
+ "command_patterns": {
+  "call": [
+   "call karo {name} ko",
+   "{name} ko phone karo",
+   "dial {name}",
+   "{name} ko call laga",
+   "phone karo {name} ko",
+   "{name} se baat karo",
+   "call {name}",
+   "{name} ko ring karo"
+  ],
+  "message": [
+   "{name} ko message bhejo",
+   "sms bhejo {name} ko",
+   "msg karo {name} ko",
+   "text bhejo {name} ko",
+   "whatsapp karo {name} ko",
+   "{name} ko whatsapp pe bhejo",
+   "message type karo {name} ke liye"
+  ],
+  "weather": [
+   "mausam kaisa hai",
+   "weather batao",
+   "barish hogi kya",
+   "temperature kya hai",
+   "aaj ka mausam",
+   "kal ka weather",
+   "garmi kitni hai",
+   "humidity kitni hai"
+  ],
+  "time": [
+   "time kya hua",
+   "abhi kya time hai",
+   "kitne baje hain",
+   "date kya hai",
+   "aaj kya din hai",
+   "kal ka din batao",
+   "alarm laga do {time} ka"
+  ],
+  "music": [
+   "gaana bajao",
+   "music play karo",
+   "gana suno",
+   "song play karo",
+   "volume badhao",
+   "volume kam karo",
+   "mute karo",
+   "unmute karo",
+   "next song",
+   "previous song",
+   "pause karo",
+   "resume karo"
+  ],
+  "search": [
+   "search karo {query}",
+   "google karo {query}",
+   "dhundho {query}",
+   "internet pe search karo {query}",
+   "research karo {query} pe",
+   "pata karo {query}",
+   "batao {query} ke baare mein"
+  ],
+  "app_open": [
+   "youtube kholo",
+   "instagram open karo",
+   "whatsapp kholo",
+   "camera kholo",
+   "gallery kholo",
+   "settings open karo",
+   "maps kholo",
+   "calculator kholo",
+   "chrome open karo",
+   "play store kholo",
+   "spotify open karo"
+  ],
+  "system": [
+   "wifi on karo",
+   "wifi off karo",
+   "bluetooth on karo",
+   "bluetooth off karo",
+   "flashlight on karo",
+   "torch off karo",
+   "brightness badhao",
+   "brightness kam karo",
+   "silent mode on karo",
+   "volume full karo",
+   "airplane mode on karo",
+   "hotspot on karo",
+   "location on karo",
+   "nfc on karo"
+  ],
+  "ai_chat": [
+   "kuch batao interesting",
+   "joke sunao",
+   "shayari sunao",
+   "fact batao",
+   "motivational quote batao",
+   "story sunao",
+   "riddle batao",
+   "kuch naya sikhao",
+   "gk question pucho",
+   "current affairs batao"
+  ],
+  "reminder": [
+   "yaad dilana {time} pe {task}",
+   "reminder set karo {task}",
+   "alarm laga do",
+   "timer set karo {minutes} minute ka",
+   "yaad rakhna {task}",
+   "note karo {text}"
+  ],
+  "translation": [
+   "translate karo {text}",
+   "english mein kya hota hai {word}",
+   "hindi mein batao {word}",
+   "urdu mein kya kehte hain {word}",
+   "meaning batao {word} ka"
+  ],
+  "calculation": [
+   "calculate karo {expression}",
+   "kitna hota hai {num1} plus {num2}",
+   "percentage nikalo {num} ka {percent}",
+   "convert karo {value} {unit1} to {unit2}"
+  ],
+  "screenshot": [
+   "screenshot lo",
+   "screen capture karo",
+   "screen share karo",
+   "screen dikhao",
+   "screenshot analyze karo"
+  ],
+  "clipboard": [
+   "clipboard dikhao",
+   "clipboard mein kya hai",
+   "paste karo",
+   "clipboard history",
+   "clipboard search karo"
+  ],
+  "notes": [
+   "note banao",
+   "note likhho",
+   "notes dikhao",
+   "note delete karo",
+   "note search karo",
+   "sare notes batao"
+  ],
+  "emergency": [
+   "emergency call karo",
+   "help chahiye",
+   "ambulance bulao",
+   "police bulao",
+   "fire brigade bulao",
+   "sos bhejo"
+  ],
+  "file_scan": [
+   "files scan karo",
+   "storage check karo",
+   "kitni jagah bachi hai",
+   "large files dhundho",
+   "duplicate files dhundho"
+  ],
+  "screen_time": [
+   "screen time dikhao",
+   "phone kitna use kiya",
+   "instagram kitna chala",
+   "youtube time batao",
+   "app usage dikhao"
+  ]
+ },
+ "response_templates": {
+  "greeting": [
+   "Haan {boss}, bolo! Kya karna hai aaj?",
+   "Ji {boss}, main hoon. Kaise madad karun?",
+   "Bolo {boss}, main sun raha hoon!",
+   "Haan {boss}! Ready hoon, command do.",
+   "Namaste {boss}! Kya service chahiye?"
+  ],
+  "acknowledgment": [
+   "Ji {boss}, abhi karta hoon.",
+   "Theek hai {boss}, ho jayega.",
+   "Bilkul {boss}, kar raha hoon.",
+   "Done {boss}!",
+   "Samajh gaya {boss}, processing..."
+  ],
+  "error": [
+   "{boss}, ye kaam nahi ho paya. Error: {error}",
+   "Maaf karna {boss}, kuch gadbad hui.",
+   "{boss}, permission chahiye iske liye.",
+   "Sorry {boss}, internet connection check karo.",
+   "{boss}, API key set karo pehle settings mein."
+  ]
+ },
+ "intent_labels": [
+  "call",
+  "message",
+  "weather",
+  "time",
+  "music",
+  "search",
+  "app_open",
+  "system",
+  "ai_chat",
+  "reminder",
+  "translation",
+  "calculation",
+  "screenshot",
+  "clipboard",
+  "notes",
+  "emergency",
+  "file_scan",
+  "screen_time"
+ ],
+ "supported_commands_count": 131,
+ "version": "2.0",
+ "language": "hinglish"
+}

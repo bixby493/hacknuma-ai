@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 data class RuhanUiState(
     val orbState: OrbState = OrbState.IDLE,
-    val statusText: String = "Idle — Say Hello Ruhan",
+    val statusText: String = "Listening... Bolo 'Ruhan'",
     val conversations: List<ConversationEntity> = emptyList(),
     val currentTranscript: String = "",
     val isListening: Boolean = false,
@@ -57,11 +57,12 @@ class RuhanViewModel @Inject constructor(
     private var pendingOnConfirm: (suspend () -> String)? = null
 
     init {
-        try { setupSpeechCallbacks() } catch (_: Exception) {}
-        try { loadConversations() } catch (_: Exception) {}
-        try { updateApiStatus() } catch (_: Exception) {}
-        try { observeLiveVoice() } catch (_: Exception) {}
-        try { initializeVoice() } catch (_: Exception) {}
+        try { setupSpeechCallbacks() } catch (_: Throwable) {}
+        try { loadConversations() } catch (_: Throwable) {}
+        try { updateApiStatus() } catch (_: Throwable) {}
+        try { observeLiveVoice() } catch (_: Throwable) {}
+        try { initializeVoice() } catch (_: Throwable) {}
+        try { startListening() } catch (_: Throwable) {}
     }
 
     private fun setupSpeechCallbacks() {
@@ -70,6 +71,8 @@ class RuhanViewModel @Inject constructor(
         }
 
         speechManager.onFinalResult = { text ->
+            // Pause mic while processing — prevents feedback loop
+            speechManager.pauseListening()
             _uiState.value = _uiState.value.copy(
                 currentTranscript = "",
                 isListening = false,
@@ -91,7 +94,7 @@ class RuhanViewModel @Inject constructor(
             if (_uiState.value.orbState == OrbState.LISTENING) {
                 _uiState.value = _uiState.value.copy(
                     orbState = OrbState.IDLE,
-                    statusText = "Idle — Say Hello Ruhan",
+                    statusText = "Listening... Bolo 'Ruhan'",
                     isListening = false
                 )
             }
@@ -135,7 +138,7 @@ class RuhanViewModel @Inject constructor(
                         orbState = orbState,
                         isLiveVoiceActive = state != LiveVoiceState.IDLE && state != LiveVoiceState.ERROR,
                         statusText = when (state) {
-                            LiveVoiceState.IDLE -> "Idle — Say Hello Ruhan"
+                            LiveVoiceState.IDLE -> "Listening... Bolo 'Ruhan'"
                             LiveVoiceState.CONNECTING -> "Connecting to Gemini Live..."
                             LiveVoiceState.LISTENING -> "Live Voice — Listening..."
                             LiveVoiceState.PROCESSING -> "Gemini processing..."
@@ -195,7 +198,12 @@ class RuhanViewModel @Inject constructor(
     fun startListening() {
         try {
             voiceEngine.stop()
-            speechManager.startListening()
+            speechManager.startContinuousListening()
+            _uiState.value = _uiState.value.copy(
+                orbState = OrbState.LISTENING,
+                statusText = "Listening... Bolo 'Ruhan'",
+                isListening = true
+            )
         } catch (_: Exception) {
             _uiState.value = _uiState.value.copy(statusText = "Mic access fail")
         }
@@ -205,7 +213,7 @@ class RuhanViewModel @Inject constructor(
         try { speechManager.stopListening() } catch (_: Exception) {}
         _uiState.value = _uiState.value.copy(
             orbState = OrbState.IDLE,
-            statusText = "Idle — Say Hello Ruhan",
+            statusText = "Idle — Say 'Ruhan'",
             isListening = false
         )
     }
@@ -272,7 +280,7 @@ class RuhanViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             pendingConfirmation = null,
             orbState = OrbState.IDLE,
-            statusText = "Idle — Say Hello Ruhan"
+            statusText = "Listening... Bolo 'Ruhan'"
         )
         viewModelScope.launch {
             val msg = "Cancel kar diya, ${preferencesManager.bossName}."
@@ -281,7 +289,7 @@ class RuhanViewModel @Inject constructor(
         }
     }
 
-    private fun processInput(text: String) {
+    fun processInput(text: String) {
         viewModelScope.launch {
             try { conversationRepository.saveMessage(text, isUser = true) } catch (_: Exception) {}
 
@@ -310,7 +318,7 @@ class RuhanViewModel @Inject constructor(
                 is BrainResponse.Navigate -> {
                     _uiState.value = _uiState.value.copy(
                         orbState = OrbState.IDLE,
-                        statusText = "Idle — Say Hello Ruhan"
+                        statusText = "Listening... Bolo 'Ruhan'"
                     )
                 }
 
@@ -334,16 +342,21 @@ class RuhanViewModel @Inject constructor(
                 },
                 onDone = {
                     _uiState.value = _uiState.value.copy(
-                        orbState = OrbState.IDLE,
-                        statusText = "Idle — Say Hello Ruhan"
+                        orbState = OrbState.LISTENING,
+                        statusText = "Listening... Bolo 'Ruhan'",
+                        isListening = true
                     )
+                    // Resume listening after speaking (Jarvis style)
+                    try { speechManager.resumeListening() } catch (_: Exception) {}
                 }
             )
         } catch (_: Exception) {
             _uiState.value = _uiState.value.copy(
                 orbState = OrbState.IDLE,
-                statusText = "Idle — Say Hello Ruhan"
+                statusText = "Idle — Say 'Ruhan'"
             )
+            // Resume listening even on error
+            try { speechManager.resumeListening() } catch (_: Exception) {}
         }
     }
 

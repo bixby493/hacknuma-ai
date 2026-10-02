@@ -23,3 +23,21 @@
 -keep class dagger.hilt.** { *; }
 -keep class javax.inject.** { *; }
 -keep class * extends dagger.hilt.android.internal.managers.ViewComponentManager { *; }
+
+# Anti-tamper: Obfuscate security classes heavily
+-repackageclasses ''
+-allowaccessmodification
+-optimizationpasses 5
+-overloadaggressively
+
+# Remove debug logs in release
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
+
+# Encrypt string constants
+-adaptclassstrings
+-adaptresourcefilenames
+-adaptresourcefilecontents
